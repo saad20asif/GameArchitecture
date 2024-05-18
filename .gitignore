@@ -3,3 +3,6 @@ Temp
 Logs
 Library
 *.sln
+.vs
+obj
+Assembly-CSharp.csproj
