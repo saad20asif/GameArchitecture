@@ -4,29 +4,31 @@ using UnityEngine;
 public class State : ScriptableObject
 {
     public bool Paused;
-    private IEnumerator Init()
+    protected IState _listener;
+    public virtual IEnumerator Init(IState listener)
+    {
+        _listener = listener;
+        yield return null;
+    }
+    public virtual IEnumerator Execute()
     {
         yield return null;
     }
-    private IEnumerator Execute()
-    {
-        yield return null;
-    }
-    private IEnumerator Pause()
+    public virtual IEnumerator Pause()
     {
         Paused = true;
         yield return null;
     }
-    private IEnumerator Resume()
+    public virtual IEnumerator Resume()
     {
         Paused = false;
         yield return null;
     }
-    private IEnumerator Tick()
+    public virtual IEnumerator Tick()
     {
         yield return null;
     }
-    private IEnumerator Exit()
+    public virtual IEnumerator Exit()
     {
         yield return null;
     }
