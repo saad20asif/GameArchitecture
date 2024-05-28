@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "StateMachine",menuName = "ProjectCore/State Machine/Basic FSM")]
-public class StateMachine : ScriptableObject, IState
+[CreateAssetMenu(fileName = "FiniteStateMachine", menuName = "ProjectCore/State Machine/Basic FSM")]
+public class FiniteStateMachine : ScriptableObject, IState
 {
     [SerializeField] private State BootState;
 
