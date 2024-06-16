@@ -9,7 +9,7 @@ public class Float : ScriptableObject
     [SerializeField] protected float DefaultValue;
     [SerializeField] protected bool ResetToDefault;
 
-    private void Awake()
+    private void OnEnable()
     {
         if (ResetToDefault)
             Value = DefaultValue;
