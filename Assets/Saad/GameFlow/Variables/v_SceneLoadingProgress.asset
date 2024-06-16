@@ -9,7 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd0920995d4cb0241a4c6144db2dca17, type: 3}
-  m_Name: Transition
+  m_Script: {fileID: 11500000, guid: 5f4934dd094e19b4db84fc5caa606510, type: 3}
+  m_Name: v_SceneLoadingProgress
   m_EditorClassIdentifier: 
-  ToState: {fileID: 11400000, guid: b9b3bb32f623d9a4e88b36188597fed0, type: 2}
+  Value: 0.5673691
+  DefaultValue: 0
+  ResetToDefault: 1
