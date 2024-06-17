@@ -24,6 +24,20 @@ public class FiniteStateMachine : ScriptableObject, IState
         }
     }
 
+    public IEnumerator DoTransition(Transition transition)
+    {
+        Debug.Log("DoTransition " + transition.ToState.name);
+        if(CurrentState != null)
+        {
+            CurrentState.Exit();
+            CurrentState = transition.ToState;
+            yield return CurrentState.Enter(this);
+            yield return CurrentState.Execute();
+        }
+        yield return null;
+    }
+
+    // Still Cant understand This Interface properly
     void IState.TransitionTo(State state, Transition transition)
     {
         //Transition(transition);
