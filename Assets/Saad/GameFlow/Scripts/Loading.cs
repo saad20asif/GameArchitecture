@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections;
-using System.Threading;
-using UnityEngine.SceneManagement;
 
 public class Loading : MonoBehaviour
 {
@@ -11,12 +9,11 @@ public class Loading : MonoBehaviour
     [SerializeField] private Slider Slider;
     [SerializeField] private Float LoadValue;
 
-    AsyncOperation _asyncLoad;
+    
 
     private void Start()
     {
         StartCoroutine(Load());
-        StartCoroutine(PreloadScene());
     }
     private IEnumerator Load()
     {
@@ -26,28 +23,10 @@ public class Loading : MonoBehaviour
                 Slider.value = _value;
                 LoadValue.SetValue(_value);
             }).OnComplete(() => {
-                ActivateGameScene();
+                gameObject.SetActive(false);
             });
         yield return null;
     }
-    private void ActivateGameScene()
-    {
-        print("Activate called! ");
-        if (_asyncLoad != null)
-        {
-            gameObject.SetActive(false); 
-            _asyncLoad.allowSceneActivation = true;
-        }
-            
-    }
 
-    IEnumerator PreloadScene()
-    {
-        _asyncLoad = SceneManager.LoadSceneAsync("GameScene", LoadSceneMode.Additive);
-        _asyncLoad.allowSceneActivation = false;
-        while (!_asyncLoad.isDone)
-        {
-            yield return null;
-        }
-    }
+    
 }
