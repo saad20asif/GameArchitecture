@@ -584,6 +584,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AndroidFrameRate: 60
   IOSFrameRate: 60
+  SceneLoadingProgress: {fileID: 11400000, guid: 22107114a96b20045afafc0cc1f2c931, type: 2}
   FiniteStateMachine: {fileID: 11400000, guid: a870bbea6abe8404cb307e5b551daf37, type: 2}
 --- !u!4 &1222757692
 Transform:
