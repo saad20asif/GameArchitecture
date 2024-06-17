@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "MainMenuState", menuName = "ProjectCore/States/MainMenuState")]
+[CreateAssetMenu(fileName = "MainMenuState", menuName = "ProjectCore/State Machine/States/MainMenuState")]
 public class MainMenuState : State
 {
     [SerializeField] private string prefabName; 
@@ -13,6 +13,7 @@ public class MainMenuState : State
 
         // Load and instantiate the prefab
         GameObject prefab = Resources.Load<GameObject>(prefabName);
+        Debug.Log("MainMnu Prefab Loaded!");
         if (prefab != null)
         {
             prefabInstance = Instantiate(prefab);
