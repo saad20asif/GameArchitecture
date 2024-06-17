@@ -7,10 +7,10 @@ public class SplashState : State
 {
     [SerializeField]private Float SceneLoadingProgress;
     private ApplicationFlowController _applicationFlowController;
-    public override IEnumerator Init(IState _listener)
+    public override IEnumerator Enter(IState _listener)
     {
         Debug.Log("Splash State init has been called!");
-        yield return base.Init(_listener);
+        yield return base.Enter(_listener);
     }
     public override IEnumerator Execute()
     {

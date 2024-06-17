@@ -4,7 +4,7 @@ using UnityEngine;
 public class State : ScriptableObject
 {
     protected IState Listener;
-    public virtual IEnumerator Init(IState _listener)
+    public virtual IEnumerator Enter(IState _listener)
     {
         Listener = _listener;
         yield return null;

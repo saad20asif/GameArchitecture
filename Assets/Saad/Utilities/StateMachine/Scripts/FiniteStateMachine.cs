@@ -14,7 +14,7 @@ public class FiniteStateMachine : ScriptableObject, IState
         if (BootState != null)
         {
             CurrentState = BootState;
-            yield return CurrentState.Init(this);
+            yield return CurrentState.Enter(this);
             yield return CurrentState.Execute();
         }
         else
