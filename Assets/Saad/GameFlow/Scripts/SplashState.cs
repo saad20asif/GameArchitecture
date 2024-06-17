@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[CreateAssetMenu(fileName = "SplashState", menuName = "ProjectCore/States/SplashState")]
+[CreateAssetMenu(fileName = "SplashState", menuName = "ProjectCore/State Machine/States/SplashState")]
 public class SplashState : State
 {
     AsyncOperation _asyncLoad;
@@ -24,6 +24,7 @@ public class SplashState : State
         // For now im waiting for slider value to reach 1 but later we can also wait for all sdk's to load first(we can map sdk's loading progress from 0-1 and use Int So for that)
         yield return new WaitUntil(() => SceneLoadingProgress.GetValue() >= 1);
         _asyncLoad.allowSceneActivation = true;
+        _applicationFlowController.Boot();
 
     }
     public override IEnumerator Exit()
