@@ -47,3 +47,7 @@ MonoBehaviour:
   FiniteStateMachine: {fileID: 11400000, guid: a870bbea6abe8404cb307e5b551daf37, type: 2}
   GoToMainMenuEvent: {fileID: 11400000, guid: e22c32f43b1567c498322833dd0d4d52, type: 2}
   MainMenuTransition: {fileID: 11400000, guid: 293e98774410a3d4fbb4d767f579a6d5, type: 2}
+  GoToLevelCompleteEvent: {fileID: 11400000, guid: b127c607009da264a81f6e3465b0080d, type: 2}
+  LevelcompleteTransition: {fileID: 11400000, guid: 9d6f2a641cd745242b90f79baaa54ccd, type: 2}
+  GoToLevelFailEvent: {fileID: 11400000, guid: 2546da7c6ddcb964395a9b72bf972875, type: 2}
+  LevelFailTransition: {fileID: 11400000, guid: 66e8885df9ed9674bbd3a35daff55685, type: 2}
