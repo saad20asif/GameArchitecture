@@ -4,6 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MainMenuState", menuName = "ProjectCore/State Machine/States/MainMenuState")]
 public class MainMenuState : State
 {
+    [SerializeField] private GameEvent GoToLevelCompleteEvent;
     [SerializeField] private string prefabName; 
     private GameObject prefabInstance; 
     public override IEnumerator Enter(IState _listener)
@@ -32,6 +33,7 @@ public class MainMenuState : State
 
     public override IEnumerator Exit()
     {
+        Debug.Log("Main Menu Exit Called ! ");
         // Destroy the prefab instance if it exists
         if (prefabInstance != null)
         {
@@ -39,5 +41,10 @@ public class MainMenuState : State
         }
 
         yield return base.Exit(); // Call base Exit method
+    }
+    public void GoToPlayState()
+    {
+        Debug.Log("Go to Level Complete Called!");
+        GoToLevelCompleteEvent.Invoke();
     }
 }
