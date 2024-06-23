@@ -29,7 +29,7 @@ public class FiniteStateMachine : ScriptableObject, IState
         Debug.Log("DoTransition " + transition.ToState.name);
         if(CurrentState != null)
         {
-            CurrentState.Exit();
+            yield return CurrentState.Exit();
             CurrentState = transition.ToState;
             yield return CurrentState.Enter(this);
             yield return CurrentState.Execute();
