@@ -7,7 +7,7 @@ public class LevelCompleteState : State
 {
     [SerializeField] private string prefabName;
     private GameObject prefabInstance;
-    [SerializeField] private GameEvent GoToLevelFailEvent;
+    [SerializeField] private GameEvent GoToMainMenuEvent;
     public override IEnumerator Enter(IState _listener)
     {
         yield return base.Enter(_listener);
@@ -36,8 +36,8 @@ public class LevelCompleteState : State
             Destroy(prefabInstance);
         }
     }
-    public void GoToLevelFail()
+    public void GoToMainMenu()
     {
-        GoToLevelFailEvent.Invoke();
+        GoToMainMenuEvent.Invoke();
     }
 }

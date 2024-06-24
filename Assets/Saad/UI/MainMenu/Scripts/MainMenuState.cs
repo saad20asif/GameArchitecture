@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MainMenuState", menuName = "ProjectCore/State Machine/States/MainMenuState")]
 public class MainMenuState : State
 {
-    [SerializeField] private GameEvent GoToLevelCompleteEvent;
+    [SerializeField] private GameEvent GoToGameEvent;
     [SerializeField] private string prefabName; 
     private GameObject prefabInstance; 
     public override IEnumerator Enter(IState _listener)
@@ -45,6 +45,6 @@ public class MainMenuState : State
     public void GoToPlayState()
     {
         Debug.Log("Go to Level Complete Called!");
-        GoToLevelCompleteEvent.Invoke();
+        GoToGameEvent.Invoke();
     }
 }

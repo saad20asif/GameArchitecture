@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: LevelCompleteState
   m_EditorClassIdentifier: 
   prefabName: LevelComplete
-  GoToLevelFailEvent: {fileID: 11400000, guid: 2546da7c6ddcb964395a9b72bf972875, type: 2}
+  GoToMainMenuEvent: {fileID: 11400000, guid: e22c32f43b1567c498322833dd0d4d52, type: 2}

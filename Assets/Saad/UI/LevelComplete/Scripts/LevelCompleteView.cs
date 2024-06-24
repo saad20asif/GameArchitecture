@@ -18,6 +18,6 @@ public class LevelCompleteView : MonoBehaviour
     }
     private void OnNextBtnClicked()
     {
-        LevelCompleteState.GoToLevelFail();
+        LevelCompleteState.GoToMainMenu();
     }
 }
