@@ -260,8 +260,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: RETRY
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84b1b5272b5c34f4d8dd4b06b1d6f593, type: 2}
-  m_sharedMaterial: {fileID: -8479265303267996549, guid: 84b1b5272b5c34f4d8dd4b06b1d6f593, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5d40f4312aadd49479c5213cbbd50504, type: 2}
+  m_sharedMaterial: {fileID: 6585981966485810191, guid: 5d40f4312aadd49479c5213cbbd50504, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -387,7 +387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.25490198, g: 0.31764707, b: 0.41960788, a: 1}
+  m_Color: {r: 1, g: 0.14099689, b: 0, a: 0.25490198}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -592,8 +592,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: LEVEL FAILED
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 84b1b5272b5c34f4d8dd4b06b1d6f593, type: 2}
-  m_sharedMaterial: {fileID: -8479265303267996549, guid: 84b1b5272b5c34f4d8dd4b06b1d6f593, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5d40f4312aadd49479c5213cbbd50504, type: 2}
+  m_sharedMaterial: {fileID: 6585981966485810191, guid: 5d40f4312aadd49479c5213cbbd50504, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
