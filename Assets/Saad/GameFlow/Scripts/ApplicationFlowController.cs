@@ -8,6 +8,10 @@ public class ApplicationFlowController : MonoBehaviour
     [SerializeField] private GameEvent GoToMainMenuEvent;
     [SerializeField] private Transition MainMenuTransition;
 
+    [Header("GameState")]
+    [SerializeField] private GameEvent GoToGameEvent;
+    [SerializeField] private Transition GameTransition;
+
     [Header("LevelComplete")]
     [SerializeField] private GameEvent GoToLevelCompleteEvent;
     [SerializeField] private Transition LevelcompleteTransition;
@@ -27,12 +31,14 @@ public class ApplicationFlowController : MonoBehaviour
     private void OnEnable()
     {
         GoToMainMenuEvent.Handler += GoToMainMenu;
+        GoToGameEvent.Handler += GoToGame;
         GoToLevelCompleteEvent.Handler += GoToLevelComplete;
         GoToLevelFailEvent.Handler += GoToLevelFail;
     }
     private void OnDisable()
     {
         GoToMainMenuEvent.Handler -= GoToMainMenu;
+        GoToGameEvent.Handler -= GoToGame;
         GoToLevelCompleteEvent.Handler -= GoToLevelComplete;
         GoToLevelFailEvent.Handler -= GoToLevelFail;
     }
@@ -42,6 +48,14 @@ public class ApplicationFlowController : MonoBehaviour
         if (_transitionCo != null)
             StopCoroutine(_transitionCo);
         _transitionCo = StartCoroutine(FiniteStateMachine.DoTransition(MainMenuTransition));
+        
+    }
+    private void GoToGame()
+    {
+        Debug.LogError("GoToMainMenuCalled!");
+        if (_transitionCo != null)
+            StopCoroutine(_transitionCo);
+        _transitionCo = StartCoroutine(FiniteStateMachine.DoTransition(GameTransition));
         
     }
     private void GoToLevelComplete()
