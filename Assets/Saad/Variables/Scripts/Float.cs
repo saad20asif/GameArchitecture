@@ -7,11 +7,11 @@ public class Float : ScriptableObject
 {
     [SerializeField] protected float Value;
     [SerializeField] protected float DefaultValue;
-    [SerializeField] protected bool ResetToDefault;
+    [SerializeField] protected bool ResetToDefaultOnPlay;
 
     private void OnEnable()
     {
-        if (ResetToDefault)
+        if (ResetToDefaultOnPlay)
             Value = DefaultValue;
 
     }
