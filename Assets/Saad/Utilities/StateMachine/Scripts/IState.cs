@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IState
 {
-    void TransitionTo(State state, Transition transition);
+    void TransitionTo(Transition transition);
 }
