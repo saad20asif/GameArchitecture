@@ -8,9 +8,9 @@ public class LevelCompleteState : State
     [SerializeField] private string prefabName;
     private GameObject prefabInstance;
     [SerializeField] private GameEvent GoToMainMenuEvent;
-    public override IEnumerator Enter(IState _listener)
+    public override IEnumerator Enter()
     {
-        yield return base.Enter(_listener);
+        yield return base.Enter();
         GameObject prefab = Resources.Load<GameObject>(prefabName);
         Debug.Log("MainMnu Prefab Loaded!");
         if (prefab != null)
@@ -21,11 +21,6 @@ public class LevelCompleteState : State
         {
             Debug.LogWarning($"Prefab with name {prefabName} could not be found in Resources!");
         }
-    }
-
-    public override IEnumerator Execute()
-    {
-        yield return base.Execute();
     }
 
     public override IEnumerator Exit()

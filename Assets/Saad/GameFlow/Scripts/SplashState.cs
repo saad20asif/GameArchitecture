@@ -10,15 +10,11 @@ public class SplashState : State
     [SerializeField] private Float SceneLoadingProgress;
     private ApplicationFlowController _applicationFlowController;
     private string _sceneName="GameScene";
-    public override IEnumerator Enter(IState _listener)
+    public override IEnumerator Enter()
     {
         Debug.Log("Splash State init has been called!");
-        yield return base.Enter(_listener);
-    }
-    public override IEnumerator Execute()
-    {
-        Debug.Log("Splash State Execute has been called!");
-        yield return base.Execute();
+        yield return base.Enter();
+
         _applicationFlowController = Instantiate(Resources.Load<ApplicationFlowController>("ApplicationFlowController"));
 
         yield return GameSceneLoading();
@@ -30,7 +26,6 @@ public class SplashState : State
         SetGameSceneAsActiveScene(); // Set the newly loaded game scene as the active scene
 
         _applicationFlowController.Boot();
-
     }
     private void SetGameSceneAsActiveScene()
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "FiniteStateMachine", menuName = "ProjectCore/State Machine/Basic FSM")]
-public class FiniteStateMachine : ScriptableObject, IState
+public class FiniteStateMachine : ScriptableObject
 {
     [SerializeField] private State BootState;
     [SerializeField] private State CurrentState;
@@ -14,8 +14,7 @@ public class FiniteStateMachine : ScriptableObject, IState
         if (BootState != null)
         {
             CurrentState = BootState;
-            yield return CurrentState.Enter(this);
-            yield return CurrentState.Execute();
+            yield return CurrentState.Enter();
         }
         else
         {
@@ -31,15 +30,9 @@ public class FiniteStateMachine : ScriptableObject, IState
         {
             yield return CurrentState.Exit();
             CurrentState = transition.ToState;
-            yield return CurrentState.Enter(this);
-            yield return CurrentState.Execute();
+            yield return CurrentState.Enter();
         }
         yield return null;
     }
 
-    // Still Cant understand This Interface properly
-    void IState.TransitionTo(State state, Transition transition)
-    {
-        //Transition(transition);
-    }
 }

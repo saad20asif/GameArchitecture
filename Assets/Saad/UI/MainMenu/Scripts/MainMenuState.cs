@@ -7,10 +7,9 @@ public class MainMenuState : State
     [SerializeField] private GameEvent GoToGameEvent;
     [SerializeField] private string prefabName; 
     private GameObject prefabInstance; 
-    public override IEnumerator Enter(IState _listener)
+    public override IEnumerator Enter()
     {
-        yield return base.Enter(_listener);
-        Listener = _listener;
+        yield return base.Enter();
 
         // Load and instantiate the prefab
         GameObject prefab = Resources.Load<GameObject>(prefabName);
@@ -23,12 +22,6 @@ public class MainMenuState : State
         {
             Debug.LogWarning($"Prefab with name {prefabName} could not be found in Resources!");
         }
-    }
-
-    public override IEnumerator Execute()
-    {
-        Debug.Log("Main Menu Execute");
-        yield return base.Execute(); 
     }
 
     public override IEnumerator Exit()
