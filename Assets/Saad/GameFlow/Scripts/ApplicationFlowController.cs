@@ -14,19 +14,13 @@ public class ApplicationFlowController : MonoBehaviour
 
     [Header("LevelComplete")]
     [SerializeField] private GameEvent GoToLevelCompleteEvent;
-    [SerializeField] private Transition LevelcompleteTransition;
+    [SerializeField] private Transition LevelCompleteTransition;
 
     [Header("LevelFail")]
     [SerializeField] private GameEvent GoToLevelFailEvent;
     [SerializeField] private Transition LevelFailTransition;
 
-    private Coroutine _transitionCo;
-
-    public void Boot()
-    {
-        print("Application Base Called!");
-        GoToMainMenu();
-    }
+    private Coroutine transitionCoroutine;
 
     private void OnEnable()
     {
@@ -35,6 +29,7 @@ public class ApplicationFlowController : MonoBehaviour
         GoToLevelCompleteEvent.Handler += GoToLevelComplete;
         GoToLevelFailEvent.Handler += GoToLevelFail;
     }
+
     private void OnDisable()
     {
         GoToMainMenuEvent.Handler -= GoToMainMenu;
@@ -42,34 +37,35 @@ public class ApplicationFlowController : MonoBehaviour
         GoToLevelCompleteEvent.Handler -= GoToLevelComplete;
         GoToLevelFailEvent.Handler -= GoToLevelFail;
     }
+    public void Boot()
+    {
+        GoToMainMenu();
+    }
+
     private void GoToMainMenu()
     {
-        Debug.LogError("GoToMainMenuCalled!");
-        if (_transitionCo != null)
-            StopCoroutine(_transitionCo);
-        _transitionCo = StartCoroutine(FiniteStateMachine.DoTransition(MainMenuTransition));
-        
+        StartTransition(MainMenuTransition);
     }
+
     private void GoToGame()
     {
-        Debug.LogError("GoToMainMenuCalled!");
-        if (_transitionCo != null)
-            StopCoroutine(_transitionCo);
-        _transitionCo = StartCoroutine(FiniteStateMachine.DoTransition(GameTransition));
-        
+        StartTransition(GameTransition);
     }
+
     private void GoToLevelComplete()
     {
-        if (_transitionCo != null)
-            StopCoroutine(_transitionCo);
-        Debug.LogError("GoToLevelComplete!");
-        _transitionCo = StartCoroutine(FiniteStateMachine.DoTransition(LevelcompleteTransition));
+        StartTransition(LevelCompleteTransition);
     }
+
     private void GoToLevelFail()
     {
-        if (_transitionCo != null)
-            StopCoroutine(_transitionCo);
-        Debug.LogError("GoToLevelComplete!");
-        _transitionCo = StartCoroutine(FiniteStateMachine.DoTransition(LevelFailTransition));
+        StartTransition(LevelFailTransition);
+    }
+
+    private void StartTransition(Transition transition)
+    {
+        if (transitionCoroutine != null)
+            StopCoroutine(transitionCoroutine);
+        transitionCoroutine = StartCoroutine(FiniteStateMachine.DoTransition(transition));
     }
 }
