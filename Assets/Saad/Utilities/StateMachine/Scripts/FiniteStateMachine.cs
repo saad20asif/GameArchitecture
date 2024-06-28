@@ -1,38 +1,49 @@
+using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "FiniteStateMachine", menuName = "ProjectCore/State Machine/Basic FSM")]
-public class FiniteStateMachine : ScriptableObject
+public class FiniteStateMachine : ScriptableObject, IState
 {
     [SerializeField] private State BootState;
     [SerializeField] private State CurrentState;
 
-    
+    // Initializes the FiniteStateMachine with the BootState
     public IEnumerator Init()
     {
         Debug.Log("FiniteStateMachine Init called");
         if (BootState != null)
         {
             CurrentState = BootState;
-            yield return CurrentState.Enter();
+            // Pass 'this' (the FiniteStateMachine instance) to the BootState
+            yield return CurrentState.Enter(this);
         }
         else
         {
-            Debug.LogWarning("Plz pass the boot state in FiniteStateMachine to start the game! ");
+            Debug.LogWarning("Please assign a boot state in FiniteStateMachine to start the game!");
             yield return null;
         }
     }
 
-    public IEnumerator DoTransition(Transition transition)
+    // Implements the TransitionTo method from the IState interface
+    public void TransitionTo(Transition transition)
+    {
+        if (transition != null && transition.ToState != null)
+            CoroutineRunner.instance.StartCoroutine(DoTransition(transition));
+    }
+
+    // Performs the state transition
+    private IEnumerator DoTransition(Transition transition)
     {
         Debug.Log("DoTransition " + transition.ToState.name);
-        if(CurrentState != null)
+        if (CurrentState != null)
         {
             yield return CurrentState.Exit();
             CurrentState = transition.ToState;
-            yield return CurrentState.Enter();
+            // Pass 'this' (the FiniteStateMachine instance) to the new state,  so that any state can call Transition directly too!
+            yield return CurrentState.Enter(this);
         }
         yield return null;
     }
-
 }
