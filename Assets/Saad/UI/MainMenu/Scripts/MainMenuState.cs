@@ -7,9 +7,9 @@ public class MainMenuState : State
     [SerializeField] private GameEvent GoToGameEvent;
     [SerializeField] private string prefabName; 
     private GameObject prefabInstance; 
-    public override IEnumerator Enter()
+    public override IEnumerator Enter(IState _listener)
     {
-        yield return base.Enter();
+        yield return base.Enter(_listener);
 
         // Load and instantiate the prefab
         GameObject prefab = Resources.Load<GameObject>(prefabName);

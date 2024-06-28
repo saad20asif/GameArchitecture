@@ -9,9 +9,9 @@ public class GameState : State
     [SerializeField] private GameEvent GoToLevelFailEvent;
     [SerializeField] private string prefabName;
     private GameObject prefabInstance;
-    public override IEnumerator Enter()
+    public override IEnumerator Enter(IState _listener)
     {
-        yield return base.Enter();
+        yield return base.Enter(_listener);
 
         // Load and instantiate the prefab
         GameObject prefab = Resources.Load<GameObject>(prefabName);
@@ -24,6 +24,7 @@ public class GameState : State
         {
             Debug.LogWarning($"Prefab with name {prefabName} could not be found in Resources!");
         }
+        
     }
     public override IEnumerator Exit()
     {

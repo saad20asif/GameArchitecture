@@ -7,9 +7,9 @@ public class LevelFailState : State
     [SerializeField] private string prefabName;
     private GameObject prefabInstance;
     [SerializeField] private GameEvent GoToMainMenuEvent;
-    public override IEnumerator Enter()
+    public override IEnumerator Enter(IState _listener)
     {
-        yield return base.Enter();
+        yield return base.Enter(_listener);
         GameObject prefab = Resources.Load<GameObject>(prefabName);
         Debug.Log("MainMnu Prefab Loaded!");
         if (prefab != null)

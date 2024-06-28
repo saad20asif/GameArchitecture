@@ -10,10 +10,10 @@ public class SplashState : State
     [SerializeField] private Float SceneLoadingProgress;
     private ApplicationFlowController _applicationFlowController;
     private string _sceneName="GameScene";
-    public override IEnumerator Enter()
+    public override IEnumerator Enter(IState _listener)
     {
         Debug.Log("Splash State init has been called!");
-        yield return base.Enter();
+        yield return base.Enter(_listener);
 
         _applicationFlowController = Instantiate(Resources.Load<ApplicationFlowController>("ApplicationFlowController"));
 
