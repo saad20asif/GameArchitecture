@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class UiViewState : State
 {
-    [SerializeField] private string prefabName;
-    private GameObject prefabInstance;
+    [SerializeField] protected string prefabName;
+    protected GameObject prefabInstance;
     public override IEnumerator Enter(IState _listener)
     {
         yield return base.Enter(_listener);
