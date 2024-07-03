@@ -2,7 +2,7 @@ using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Float")]
+[CreateAssetMenu(fileName = "vFloat_", menuName = "ProjectCore/Variables/Float")]
 public class Float : ScriptableObject
 {
     [SerializeField] protected float Value;
@@ -15,7 +15,7 @@ public class Float : ScriptableObject
             Value = DefaultValue;
 
     }
-    public void SetValue(float value)
+    public virtual void SetValue(float value)
     { Value = value; }
-    public float GetValue() { return Value; }
+    public virtual float GetValue() { return Value; }
 }
