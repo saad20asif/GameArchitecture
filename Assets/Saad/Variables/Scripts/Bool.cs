@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "vBool_", menuName = "ProjectCore/Variables/Bool")]
+[CreateAssetMenu(fileName = "vBool_", menuName = "ProjectCore/Variables/Simple/Bool")]
 public class Bool : ScriptableObject
 {
     [SerializeField] protected bool Value;

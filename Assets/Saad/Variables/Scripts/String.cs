@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "vString_", menuName = "ProjectCore/Variables/String")]
+[CreateAssetMenu(fileName = "vString_", menuName = "ProjectCore/Variables/Simple/String")]
 public class String : ScriptableObject
 {
     [SerializeField] protected string Value;

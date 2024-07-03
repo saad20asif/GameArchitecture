@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "vInt_", menuName = "ProjectCore/Variables/Int")]
+[CreateAssetMenu(fileName = "vInt_", menuName = "ProjectCore/Variables/Simple/Int")]
 public class Int : ScriptableObject
 {
     [SerializeField] protected int Value;

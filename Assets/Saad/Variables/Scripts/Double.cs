@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "vDouble_", menuName = "ProjectCore/Variables/Double")]
+[CreateAssetMenu(fileName = "vDouble_", menuName = "ProjectCore/Variables/Simple/Double")]
 public class Double : ScriptableObject
 {
     [SerializeField] protected double Value;
