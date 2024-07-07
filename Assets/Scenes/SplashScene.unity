@@ -238,7 +238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 791c73259af21a04b967c78d0b414f1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Duration: 5
+  Duration: 1
   Slider: {fileID: 657695066}
   LoadValue: {fileID: 11400000, guid: 22107114a96b20045afafc0cc1f2c931, type: 2}
 --- !u!1 &477453195
