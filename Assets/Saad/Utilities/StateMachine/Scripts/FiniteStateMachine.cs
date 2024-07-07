@@ -1,3 +1,5 @@
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "FiniteStateMachine", menuName = "ProjectCore/State Machine/Basic FSM")]
-public class FiniteStateMachine : ScriptableObject, IState
+public class FiniteStateMachine : SerializedScriptableObject, IState
 {
     [SerializeField] private State BootState;
     [SerializeField] private State CurrentState;
@@ -20,6 +22,10 @@ public class FiniteStateMachine : ScriptableObject, IState
             CurrentState = BootState;
             // Pass 'this' (the FiniteStateMachine instance) to the BootState
             yield return CurrentState.Enter(this);
+
+            if(PausedStates != null) { PausedStates.Clear(); }
+            else
+                PausedStates = new Stack<State>();
         }
         else
         {
