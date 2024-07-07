@@ -47,6 +47,8 @@ MonoBehaviour:
   FiniteStateMachine: {fileID: 11400000, guid: a870bbea6abe8404cb307e5b551daf37, type: 2}
   GoToMainMenuEvent: {fileID: 11400000, guid: e22c32f43b1567c498322833dd0d4d52, type: 2}
   MainMenuTransition: {fileID: 11400000, guid: 293e98774410a3d4fbb4d767f579a6d5, type: 2}
+  GoToSpinWheelEvent: {fileID: 11400000, guid: 65f9b06937345ee459f45c189949770d, type: 2}
+  SpinWheelTransition: {fileID: 11400000, guid: 8d96b05f42dfa574e86fe4b6cc7cc85c, type: 2}
   GoToGameEvent: {fileID: 11400000, guid: 99e262760043c71408dedc66f3328693, type: 2}
   GameTransition: {fileID: 11400000, guid: 41a1327af71b36f42b45bea2b7bf8c65, type: 2}
   GoToLevelCompleteEvent: {fileID: 11400000, guid: b127c607009da264a81f6e3465b0080d, type: 2}

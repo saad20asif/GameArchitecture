@@ -8,6 +8,10 @@ public class ApplicationFlowController : MonoBehaviour
     [SerializeField] private GameEvent GoToMainMenuEvent;
     [SerializeField] private Transition MainMenuTransition;
 
+    [Header("SpinWheel")]
+    [SerializeField] private GameEvent GoToSpinWheelEvent;
+    [SerializeField] private Transition SpinWheelTransition;
+
     [Header("GameState")]
     [SerializeField] private GameEvent GoToGameEvent;
     [SerializeField] private Transition GameTransition;
@@ -23,6 +27,7 @@ public class ApplicationFlowController : MonoBehaviour
     private void OnEnable()
     {
         GoToMainMenuEvent.Handler += GoToMainMenu;
+        GoToSpinWheelEvent.Handler += GoToSpinWheel;
         GoToGameEvent.Handler += GoToGame;
         GoToLevelCompleteEvent.Handler += GoToLevelComplete;
         GoToLevelFailEvent.Handler += GoToLevelFail;
@@ -31,6 +36,7 @@ public class ApplicationFlowController : MonoBehaviour
     private void OnDisable()
     {
         GoToMainMenuEvent.Handler -= GoToMainMenu;
+        GoToSpinWheelEvent.Handler -= GoToSpinWheel;
         GoToGameEvent.Handler -= GoToGame;
         GoToLevelCompleteEvent.Handler -= GoToLevelComplete;
         GoToLevelFailEvent.Handler -= GoToLevelFail;
@@ -43,6 +49,10 @@ public class ApplicationFlowController : MonoBehaviour
     private void GoToMainMenu()
     {
         FiniteStateMachine.TransitionTo(MainMenuTransition);
+    } 
+    private void GoToSpinWheel()
+    {
+        FiniteStateMachine.TransitionTo(SpinWheelTransition);
     }
 
     private void GoToGame()
