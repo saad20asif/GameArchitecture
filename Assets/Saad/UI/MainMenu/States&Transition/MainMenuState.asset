@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0595df0d790e1440a14a62f96febcf5, type: 3}
   m_Name: MainMenuState
   m_EditorClassIdentifier: 
-  GoToGameEvent: {fileID: 11400000, guid: 99e262760043c71408dedc66f3328693, type: 2}
+  PausePreviousState: 0
   prefabName: MainMenu
+  GoToGameEvent: {fileID: 11400000, guid: 99e262760043c71408dedc66f3328693, type: 2}
+  GoToSpinWheelEvent: {fileID: 11400000, guid: 65f9b06937345ee459f45c189949770d, type: 2}
