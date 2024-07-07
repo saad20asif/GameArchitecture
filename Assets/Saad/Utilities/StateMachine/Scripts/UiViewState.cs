@@ -11,7 +11,7 @@ public class UiViewState : State
 
         // Load and instantiate the prefab
         GameObject prefab = Resources.Load<GameObject>(prefabName);
-        Debug.Log("MainMnu Prefab Loaded!");
+
         if (prefab != null)
         {
             prefabInstance = Instantiate(prefab);
@@ -24,7 +24,6 @@ public class UiViewState : State
 
     public override IEnumerator Exit()
     {
-        Debug.Log("Main Menu Exit Called ! ");
         // Destroy the prefab instance if it exists
         if (prefabInstance != null)
         {
@@ -32,5 +31,15 @@ public class UiViewState : State
         }
 
         yield return base.Exit(); // Call base Exit method
+    }
+
+    public override IEnumerator Pause()
+    {
+        yield return base.Pause();
+    }
+
+    public override IEnumerator Resume()
+    {
+        yield return base.Resume();
     }
 }

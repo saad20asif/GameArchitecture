@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class State : ScriptableObject
 {
     protected IState Listener;
+    public bool PausePreviousState = false;
 
     // Enter method which accepts an IState listener, which is nothing but FSM refernce, but in a controlled manner
     // Which means you can only access IState Transition method not all FSM prperties!  (Yeah Thats great!!!)
@@ -13,7 +15,14 @@ public class State : ScriptableObject
         Listener = listener; // Store the listener (FiniteStateMachine) reference
         yield return null;
     }
-
+    public virtual IEnumerator Pause()
+    {
+        yield return null;
+    }
+    public virtual IEnumerator Resume()
+    {
+        yield return null;
+    }
     public virtual IEnumerator Exit()
     {
         yield return null;
