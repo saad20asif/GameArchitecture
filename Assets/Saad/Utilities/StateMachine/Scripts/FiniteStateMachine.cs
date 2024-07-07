@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class FiniteStateMachine : ScriptableObject, IState
 {
     [SerializeField] private State BootState;
     [SerializeField] private State CurrentState;
+    [SerializeField] private Stack<State> PausedStates;
 
     // Initializes the FiniteStateMachine with the BootState
     public IEnumerator Init()
@@ -37,10 +39,18 @@ public class FiniteStateMachine : ScriptableObject, IState
     private IEnumerator DoTransition(Transition transition)
     {
         Debug.Log("DoTransition " + transition.ToState.name);
+        State _nextState = transition.ToState;
         if (CurrentState != null)
         {
-            yield return CurrentState.Exit();
-            CurrentState = transition.ToState;
+            if(_nextState.PausePreviousState)
+            {
+                yield return CurrentState.Pause();
+                PausedStates.Push(CurrentState);
+            }
+            else
+                yield return CurrentState.Exit();
+
+            CurrentState = _nextState;
             // Pass 'this' (the FiniteStateMachine instance) to the new state,  so that any state can call Transition directly too!
             yield return CurrentState.Enter(this);
         }
