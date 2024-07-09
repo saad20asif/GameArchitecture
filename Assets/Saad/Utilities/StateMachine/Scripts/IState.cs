@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IState
+namespace ProjectCore.StateMachine
 {
-    void TransitionTo(Transition transition);
+    public interface IState
+    {
+        void TransitionTo(Transition transition);
+    }
 }

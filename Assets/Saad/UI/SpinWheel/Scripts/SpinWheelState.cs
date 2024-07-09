@@ -1,3 +1,4 @@
+using ProjectCore.Events;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SpinWheelState", menuName = "ProjectCore/State Machine/States/SpinWheelState")]

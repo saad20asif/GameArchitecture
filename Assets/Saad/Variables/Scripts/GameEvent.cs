@@ -1,17 +1,18 @@
-using Sirenix.OdinInspector;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
-[CreateAssetMenu(fileName = "e_", menuName = "ProjectCore/Events/Game Event - Basic")]
-public class GameEvent : ScriptableObject
+namespace ProjectCore.Events
 {
-    public delegate void EventHandler();
-    public event EventHandler Handler;
-
-    [Button(ButtonSizes.Medium)]
-    public void Invoke()
+    [CreateAssetMenu(fileName = "e_", menuName = "ProjectCore/Events/Game Event - Basic")]
+    public class GameEvent : ScriptableObject
     {
-        Handler?.Invoke();
+        public delegate void EventHandler();
+        public event EventHandler Handler;
+
+        [Button(ButtonSizes.Medium)]
+        public void Invoke()
+        {
+            Handler?.Invoke();
+        }
     }
 }

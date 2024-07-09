@@ -1,19 +1,22 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "vSharedVector2_", menuName = "ProjectCore/Variables/Simple/SharedVector2")]
-public class SharedVector2 : ScriptableObject
+namespace ProjectCore.Variables
 {
-    [SerializeField] protected Vector2 Value;
-    [SerializeField] protected Vector2 DefaultValue;
-    [SerializeField] protected bool ResetToDefaultOnPlay;
-
-    private void OnEnable()
+    [CreateAssetMenu(fileName = "vSharedVector2_", menuName = "ProjectCore/Variables/Simple/SharedVector2")]
+    public class SharedVector2 : ScriptableObject
     {
-        if (ResetToDefaultOnPlay)
-            Value = DefaultValue;
+        [SerializeField] protected Vector2 Value;
+        [SerializeField] protected Vector2 DefaultValue;
+        [SerializeField] protected bool ResetToDefaultOnPlay;
 
+        private void OnEnable()
+        {
+            if (ResetToDefaultOnPlay)
+                Value = DefaultValue;
+
+        }
+        public virtual void SetValue(Vector2 value)
+        { Value = value; }
+        public virtual Vector2 GetValue() { return Value; }
     }
-    public virtual void SetValue(Vector2 value)
-    { Value = value; }
-    public virtual Vector2 GetValue() { return Value; }
 }

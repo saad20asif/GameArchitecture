@@ -1,3 +1,4 @@
+using ProjectCore.Events;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "LevelFailState", menuName = "ProjectCore/State Machine/States/LevelFail State")]

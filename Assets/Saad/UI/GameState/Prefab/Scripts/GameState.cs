@@ -1,3 +1,4 @@
+using ProjectCore.Events;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GameState", menuName = "ProjectCore/State Machine/States/Game State")]

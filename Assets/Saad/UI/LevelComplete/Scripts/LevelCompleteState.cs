@@ -1,3 +1,4 @@
+using ProjectCore.Events;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "LevelCompleteState", menuName = "ProjectCore/State Machine/States/LevelComplete State")]

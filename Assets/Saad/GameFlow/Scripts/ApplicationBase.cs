@@ -1,20 +1,25 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using ProjectCore.StateMachine;
+using System.Collections;
+using ProjectCore.Variables;
 
-public class ApplicationBase : MonoBehaviour
+
+namespace ProjectCore.Application
 {
-    [SerializeField] private int AndroidFrameRate = 60;
-    [SerializeField] private int IOSFrameRate = 60;
-    [SerializeField] private Float SceneLoadingProgress;
-    [SerializeField] private FiniteStateMachine FiniteStateMachine;
-    
-    private IEnumerator Start()
+    public class ApplicationBase : MonoBehaviour
     {
-        Application.targetFrameRate = AndroidFrameRate;
-        Debug.Log("ApplicationBase Start called");
-        yield return FiniteStateMachine.Init();
-        
+        [SerializeField] private int AndroidFrameRate = 60;
+        [SerializeField] private int IOSFrameRate = 60;
+        [SerializeField] private Float SceneLoadingProgress;
+        [SerializeField] private FiniteStateMachine FiniteStateMachine;
+
+        private IEnumerator Start()
+        {
+            UnityEngine.Application.targetFrameRate = AndroidFrameRate;
+            Debug.Log("ApplicationBase Start called");
+            yield return FiniteStateMachine.Init();
+
+        }
+
     }
-    
 }
