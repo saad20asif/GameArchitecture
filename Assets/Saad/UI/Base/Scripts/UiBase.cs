@@ -1,52 +1,54 @@
 using DG.Tweening;
-using ProjectCore.StateMachine;
 using UnityEngine;
 
-public abstract class UiBase : UiAnimations, IShowable
+namespace ProjectCore.UI
 {
-    private CanvasGroup _canvasGroup;
-    [SerializeField] protected RectTransform UIPanel;
-    [SerializeField] protected float fadeDuration = 0.5f;
-
-    protected virtual void Awake()
+    public abstract class UiBase : UiAnimations, IShowable
     {
-        if (_canvasGroup == null)
+        private CanvasGroup _canvasGroup;
+        [SerializeField] protected RectTransform UIPanel;
+        [SerializeField] protected float fadeDuration = 0.5f;
+
+        protected virtual void Awake()
         {
-            _canvasGroup = GetComponent<CanvasGroup>();
             if (_canvasGroup == null)
             {
-                _canvasGroup = gameObject.AddComponent<CanvasGroup>();
+                _canvasGroup = GetComponent<CanvasGroup>();
+                if (_canvasGroup == null)
+                {
+                    _canvasGroup = gameObject.AddComponent<CanvasGroup>();
+                }
             }
         }
-    }
 
-    public virtual void Show()
-    {
-        _canvasGroup.interactable = true;
-        _canvasGroup.blocksRaycasts = true;
-        FadeIn(_canvasGroup);
-        ScaleIn(UIPanel);
-    }
+        public virtual void Show()
+        {
+            _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true;
+            FadeIn(_canvasGroup);
+            ScaleIn(UIPanel);
+        }
 
-    public virtual void Hide()
-    {
-        ScaleOut(UIPanel).OnComplete(() =>
+        public virtual void Hide()
+        {
+            ScaleOut(UIPanel).OnComplete(() =>
+            {
+                _canvasGroup.interactable = false;
+                _canvasGroup.blocksRaycasts = false;
+                Destroy(gameObject);
+            });
+        }
+
+        public virtual void Pause()
         {
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
-            Destroy(gameObject);
-        });
-    }
+        }
 
-    public virtual void Pause()
-    {
-        _canvasGroup.interactable = false;
-        _canvasGroup.blocksRaycasts = false;
-    }
-
-    public virtual void Resume()
-    {
-        _canvasGroup.interactable = true;
-        _canvasGroup.blocksRaycasts = true;
+        public virtual void Resume()
+        {
+            _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true;
+        }
     }
 }
