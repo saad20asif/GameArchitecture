@@ -2,17 +2,21 @@ using UnityEngine;
 using ProjectCore.Events;
 using System.Collections;
 
-[CreateAssetMenu(fileName = "TimeMachine",menuName = "ProjectCore/TimeMachine")]
-public class TimeMachine : ScriptableObject
+namespace ProjectCore.TheTimeMachine
 {
-    [SerializeField] private GameEvent _tick;
-    private readonly WaitForSeconds _waitForOneSecond = new WaitForSeconds(1);
-    public IEnumerator TimeTick()
+    [CreateAssetMenu(fileName = "TimeMachine", menuName = "ProjectCore/TimeMachine")]
+    public class TimeMachine : ScriptableObject
     {
-        while (true) 
+        [SerializeField] private GameEvent _tick;
+        private readonly WaitForSeconds _waitForOneSecond = new WaitForSeconds(1);
+        public IEnumerator Tick()
         {
-            yield return _waitForOneSecond;
-            _tick.Invoke();
+            while (true)
+            {
+                //Debug.Log("Ticking");
+                yield return _waitForOneSecond;
+                _tick.Invoke();
+            }
         }
     }
 }
