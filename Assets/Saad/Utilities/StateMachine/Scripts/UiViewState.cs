@@ -6,6 +6,7 @@ public class UiViewState : State
 {
     [SerializeField] protected string prefabName;
     protected GameObject prefabInstance;
+    private CanvasGroup _canvasGroup;
     public override IEnumerator Enter(IState _listener)
     {
         yield return base.Enter(_listener);
@@ -16,6 +17,8 @@ public class UiViewState : State
         if (prefab != null)
         {
             prefabInstance = Instantiate(prefab);
+            if(prefabInstance.GetComponent<CanvasGroup>()!=null)
+                _canvasGroup = prefabInstance.GetComponent<CanvasGroup>();
         }
         else
         {
@@ -36,11 +39,21 @@ public class UiViewState : State
 
     public override IEnumerator Pause()
     {
+        if (_canvasGroup != null)
+        {
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false; // Optional: also disable raycasting
+        }
         yield return base.Pause();
     }
 
     public override IEnumerator Resume()
     {
+        if (_canvasGroup != null)
+        {
+            _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true; // Optional: also disable raycasting
+        }
         yield return base.Resume();
     }
 }

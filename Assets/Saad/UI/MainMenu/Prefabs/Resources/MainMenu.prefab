@@ -854,9 +854,9 @@ GameObject:
   - component: {fileID: 5040063266695646705}
   - component: {fileID: 3836895171476882326}
   - component: {fileID: 2506005936970633907}
-  - component: {fileID: 952473332770264784}
   - component: {fileID: 20399652555857100}
   - component: {fileID: -5613153178753580639}
+  - component: {fileID: 7152137851489016845}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -930,18 +930,6 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
---- !u!225 &952473332770264784
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8851818196481443515}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!114 &20399652555857100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -974,3 +962,15 @@ MonoBehaviour:
   MainMenuState: {fileID: 11400000, guid: b9b3bb32f623d9a4e88b36188597fed0, type: 2}
   PlayBtn: {fileID: 2449054064359674896}
   GoToSpinWheel: {fileID: 3143879218858998483}
+--- !u!225 &7152137851489016845
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8851818196481443515}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
