@@ -1737,6 +1737,7 @@ GameObject:
   - component: {fileID: 314719740760851633}
   - component: {fileID: 4038795303140490057}
   - component: {fileID: 8124943717592556774}
+  - component: {fileID: 5458741330902134912}
   - component: {fileID: 3168278964023362695}
   m_Layer: 5
   m_Name: GameState
@@ -1828,6 +1829,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 55
+--- !u!225 &5458741330902134912
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7582213283336939669}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &3168278964023362695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1840,6 +1853,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c0e2b7ac41d0a1468d6e5224d8f255f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiConfig: {fileID: 11400000, guid: bee61dab388a2a94bb19d0de2f3edb63, type: 2}
+  UIPanel: {fileID: 7907634726624548070}
+  fadeDuration: 0.5
   LevelCompleteBtn: {fileID: 3964348591654721801}
   LevelFailBtn: {fileID: 5363919022854807856}
   GameState: {fileID: 11400000, guid: 02edefa8922b05148afeaaa43630bd75, type: 2}

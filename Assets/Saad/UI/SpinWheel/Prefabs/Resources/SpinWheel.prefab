@@ -855,6 +855,7 @@ GameObject:
   - component: {fileID: 2016592224000505125}
   - component: {fileID: 7489904250591280107}
   - component: {fileID: 7734014854075976090}
+  - component: {fileID: 715290985368968179}
   - component: {fileID: 7095220347835669092}
   m_Layer: 5
   m_Name: SpinWheel
@@ -946,6 +947,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 55
+--- !u!225 &715290985368968179
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8684215832980734760}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &7095220347835669092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -958,5 +971,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a8e8309813ef2b4f8cd7b1f30870ddb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiConfig: {fileID: 11400000, guid: bee61dab388a2a94bb19d0de2f3edb63, type: 2}
+  UIPanel: {fileID: 4850700620338720938}
+  fadeDuration: 0.5
   Back: {fileID: 7782532488290293347}
   SpinWheelState: {fileID: 11400000, guid: 0f2de33f14715024d8c1441ece63caa9, type: 2}

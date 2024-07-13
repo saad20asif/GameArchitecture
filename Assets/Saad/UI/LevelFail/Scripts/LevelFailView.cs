@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelFailView : MonoBehaviour
+public class LevelFailView : UiBase
 {
     [SerializeField] private Button NextBtn;
     [SerializeField] private LevelFailState LevelFailState;

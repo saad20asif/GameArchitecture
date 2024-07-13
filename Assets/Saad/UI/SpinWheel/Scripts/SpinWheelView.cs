@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SpinWheelView : MonoBehaviour
+public class SpinWheelView : UiBase
 {
     [SerializeField] private Button Back;
     [SerializeField] private SpinWheelState SpinWheelState;

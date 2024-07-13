@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameStateView : MonoBehaviour
+public class GameStateView : UiBase
 {
     [SerializeField] private Button LevelCompleteBtn;
     [SerializeField] private Button LevelFailBtn;

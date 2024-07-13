@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenuView : MonoBehaviour
+public class MainMenuView : UiBase
 {
     [SerializeField] private MainMenuState MainMenuState;
     [SerializeField] private Button PlayBtn;
@@ -24,5 +24,14 @@ public class MainMenuView : MonoBehaviour
     private void OnSpinWheelClicked()
     {
         MainMenuState.GoToSpinWheel();
+    }
+    public override void Show()
+    {
+        base.Show();
+    }
+
+    public override void Hide()
+    {
+        base.Hide();
     }
 }

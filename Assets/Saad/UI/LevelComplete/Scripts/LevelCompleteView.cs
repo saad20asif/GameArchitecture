@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelCompleteView : MonoBehaviour
+public class LevelCompleteView : UiBase
 {
     [SerializeField] private Button NextBtn;
     [SerializeField] private LevelCompleteState LevelCompleteState;
