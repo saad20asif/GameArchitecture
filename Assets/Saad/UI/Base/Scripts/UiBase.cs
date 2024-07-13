@@ -1,0 +1,52 @@
+using DG.Tweening;
+using UnityEngine;
+
+public abstract class UiBase : UiAnimations
+{
+    private CanvasGroup _canvasGroup;
+    [SerializeField] protected RectTransform UIPanel;
+    [SerializeField] protected float fadeDuration = 0.5f;
+
+    protected virtual void Awake()
+    {
+        if (_canvasGroup == null)
+        {
+            _canvasGroup = GetComponent<CanvasGroup>();
+            if (_canvasGroup == null)
+            {
+                _canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            }
+        }
+    }
+
+    public virtual void Show()
+    {
+        print("Show callewd");
+        _canvasGroup.interactable = true;
+        _canvasGroup.blocksRaycasts = true;
+        FadeIn(_canvasGroup);
+        SlideIn(UIPanel);
+    }
+
+    public virtual void Hide()
+    {
+        SlideOut(UIPanel).OnComplete(() =>
+        {
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
+            Destroy(gameObject);
+        });
+    }
+
+    public virtual void Pause()
+    {
+        _canvasGroup.interactable = false;
+        _canvasGroup.blocksRaycasts = false;
+    }
+
+    public virtual void Resume()
+    {
+        _canvasGroup.interactable = true;
+        _canvasGroup.blocksRaycasts = true;
+    }
+}
