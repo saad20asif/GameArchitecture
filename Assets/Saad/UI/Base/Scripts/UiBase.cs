@@ -1,7 +1,8 @@
 using DG.Tweening;
+using ProjectCore.StateMachine;
 using UnityEngine;
 
-public abstract class UiBase : UiAnimations
+public abstract class UiBase : UiAnimations, IShowable
 {
     private CanvasGroup _canvasGroup;
     [SerializeField] protected RectTransform UIPanel;
@@ -21,7 +22,6 @@ public abstract class UiBase : UiAnimations
 
     public virtual void Show()
     {
-        print("Show callewd");
         _canvasGroup.interactable = true;
         _canvasGroup.blocksRaycasts = true;
         FadeIn(_canvasGroup);

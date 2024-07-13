@@ -6,7 +6,8 @@ public class UiViewState : State
 {
     [SerializeField] protected string prefabName;
     protected GameObject prefabInstance;
-    private UiBase _uiBase;
+    private IShowable _ishowable;
+    //private UiBase _uiBase;
 
     public override IEnumerator Enter(IState _listener)
     {
@@ -18,10 +19,10 @@ public class UiViewState : State
         if (prefab != null)
         {
             prefabInstance = Instantiate(prefab);
-            _uiBase = prefabInstance.GetComponent<UiBase>();
-            if (_uiBase != null)
+            _ishowable = prefabInstance.GetComponent<UiBase>();
+            if (_ishowable != null)
             {
-                _uiBase.Show();
+                _ishowable.Show();
             }
         }
         else
@@ -31,9 +32,9 @@ public class UiViewState : State
     }
     public override IEnumerator Pause()
     {
-        if (_uiBase != null)
+        if (_ishowable != null)
         {
-            _uiBase.Pause();
+            _ishowable.Pause();
         }
 
         yield return base.Pause();
@@ -41,18 +42,18 @@ public class UiViewState : State
 
     public override IEnumerator Resume()
     {
-        if (_uiBase != null)
+        if (_ishowable != null)
         {
-            _uiBase.Resume();
+            _ishowable.Resume();
         }
 
         yield return base.Resume();
     }
     public override IEnumerator Exit()
     {
-        if (_uiBase != null)
+        if (_ishowable != null)
         {
-            _uiBase.Hide();
+            _ishowable.Hide();
         }
         //else if (prefabInstance != null)
         //{
