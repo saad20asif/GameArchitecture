@@ -8,6 +8,7 @@ namespace ProjectCore.UI
         private CanvasGroup _canvasGroup;
         [SerializeField] protected RectTransform UIPanel;
         [SerializeField] protected float fadeDuration = 0.5f;
+        [SerializeField] protected bool Paused = false;
 
         protected virtual void Awake()
         {
@@ -43,12 +44,14 @@ namespace ProjectCore.UI
         {
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
+            Paused = true;
         }
 
         public virtual void Resume()
         {
             _canvasGroup.interactable = true;
             _canvasGroup.blocksRaycasts = true;
+            Paused = false;
         }
     }
 }
