@@ -25,12 +25,12 @@ public abstract class UiBase : UiAnimations
         _canvasGroup.interactable = true;
         _canvasGroup.blocksRaycasts = true;
         FadeIn(_canvasGroup);
-        SlideIn(UIPanel);
+        ScaleIn(UIPanel);
     }
 
     public virtual void Hide()
     {
-        SlideOut(UIPanel).OnComplete(() =>
+        ScaleOut(UIPanel).OnComplete(() =>
         {
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
