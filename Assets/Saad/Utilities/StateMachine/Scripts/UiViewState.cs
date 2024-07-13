@@ -6,7 +6,8 @@ public class UiViewState : State
 {
     [SerializeField] protected string prefabName;
     protected GameObject prefabInstance;
-    private CanvasGroup _canvasGroup;
+    private UiBase _uiBase;
+
     public override IEnumerator Enter(IState _listener)
     {
         yield return base.Enter(_listener);
@@ -17,43 +18,47 @@ public class UiViewState : State
         if (prefab != null)
         {
             prefabInstance = Instantiate(prefab);
-            if(prefabInstance.GetComponent<CanvasGroup>()!=null)
-                _canvasGroup = prefabInstance.GetComponent<CanvasGroup>();
+            _uiBase = prefabInstance.GetComponent<UiBase>();
+            if (_uiBase != null)
+            {
+                _uiBase.Show();
+            }
         }
         else
         {
             Debug.LogWarning($"Prefab with name {prefabName} could not be found in Resources!");
         }
     }
-
-    public override IEnumerator Exit()
-    {
-        // Destroy the prefab instance if it exists
-        if (prefabInstance != null)
-        {
-            Destroy(prefabInstance);
-        }
-
-        yield return base.Exit(); // Call base Exit method
-    }
-
     public override IEnumerator Pause()
     {
-        if (_canvasGroup != null)
+        if (_uiBase != null)
         {
-            _canvasGroup.interactable = false;
-            _canvasGroup.blocksRaycasts = false; // Optional: also disable raycasting
+            _uiBase.Pause();
         }
+
         yield return base.Pause();
     }
 
     public override IEnumerator Resume()
     {
-        if (_canvasGroup != null)
+        if (_uiBase != null)
         {
-            _canvasGroup.interactable = true;
-            _canvasGroup.blocksRaycasts = true; // Optional: also disable raycasting
+            _uiBase.Resume();
         }
+
         yield return base.Resume();
+    }
+    public override IEnumerator Exit()
+    {
+        if (_uiBase != null)
+        {
+            _uiBase.Hide();
+        }
+        //else if (prefabInstance != null)
+        //{
+        //    Destroy(prefabInstance);
+        //}
+
+        yield return base.Exit(); // Call base Exit method
     }
 }
