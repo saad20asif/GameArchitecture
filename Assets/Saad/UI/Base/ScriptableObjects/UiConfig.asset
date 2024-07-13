@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50cee79905ea0b4e959bd7729756d7d, type: 3}
   m_Name: UiConfig
   m_EditorClassIdentifier: 
-  easeInDuration: 0.75
-  easeOutDuration: 0.35
+  easeInDuration: 0.5
+  easeOutDuration: 0.3
   easeIn: 27
   easeOut: 26
