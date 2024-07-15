@@ -9,7 +9,7 @@ namespace ProjectCore.Variables
         public override void SetValue(bool value)
         {
             base.SetValue(value);
-            GameEvent.Invoke();
+            GameEvent?.Invoke();
         }
     }
 }

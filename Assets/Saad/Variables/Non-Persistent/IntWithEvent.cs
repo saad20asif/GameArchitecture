@@ -11,18 +11,18 @@ namespace ProjectCore.Variables
         public override void Decrement(int _decrement)
         {
             base.Decrement(_decrement);
-            GameEvent.Invoke();
+            GameEvent?.Invoke();
         }
         public override void Increment(int _increment)
         {
             base.Increment(_increment);
-            GameEvent.Invoke();
+            GameEvent?.Invoke();
         }
 
         public override void SetValue(int value)
         {
             base.SetValue(value);
-            GameEvent.Invoke();
+            GameEvent?.Invoke();
         }
     }
 }
