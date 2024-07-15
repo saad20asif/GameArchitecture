@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vString_", menuName = "ProjectCore/Variables/Simple/String")]
-    public class String : ScriptableObject
+    [CreateAssetMenu(fileName = "vSharedString_", menuName = "ProjectCore/Variables/Simple/SharedString")]
+    public class SharedString : ScriptableObject
     {
         [SerializeField] protected string Value;
         [SerializeField] protected string DefaultValue;
