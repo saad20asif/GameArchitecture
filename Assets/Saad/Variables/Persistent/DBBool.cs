@@ -3,28 +3,17 @@ using ProjectCore.Variables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "vDBInt_", menuName = "ProjectCore/Variables/Persistent/DBInt")]
-public class DBInt : Int
+[CreateAssetMenu(fileName = "vDBBool_", menuName = "ProjectCore/Variables/Persistent/DBBool")]
+public class DBBool : Bool
 {
     private string _key;
+
     private void OnEnable()
     {
         Load();
     }
 
-    public override void Decrement(int _decrement)
-    {
-        base.Decrement(_decrement);
-        Save();
-    }
-
-    public override void Increment(int _increment)
-    {
-        base.Increment(_increment);
-        Save();
-    }
-
-    public override void SetValue(int value)
+    public override void SetValue(bool value)
     {
         base.SetValue(value);
         Save();
@@ -33,8 +22,13 @@ public class DBInt : Int
     [Button(ButtonSizes.Small)]
     private void Save()
     {
-        PlayerPrefs.SetInt(_key, Value);
+        PlayerPrefs.SetInt(_key, Value ? 1 : 0);
         PlayerPrefs.Save(); // Ensure the data is saved
+    }
+
+    public virtual bool GetBool(string key)
+    {
+        return PlayerPrefs.GetInt(key) == 1;
     }
 
     private void Load()
@@ -49,7 +43,7 @@ public class DBInt : Int
         if (PlayerPrefs.HasKey(_key))
         {
             // Load value from PlayerPrefs using the generated key
-            Value = PlayerPrefs.GetInt(_key);
+            Value = GetBool(_key);
         }
         else
         {
