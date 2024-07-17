@@ -3,7 +3,7 @@ using ProjectCore.Variables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "DBInt", menuName = "ProjectCore/Variables/DBInt")]
+[CreateAssetMenu(fileName = "DBInt", menuName = "ProjectCore/Variables/Persistent/DBInt")]
 public class DBInt : Int
 {
     private string _key;

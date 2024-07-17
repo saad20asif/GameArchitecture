@@ -2,7 +2,7 @@ using UnityEngine;
 using ProjectCore.Events;
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vBoolWithEvent_", menuName = "ProjectCore/Variables/Simple/BoolWithEvent")]
+    [CreateAssetMenu(fileName = "vBoolWithEvent_", menuName = "ProjectCore/Variables/Non-Persistent/BoolWithEvent")]
     public class BoolWithEvent : Bool
     {
         [SerializeField] protected GameEvent GameEvent;

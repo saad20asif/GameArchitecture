@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vDouble_", menuName = "ProjectCore/Variables/Simple/Double")]
+    [CreateAssetMenu(fileName = "vDouble_", menuName = "ProjectCore/Variables/Non-Persistent/Double")]
     public class Double : ScriptableObject
     {
         [SerializeField] protected double Value;
@@ -13,7 +13,6 @@ namespace ProjectCore.Variables
         {
             if (ResetToDefaultOnPlay)
                 Value = DefaultValue;
-
         }
         public virtual void SetValue(double value)
         { Value = value; }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vSharedVector2_", menuName = "ProjectCore/Variables/Simple/SharedVector2")]
+    [CreateAssetMenu(fileName = "vSharedVector2_", menuName = "ProjectCore/Variables/Non-Persistent/SharedVector2")]
     public class SharedVector2 : ScriptableObject
     {
         [SerializeField] protected Vector2 Value;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vIntWithEvent_", menuName = "ProjectCore/Variables/Simple/IntWithEvent")]
+    [CreateAssetMenu(fileName = "vIntWithEvent_", menuName = "ProjectCore/Variables/Non-Persistent/IntWithEvent")]
     public class IntWithEvent : Int
     {
         [SerializeField] protected GameEvent GameEvent;

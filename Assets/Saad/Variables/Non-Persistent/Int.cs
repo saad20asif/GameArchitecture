@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vInt_", menuName = "ProjectCore/Variables/Simple/Int")]
+    [CreateAssetMenu(fileName = "vInt_", menuName = "ProjectCore/Variables/Non-Persistent/Int")]
     public class Int : ScriptableObject
     {
         [SerializeField] protected int Value;
