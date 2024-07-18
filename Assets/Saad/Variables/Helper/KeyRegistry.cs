@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ProjectCore.Utilities
+namespace ProjectCore.Helpers
 {
     public static class KeyRegistry
     {
