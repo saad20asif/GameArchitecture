@@ -54,11 +54,11 @@ public class StudentsJsonHandler : MonoBehaviour
     [SerializeField] private string FilePath;
     [SerializeField] private Student[] Students;
 
-    private IJsonReader _jsonReader;
+    private IJsonReader _jsonReader = new JsonFileReader();
 
     // Dependency injection via constructor or method injection can be used.
     // Here we use setter injection for simplicity.
-    //public void SetJsonReader(IJsonReader jsonReader)
+    //public void SettJsonReader(IJsonReader jsonReader)
     //{
     //    _jsonReader = jsonReader;
     //}
@@ -69,8 +69,6 @@ public class StudentsJsonHandler : MonoBehaviour
     [Button]
     private void LoadJson()
     {
-        _jsonReader = new JsonFileReader();
-
         if (_jsonReader == null)
         {
             Debug.LogError("IJsonReader not set!");
