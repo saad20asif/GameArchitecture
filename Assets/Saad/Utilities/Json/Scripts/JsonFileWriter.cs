@@ -1,10 +1,13 @@
-using System.IO;
 using Newtonsoft.Json;
-public class JsonFileWriter : IJsonWriter
+using System.IO;
+namespace ProjectCore.Utilities.Json
 {
-    public void Write<T>(string filepath, T data)
+    public class JsonFileWriter : IJsonWriter
     {
-        string _jsonContent = JsonConvert.SerializeObject(data);
-        File.WriteAllText(filepath, _jsonContent);
+        public void WriteJson<T>(string filepath, T data)
+        {
+            string jsonContent = JsonConvert.SerializeObject(data, Formatting.Indented);
+            File.WriteAllText(filepath, jsonContent);
+        }
     }
 }

@@ -1,14 +1,17 @@
 using System.IO;
 using Newtonsoft.Json;
-public class JsonFileReader : IJsonReader
+namespace ProjectCore.Utilities.Json
 {
-    public T Read<T>(string filepath)
+    public class JsonFileReader : IJsonReader
     {
-        if(!File.Exists(filepath))
+        public T ReadJson<T>(string filepath)
         {
-            throw new FileNotFoundException("File Not Found! ",filepath);
+            if (!File.Exists(filepath))
+            {
+                throw new FileNotFoundException("File Not Found!", filepath);
+            }
+            string _jsonContent = File.ReadAllText(filepath);
+            return JsonConvert.DeserializeObject<T>(_jsonContent);
         }
-        string _jsonContent = File.ReadAllText(filepath);
-        return JsonConvert.DeserializeObject<T>(_jsonContent);
     }
 }
