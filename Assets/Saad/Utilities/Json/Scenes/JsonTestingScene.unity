@@ -221,7 +221,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5148507433910614293, guid: fcbfc7cbe66a1df43a93a493ffcf7fa1, type: 3}
       propertyPath: Students.Array.data[0].name
-      value: Hira Saad
+      value: Updated Name
       objectReference: {fileID: 0}
     - target: {fileID: 5148507433910614293, guid: fcbfc7cbe66a1df43a93a493ffcf7fa1, type: 3}
       propertyPath: Students.Array.data[1].name

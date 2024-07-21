@@ -56,6 +56,7 @@ public class StudentsJsonHandler : MonoBehaviour
     [SerializeField] private string filepath;
     private IJsonReader _jsonReader = new JsonFileReader();
     private IJsonWriter _jsonWriter = new JsonFileWriter();
+
     [SerializeField] Student[] Students;
 
     [Button]
@@ -98,5 +99,4 @@ public class StudentsJsonHandler : MonoBehaviour
             Debug.LogError($"Writing Json Failed with exception : {ex}");
         }
     }
-
 }
