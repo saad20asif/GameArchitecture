@@ -4,6 +4,8 @@ using UnityEngine;
 using Newtonsoft.Json;
 using System.IO;
 using Newtonsoft.Json.Bson;
+using System.Collections.Generic;
+using ProjectCore.Utilities.Json;
 
 [Serializable]
 public struct Address
@@ -42,47 +44,59 @@ public struct Student
     public Grades grades;
     public Course[] courses;
 }
-
-[Serializable]
-public struct StudentWrapper
+[SerializeField]
+struct StudentWrapper
 {
-    public Student[] students;
+    public Student[] Students;
 }
+
 
 public class StudentsJsonHandler : MonoBehaviour
 {
-    [SerializeField] private string FilePath;
-    [SerializeField] private Student[] Students;
-
+    [SerializeField] private string filepath;
     private IJsonReader _jsonReader = new JsonFileReader();
+    private IJsonWriter _jsonWriter = new JsonFileWriter();
+    [SerializeField] Student[] Students;
 
-    // Dependency injection via constructor or method injection can be used.
-    // Here we use setter injection for simplicity.
-    //public void SettJsonReader(IJsonReader jsonReader)
-    //{
-    //    _jsonReader = jsonReader;
-    //}
-    //private void Awake()
-    //{
-    //    _jsonReader = new JsonFileReader();
-    //}
     [Button]
-    private void LoadJson()
+    private void ReadJson()
     {
-        if (_jsonReader == null)
+        if(_jsonReader == null)
         {
-            Debug.LogError("IJsonReader not set!");
+            print("Json Reader is null!");
             return;
         }
 
         try
         {
-            StudentWrapper studentWrapper = _jsonReader.Read<StudentWrapper>(FilePath);
-            Students = studentWrapper.students;
+            print("asdas");
+            StudentWrapper _studentWrapper = _jsonReader.ReadJson<StudentWrapper>(filepath);
+            print("Here I am : "+ _studentWrapper.Students);
+            Students = _studentWrapper.Students;
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            Debug.LogError($"Failed to load JSON: {ex.Message}");
+            Debug.LogError($"Reading Json Failed with exception : {ex}");
         }
     }
+    [Button]
+    private void WriteJson()
+    {
+        if (_jsonWriter == null)
+        {
+            print("Json Writer is null!");
+            return;
+        }
+        try
+        {
+            StudentWrapper _studentWrapper;
+            _studentWrapper.Students = Students;
+            _jsonWriter.WriteJson<StudentWrapper>(filepath, _studentWrapper);
+        }
+        catch(Exception ex)
+        {
+            Debug.LogError($"Writing Json Failed with exception : {ex}");
+        }
+    }
+
 }
