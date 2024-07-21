@@ -181,7 +181,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5148507433910614293, guid: fcbfc7cbe66a1df43a93a493ffcf7fa1, type: 3}
       propertyPath: Students.Array.data[0].id
-      value: 20
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 5148507433910614293, guid: fcbfc7cbe66a1df43a93a493ffcf7fa1, type: 3}
       propertyPath: Students.Array.data[1].id
@@ -221,7 +221,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5148507433910614293, guid: fcbfc7cbe66a1df43a93a493ffcf7fa1, type: 3}
       propertyPath: Students.Array.data[0].name
-      value: Updated Name
+      value: qwer
       objectReference: {fileID: 0}
     - target: {fileID: 5148507433910614293, guid: fcbfc7cbe66a1df43a93a493ffcf7fa1, type: 3}
       propertyPath: Students.Array.data[1].name
