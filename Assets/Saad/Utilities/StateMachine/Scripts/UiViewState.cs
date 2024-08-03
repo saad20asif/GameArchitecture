@@ -7,23 +7,25 @@ public class UiViewState : State
 {
     [SerializeField] protected string prefabName;
     protected GameObject prefabInstance;
-    private IShowable _ishowable;
-    //private UiBase _uiBase;
+    private IShowable _iShowable;
 
     public override IEnumerator Enter(IState _listener)
     {
         yield return base.Enter(_listener);
 
         // Load and instantiate the prefab
-        GameObject prefab = Resources.Load<GameObject>(prefabName);
+        prefabInstance = Instantiate(Resources.Load<GameObject>(prefabName));
 
-        if (prefab != null)
+        if (prefabInstance != null)
         {
-            prefabInstance = Instantiate(prefab);
-            _ishowable = prefabInstance.GetComponent<UiBase>();
-            if (_ishowable != null)
+            _iShowable = prefabInstance.GetComponent<UiBase>();
+            if (_iShowable != null)
             {
-                _ishowable.Show();
+                _iShowable.Show();
+            }
+            else
+            {
+                Debug.LogWarning($"Prefab {prefabName} does not have a UiBase component.");
             }
         }
         else
@@ -31,11 +33,12 @@ public class UiViewState : State
             Debug.LogWarning($"Prefab with name {prefabName} could not be found in Resources!");
         }
     }
+
     public override IEnumerator Pause()
     {
-        if (_ishowable != null)
+        if (_iShowable != null)
         {
-            _ishowable.Pause();
+            _iShowable.Pause();
         }
 
         yield return base.Pause();
@@ -43,24 +46,30 @@ public class UiViewState : State
 
     public override IEnumerator Resume()
     {
-        if (_ishowable != null)
+        if (_iShowable != null)
         {
-            _ishowable.Resume();
+            _iShowable.Resume();
         }
 
         yield return base.Resume();
     }
+
     public override IEnumerator Exit()
     {
-        if (_ishowable != null)
+        if (_iShowable != null)
         {
-            _ishowable.Hide();
+            _iShowable.Hide();
         }
-        //else if (prefabInstance != null)
-        //{
-        //    Destroy(prefabInstance);
-        //}
 
         yield return base.Exit(); // Call base Exit method
+    }
+
+    private void OnDestroy()
+    {
+        // Ensure that the prefab instance is properly cleaned up
+        if (prefabInstance != null)
+        {
+            Destroy(prefabInstance);
+        }
     }
 }
