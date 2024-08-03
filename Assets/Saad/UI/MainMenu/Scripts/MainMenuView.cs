@@ -27,15 +27,13 @@ public class MainMenuView : UiBase
     {
         MainMenuState.GoToSpinWheel();
     }
-    public override IEnumerator Show()
+    public override void Show()
     {
         base.Show();
-        yield return null;
     }
 
-    public override IEnumerator Hide()
+    public override void Hide()
     {
         base.Hide();
-        yield return null;
     }
 }
