@@ -19,13 +19,13 @@ public class GameStateView : UiBase
         UpdateTime();
         LevelCompleteBtn.onClick.AddListener(OnLevelCompleteBtn);
         LevelFailBtn.onClick.AddListener(OnLevelFailBtn);
-        Tick.Handler += UpdateTime;
+        Tick.Subscribe(UpdateTime);
     }
     private void OnDisable()
     {
         LevelCompleteBtn.onClick.RemoveListener(OnLevelCompleteBtn);
         LevelFailBtn.onClick.RemoveListener(OnLevelFailBtn);
-        Tick.Handler -= UpdateTime;
+        Tick.UnSubscribe(UpdateTime);
     }
     private void OnLevelCompleteBtn()
     {
