@@ -48,7 +48,7 @@ public class SharedDictionary<K,V> : SerializedScriptableObject
     {
         return keyValuePairs.Values;
     }
-    public void Update(K key, V value)
+    public void UpdateValue(K key, V value)
     {
         if (keyValuePairs.ContainsKey(key))
         {
