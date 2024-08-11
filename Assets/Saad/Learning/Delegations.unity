@@ -155,6 +155,7 @@ MonoBehaviour:
   OnButtonClick:
     m_PersistentCalls:
       m_Calls: []
+  GameEventWithReturnInt: {fileID: 11400000, guid: 5e60dc59899f84b4b897769f7f9eab31, type: 2}
 --- !u!4 &996539078
 Transform:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Events;
+using ProjectCore.Events;
 
 public class Delegations : MonoBehaviour
 {
@@ -88,6 +89,29 @@ public class Delegations : MonoBehaviour
     private void TempFuncNew(int var)
     {
         Debug.Log("TempFunc: " + var);
+    }
+    #endregion
+
+    #region GameEventWithReturnInt So Testing
+    [SerializeField] private GameEventWithReturnInt GameEventWithReturnInt;
+
+    private void OnEnable()
+    {
+        GameEventWithReturnInt.Subscribe(ReturnAsss);
+    }
+    private void OnDisable()
+    {
+        GameEventWithReturnInt.UnSubscribe(ReturnAsss);
+    }
+    [Button]
+    private void CallIt()
+    {
+        int a = GameEventWithReturnInt.Raise();
+        print("Returned value : " + a);
+    }
+    private int ReturnAsss()
+    {
+        return 12000;
     }
     #endregion
 }
