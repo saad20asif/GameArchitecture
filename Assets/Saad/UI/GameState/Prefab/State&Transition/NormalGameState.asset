@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95db150e91e1aaf418f1f41c632d3edf, type: 3}
-  m_Name: GameState
+  m_Script: {fileID: 11500000, guid: 660621220963cb04c958a7d2891b5dbc, type: 3}
+  m_Name: NormalGameState
   m_EditorClassIdentifier: 
+  PausePreviousState: 0
+  gameHudPrefabName: NormalGameHud
   GoToLevelCompleteEvent: {fileID: 11400000, guid: b127c607009da264a81f6e3465b0080d, type: 2}
-  GoToLevelFailEvent: {fileID: 11400000, guid: 2546da7c6ddcb964395a9b72bf972875, type: 2}
-  prefabName: GameState
+  GoToLeveLFailEvent: {fileID: 11400000, guid: 2546da7c6ddcb964395a9b72bf972875, type: 2}
