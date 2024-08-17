@@ -30,20 +30,20 @@ namespace ProjectCore.Application
 
         private void OnEnable()
         {
-            GoToMainMenuEvent.Handler += GoToMainMenu;
-            GoToSpinWheelEvent.Handler += GoToSpinWheel;
-            GoToGameEvent.Handler += GoToGame;
-            GoToLevelCompleteEvent.Handler += GoToLevelComplete;
-            GoToLevelFailEvent.Handler += GoToLevelFail;
+            GoToMainMenuEvent.Subscribe(GoToMainMenu);
+            GoToSpinWheelEvent.Subscribe(GoToSpinWheel);
+            GoToGameEvent.Subscribe(GoToGame);
+            GoToLevelCompleteEvent.Subscribe(GoToLevelComplete);
+            GoToLevelFailEvent.Subscribe(GoToLevelFail);
         }
 
         private void OnDisable()
         {
-            GoToMainMenuEvent.Handler -= GoToMainMenu;
-            GoToSpinWheelEvent.Handler -= GoToSpinWheel;
-            GoToGameEvent.Handler -= GoToGame;
-            GoToLevelCompleteEvent.Handler -= GoToLevelComplete;
-            GoToLevelFailEvent.Handler -= GoToLevelFail;
+            GoToMainMenuEvent.UnSubscribe(GoToMainMenu);
+            GoToSpinWheelEvent.UnSubscribe(GoToSpinWheel);
+            GoToGameEvent.UnSubscribe(GoToGame);
+            GoToLevelCompleteEvent.UnSubscribe(GoToLevelComplete);
+            GoToLevelFailEvent.UnSubscribe(GoToLevelFail);
         }
         public void Boot()
         {

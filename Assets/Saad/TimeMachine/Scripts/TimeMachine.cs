@@ -13,9 +13,8 @@ namespace ProjectCore.TheTimeMachine
         {
             while (true)
             {
-                //Debug.Log("Ticking");
-                yield return _waitForOneSecond;
                 _tick.Invoke();
+                yield return _waitForOneSecond;
             }
         }
     }

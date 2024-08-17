@@ -7,12 +7,41 @@ namespace ProjectCore.Events
     public class GameEvent : ScriptableObject
     {
         public delegate void EventHandler();
-        public event EventHandler Handler;
+        private event EventHandler _handler;
 
+        [GUIColor(1, 1, 0.5f)]
         [Button(ButtonSizes.Medium)]
         public void Invoke()
         {
-            Handler?.Invoke();
+            if (_handler != null)
+            {
+                _handler.Invoke();
+            }
+            else
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning($"GameEvent '{name}' invoked but no handlers are attached.");
+#endif
+            }
+        }
+
+        public void Subscribe(EventHandler handler)
+        {
+            _handler += handler;
+        }
+
+        public void UnSubscribe(EventHandler handler)
+        {
+            _handler -= handler;
+        }
+        public bool HasListeners()
+        {
+            return _handler != null;
+        }
+
+        private void OnDisable()
+        {
+            _handler = null; // Clear all handlers when the ScriptableObject is disabled or destroyed to avoid memory leaks
         }
     }
 }

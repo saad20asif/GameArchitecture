@@ -1,18 +1,19 @@
-using ProjectCore.Events;
-using ProjectCore.TimeUtility;
-using ProjectCore.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ProjectCore.Events;
+using ProjectCore.TimeUtility;
 
-public class GameStateView : UiBase
+public class NormalGameHud : GameHud
 {
     [SerializeField] private Button LevelCompleteBtn;
     [SerializeField] private Button LevelFailBtn;
-    [SerializeField] private GameState GameState;
+    [SerializeField] private NormalGameState NormalGameState;
     [SerializeField] private GameEvent Tick;
     [SerializeField] private TextMeshProUGUI TimeText;
     int seconds = 0;
+
+    public bool Paused { get; private set; }
 
     private void OnEnable()
     {
@@ -29,15 +30,15 @@ public class GameStateView : UiBase
     }
     private void OnLevelCompleteBtn()
     {
-        //GameState.GoToLevelCompleteState();
+        NormalGameState.GoToLevelCompleteState();
     }
     private void OnLevelFailBtn()
     {
-        //GameState.GoToLevelFailState();
+        NormalGameState.GoToLevelFailState();
     }
     private void UpdateTime()
     {
-        if(!Paused)
+        if (!Paused)
         {
             seconds++;
             TimeText.text = TimeManager.FormatTime(seconds);
