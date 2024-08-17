@@ -29,11 +29,11 @@ public class GameStateView : UiBase
     }
     private void OnLevelCompleteBtn()
     {
-        GameState.GoToLevelCompleteState();
+        //GameState.GoToLevelCompleteState();
     }
     private void OnLevelFailBtn()
     {
-        GameState.GoToLevelFailState();
+        //GameState.GoToLevelFailState();
     }
     private void UpdateTime()
     {
