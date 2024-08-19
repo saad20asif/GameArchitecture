@@ -1,18 +1,48 @@
+using CustomEditorScripts;
+using ProjectCore.UI;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class GameHud : MonoBehaviour
+namespace ProjectCore.GameHud
 {
-    public virtual void Show()
+    public class GameHud : MonoBehaviour
     {
-        // Basic implementation of showing the HUD
-        gameObject.SetActive(true);
-    }
+        [ColorFoldoutGroup("BaseHud", 1, 1, 4)]
+        [SerializeField] private UiConfig HudBarsConfig;
 
-    public virtual void Hide()
-    {
-        // Basic implementation of hiding the HUD
-        gameObject.SetActive(false);
-    }
+        [ColorFoldoutGroup("BaseHud", 1, 1, 4)]
+        [SerializeField] private RectTransform Header;
 
-    // Other common HUD methods can go here
+        [ColorFoldoutGroup("BaseHud", 1, 1, 4)]
+        [SerializeField] private RectTransform Footer;
+
+        [ColorFoldoutGroup("BaseHud", 1, 1, 4)]
+        [SerializeField] private RectTransform Middle;
+
+        private Vector2 _headerInitialPosition;
+        private Vector2 _footerInitialPosition;
+
+        private void Awake()
+        {
+            // Store the initial positions of Header and Footer
+            _headerInitialPosition = Header.anchoredPosition;
+            _footerInitialPosition = Footer.anchoredPosition;
+        }
+
+        public virtual void Show()
+        {
+            //Debug.Log("GameHud Show called!");
+
+            HudAnimations.SlideInFromAbove(Header, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
+            HudAnimations.SlideInFromBelow(Footer, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
+        }
+
+        public virtual void Hide()
+        {
+            //Debug.Log("GameHud Hide called!");
+
+            HudAnimations.SlideOutAbove(Header, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut);
+            HudAnimations.SlideOutBelow(Footer, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut);
+        }
+    }
 }

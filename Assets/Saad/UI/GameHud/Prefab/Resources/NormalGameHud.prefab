@@ -2405,6 +2405,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d36cfc04e32488a4a964ad2bf9c00213, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HudBarsConfig: {fileID: 11400000, guid: 463952eff87cf1246a236ce84dfa5e6a, type: 2}
+  Header: {fileID: 6763954658148067228}
+  Footer: {fileID: 1599760829814306869}
+  Middle: {fileID: 3876480911011738682}
   LevelCompleteBtn: {fileID: 5071216020438773026}
   LevelFailBtn: {fileID: 3789595537888071604}
   NormalGameState: {fileID: 11400000, guid: 02edefa8922b05148afeaaa43630bd75, type: 2}

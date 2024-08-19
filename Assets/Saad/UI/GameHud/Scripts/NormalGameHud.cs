@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using ProjectCore.Events;
 using ProjectCore.TimeUtility;
+using ProjectCore.GameHud;
 
 public class NormalGameHud : GameHud
 {
