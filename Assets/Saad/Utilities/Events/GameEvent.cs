@@ -20,7 +20,7 @@ namespace ProjectCore.Events
             else
             {
 #if UNITY_EDITOR
-                Debug.LogWarning($"GameEvent '{name}' invoked but no handlers are attached.");
+                //Debug.LogWarning($"GameEvent '{name}' invoked but no handlers are attached.");
 #endif
             }
         }
