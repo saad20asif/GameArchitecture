@@ -131,6 +131,7 @@ MonoBehaviour:
   uiConfig: {fileID: 11400000, guid: bee61dab388a2a94bb19d0de2f3edb63, type: 2}
   UIPanel: {fileID: 7235724554297631605}
   fadeDuration: 0.5
+  Paused: 0
   NextBtn: {fileID: 4499114141251606542}
   LevelCompleteState: {fileID: 11400000, guid: 46bff324d4bd23441af1dad97fc564f4, type: 2}
 --- !u!1 &2106843994707653360
@@ -422,10 +423,10 @@ RectTransform:
   - {fileID: 4359762827815080997}
   m_Father: {fileID: 5540043674541283960}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 300, y: 450}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1082573600503897934
 CanvasRenderer:
@@ -635,7 +636,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -150}
-  m_SizeDelta: {x: 394.08, y: 100}
+  m_SizeDelta: {x: 229.41, y: 73.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9130510763667472781
 CanvasRenderer:
