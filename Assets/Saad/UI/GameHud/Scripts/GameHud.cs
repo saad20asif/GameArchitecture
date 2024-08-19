@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ProjectCore.GameHud
 {
-    public class GameHud : MonoBehaviour
+    public class GameHud : MonoBehaviour,IShowable
     {
         [ColorFoldoutGroup("BaseHud", 1, 1, 4)]
         [SerializeField] private UiConfig HudBarsConfig;
@@ -22,8 +22,18 @@ namespace ProjectCore.GameHud
         private Vector2 _headerInitialPosition;
         private Vector2 _footerInitialPosition;
 
-        private void Awake()
+        private CanvasGroup _canvasGroup;
+
+        protected virtual void Awake()
         {
+            if (_canvasGroup == null)
+            {
+                _canvasGroup = GetComponent<CanvasGroup>();
+                if (_canvasGroup == null)
+                {
+                    _canvasGroup = gameObject.AddComponent<CanvasGroup>();
+                }
+            }
             // Store the initial positions of Header and Footer
             _headerInitialPosition = Header.anchoredPosition;
             _footerInitialPosition = Footer.anchoredPosition;
@@ -33,8 +43,8 @@ namespace ProjectCore.GameHud
         {
             //Debug.Log("GameHud Show called!");
 
-            HudAnimations.SlideInFromAbove(Header, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
-            HudAnimations.SlideInFromBelow(Footer, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
+            HudAnimations.SlideInFromAbove(_headerInitialPosition, Header, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
+            HudAnimations.SlideInFromBelow(_headerInitialPosition, Footer, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
         }
 
         public virtual void Hide()
@@ -43,6 +53,19 @@ namespace ProjectCore.GameHud
 
             HudAnimations.SlideOutAbove(Header, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut);
             HudAnimations.SlideOutBelow(Footer, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut);
+        }
+        public virtual void Resume()
+        {
+            print("Resssss ");
+            _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true;
+            Show();
+        }
+        public virtual void Pause()
+        {
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
+            Hide();
         }
     }
 }

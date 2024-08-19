@@ -45,4 +45,18 @@ public class NormalGameHud : GameHud
             TimeText.text = TimeManager.FormatTime(seconds);
         }
     }
+
+    public override void Resume()
+    {
+        base.Resume();
+        Paused = false;
+        print("Normal GameHud Resume Called!");
+    }
+
+    public override void Pause()
+    {
+        base.Pause();
+        Paused = true;
+        print("Normal GameHud Pause Called!");
+    }
 }
