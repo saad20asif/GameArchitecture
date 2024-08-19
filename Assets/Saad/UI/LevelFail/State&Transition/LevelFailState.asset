@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 267b96d73fbcfb548b37a26af4fc6f64, type: 3}
   m_Name: LevelFailState
   m_EditorClassIdentifier: 
-  PausePreviousState: 0
+  PausePreviousState: 1
   prefabName: LevelFailed
   GoToMainMenuEvent: {fileID: 11400000, guid: e22c32f43b1567c498322833dd0d4d52, type: 2}
