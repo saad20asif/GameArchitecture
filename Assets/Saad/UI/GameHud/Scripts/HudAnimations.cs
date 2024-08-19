@@ -5,10 +5,10 @@ namespace ProjectCore.GameHud
 {
     public static class HudAnimations
     {
-        public static void SlideInFromAbove(RectTransform target, float duration, Ease ease)
+        public static void SlideInFromAbove(Vector2 initialPosition, RectTransform target, float duration, Ease ease)
         {
-            Vector2 initialPosition = target.anchoredPosition;
             target.anchoredPosition = new Vector2(initialPosition.x, initialPosition.y + target.rect.height);
+            Debug.Log(initialPosition.y + target.rect.height);
             target.DOAnchorPos(initialPosition, duration).SetEase(ease);
         }
 
@@ -17,9 +17,8 @@ namespace ProjectCore.GameHud
             target.DOAnchorPosY(target.anchoredPosition.y + target.rect.height, duration).SetEase(ease);
         }
 
-        public static void SlideInFromBelow(RectTransform target, float duration, Ease ease)
+        public static void SlideInFromBelow(Vector2 initialPosition, RectTransform target, float duration, Ease ease)
         {
-            Vector2 initialPosition = target.anchoredPosition;
             target.anchoredPosition = new Vector2(initialPosition.x, initialPosition.y - target.rect.height);
             target.DOAnchorPos(initialPosition, duration).SetEase(ease);
         }

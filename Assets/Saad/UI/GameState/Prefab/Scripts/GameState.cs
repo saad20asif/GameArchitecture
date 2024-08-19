@@ -1,5 +1,6 @@
 using ProjectCore.GameHud;
 using ProjectCore.StateMachine;
+using ProjectCore.UI;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -8,7 +9,8 @@ public abstract class GameState : State
 {
     [SerializeField] private string gameHudPrefabName;  // Name of the prefab in Resources
     protected GameHud gameHudInstance;
-
+    private IShowable _iShowable;
+    
     public override IEnumerator Enter(IState listener)
     {
         yield return base.Enter(listener);
@@ -20,6 +22,7 @@ public abstract class GameState : State
             if (_hudObject != null)
             {
                 gameHudInstance = _hudObject.GetComponent<GameHud>();
+                _iShowable = _hudObject.GetComponent<GameHud>();
                 if (gameHudInstance != null)
                 {
                     gameHudInstance.Show();
@@ -50,6 +53,18 @@ public abstract class GameState : State
         }
 
         yield return base.Exit();
+    }
+
+    public override IEnumerator Pause()
+    {
+        yield return base.Pause();
+        _iShowable.Pause();
+    }
+
+    public override IEnumerator Resume()
+    {
+        yield return base.Resume();
+        _iShowable.Resume();
     }
 
 
