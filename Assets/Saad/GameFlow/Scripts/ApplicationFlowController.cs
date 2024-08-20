@@ -27,6 +27,10 @@ namespace ProjectCore.Application
         [Header("LevelFail")]
         [SerializeField] private GameEvent GoToLevelFailEvent;
         [SerializeField] private Transition LevelFailTransition;
+        
+        [Header("RateUs")]
+        [SerializeField] private GameEvent GoToRateUsEvent;
+        [SerializeField] private Transition RateUsTransition;
 
         private void OnEnable()
         {
@@ -35,6 +39,7 @@ namespace ProjectCore.Application
             GoToGameEvent.Subscribe(GoToGame);
             GoToLevelCompleteEvent.Subscribe(GoToLevelComplete);
             GoToLevelFailEvent.Subscribe(GoToLevelFail);
+            GoToRateUsEvent.Subscribe(GoToRateUs);
         }
 
         private void OnDisable()
@@ -44,6 +49,7 @@ namespace ProjectCore.Application
             GoToGameEvent.UnSubscribe(GoToGame);
             GoToLevelCompleteEvent.UnSubscribe(GoToLevelComplete);
             GoToLevelFailEvent.UnSubscribe(GoToLevelFail);
+            GoToRateUsEvent.UnSubscribe(GoToRateUs);
         }
         public void Boot()
         {
@@ -72,6 +78,10 @@ namespace ProjectCore.Application
         private void GoToLevelFail()
         {
             FiniteStateMachine.TransitionTo(LevelFailTransition);
+        }
+        private void GoToRateUs()
+        {
+            FiniteStateMachine.TransitionTo(RateUsTransition);
         }
 
     }

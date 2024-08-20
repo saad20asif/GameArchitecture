@@ -5,9 +5,14 @@ using UnityEngine;
 public class SpinWheelState : UiViewState
 {
     [SerializeField] private GameEvent GoToMainMenuEvent;
+    [SerializeField] private GameEvent GoToRateUsEvent;
 
     public void GoToMainMenu()
     {
         GoToMainMenuEvent.Invoke();
+    }
+    public void GoToRateUs()
+    {
+        GoToRateUsEvent.Invoke();
     }
 }
