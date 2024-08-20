@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 namespace ProjectCore.StateMachine
 {
@@ -5,5 +6,10 @@ namespace ProjectCore.StateMachine
     public class Transition : ScriptableObject
     {
         public State ToState;
+        public virtual IEnumerator Execute()
+        {
+            Debug.LogError(name + " transition executed! ");
+            yield break;
+        }
     }
 }
