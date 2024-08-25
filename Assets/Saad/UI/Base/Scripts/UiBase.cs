@@ -5,6 +5,7 @@ namespace ProjectCore.UI
 {
     public abstract class UiBase : UiAnimations, IShowable
     {
+        private Canvas _canvas;
         private CanvasGroup _canvasGroup;
         [SerializeField] protected RectTransform UIPanel;
         [SerializeField] protected float fadeDuration = 0.5f;
@@ -14,7 +15,12 @@ namespace ProjectCore.UI
         {
             if (_canvasGroup == null)
             {
+                _canvas = GetComponent<Canvas>();
                 _canvasGroup = GetComponent<CanvasGroup>();
+                if (_canvas.worldCamera == null)
+                {
+                    _canvas.worldCamera = Camera.main;
+                }
                 if (_canvasGroup == null)
                 {
                     _canvasGroup = gameObject.AddComponent<CanvasGroup>();

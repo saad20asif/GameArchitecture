@@ -22,13 +22,19 @@ namespace ProjectCore.GameHud
         private Vector2 _headerInitialPosition;
         private Vector2 _footerInitialPosition;
 
+        private Canvas _canvas;
         private CanvasGroup _canvasGroup;
 
         protected virtual void Awake()
         {
             if (_canvasGroup == null)
             {
+                _canvas = GetComponent<Canvas>();
                 _canvasGroup = GetComponent<CanvasGroup>();
+                if (_canvas.worldCamera == null)
+                {
+                    _canvas.worldCamera = Camera.main;
+                }
                 if (_canvasGroup == null)
                 {
                     _canvasGroup = gameObject.AddComponent<CanvasGroup>();
