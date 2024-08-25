@@ -49,7 +49,6 @@ public abstract class GameState : State
         if (gameHudInstance != null)
         {
             gameHudInstance.Hide();
-            Destroy(gameHudInstance.gameObject);
         }
 
         yield return base.Exit();

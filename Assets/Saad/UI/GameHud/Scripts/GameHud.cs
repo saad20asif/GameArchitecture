@@ -1,6 +1,8 @@
 using CustomEditorScripts;
+using DG.Tweening;
 using ProjectCore.UI;
 using Sirenix.OdinInspector;
+using System.Collections;
 using UnityEngine;
 
 namespace ProjectCore.GameHud
@@ -55,10 +57,29 @@ namespace ProjectCore.GameHud
 
         public virtual void Hide()
         {
-            //Debug.Log("GameHud Hide called!");
+            // Debug.Log("GameHud Hide called!");
 
-            HudAnimations.SlideOutAbove(Header, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut);
-            HudAnimations.SlideOutBelow(Footer, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut);
+            // Slide out animations for Header and Footer
+            Sequence hideSequence = DOTween.Sequence();
+
+            hideSequence.Append(HudAnimations.SlideOutAbove(Header, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut))
+                        .Join(HudAnimations.SlideOutBelow(Footer, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut))
+                        .OnComplete(() =>
+                        {
+                            // Call the coroutine to unload assets after animations complete
+                            StartCoroutine(UnloadAssets());
+                        });
+            Destroy(gameObject);
+            // Optionally kill any ongoing DOTween animations associated with this UI element
+            DOTween.Kill(this);
+        }
+
+        private IEnumerator UnloadAssets()
+        {
+            // Wait a frame to ensure the Destroy() call has been processed
+            yield return null;
+            // Call Resources.UnloadUnusedAssets to free up memory
+            yield return Resources.UnloadUnusedAssets();
         }
         public virtual void Resume()
         {
