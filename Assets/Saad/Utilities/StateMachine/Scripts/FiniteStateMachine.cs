@@ -51,7 +51,7 @@ namespace ProjectCore.StateMachine
 
             State nextState = transition.ToState;
 
-            if (nextState.PausePreviousState)
+            if (nextState.PausePreviousState && !IsStateInPausedStack(nextState))
             {
                 yield return PauseCurrentState();
             }
