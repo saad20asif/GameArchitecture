@@ -46,6 +46,7 @@ public abstract class GameState : State
     public override IEnumerator Exit()
     {
         // Hide and destroy the HUD instance
+        Debug.Log("Exittttt called!");
         if (gameHudInstance != null)
         {
             gameHudInstance.Hide();

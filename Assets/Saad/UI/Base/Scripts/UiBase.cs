@@ -1,4 +1,5 @@
 using DG.Tweening;
+using ProjectCore.StateMachine;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -27,6 +28,7 @@ namespace ProjectCore.UI
                 {
                     _canvasGroup = gameObject.AddComponent<CanvasGroup>();
                 }
+                _canvas.sortingOrder = FiniteStateMachine.CurrentStateSortingOrder;
             }
         }
 

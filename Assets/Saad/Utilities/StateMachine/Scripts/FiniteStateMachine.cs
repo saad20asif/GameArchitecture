@@ -13,6 +13,7 @@ namespace ProjectCore.StateMachine
         [SerializeField] private State BootState; // The initial state of the FSM
         [SerializeField] private State CurrentState; // The current active state
         [SerializeField] private Stack<State> PausedStates = new Stack<State>(); // Stack to manage paused states
+        public static int CurrentStateSortingOrder = 0;
 
         // Initializes the FiniteStateMachine with the BootState
         public IEnumerator Init()
@@ -75,6 +76,7 @@ namespace ProjectCore.StateMachine
         private IEnumerator PauseCurrentState()
         {
             Debug.Log("Pausing current state.");
+            CurrentStateSortingOrder++;
             yield return CurrentState.Pause();
             PausedStates.Push(CurrentState);
         }
@@ -94,6 +96,7 @@ namespace ProjectCore.StateMachine
         {
             while (PausedStates.Count > 0)
             {
+                CurrentStateSortingOrder--;
                 State pausedState = PausedStates.Pop();
                 yield return pausedState.Exit();
             }
@@ -102,6 +105,7 @@ namespace ProjectCore.StateMachine
         private IEnumerator ResumePausedState(State nextState)
         {
             Debug.Log("Resuming paused state: " + nextState.name);
+            CurrentStateSortingOrder--;
             yield return nextState.Resume();
             PausedStates.Pop();
         }

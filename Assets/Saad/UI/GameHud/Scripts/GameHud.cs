@@ -1,5 +1,6 @@
 using CustomEditorScripts;
 using DG.Tweening;
+using ProjectCore.StateMachine;
 using ProjectCore.UI;
 using Sirenix.OdinInspector;
 using System.Collections;
@@ -41,6 +42,7 @@ namespace ProjectCore.GameHud
                 {
                     _canvasGroup = gameObject.AddComponent<CanvasGroup>();
                 }
+                _canvas.sortingOrder = FiniteStateMachine.CurrentStateSortingOrder;
             }
             // Store the initial positions of Header and Footer
             _headerInitialPosition = Header.anchoredPosition;
@@ -57,9 +59,14 @@ namespace ProjectCore.GameHud
 
         public virtual void Hide()
         {
-            // Debug.Log("GameHud Hide called!");
-
             // Slide out animations for Header and Footer
+            HideGameHudBars();
+            Destroy(gameObject);
+            // Optionally kill any ongoing DOTween animations associated with this UI element
+            DOTween.Kill(this);
+        }
+        private void HideGameHudBars()
+        {
             Sequence hideSequence = DOTween.Sequence();
 
             hideSequence.Append(HudAnimations.SlideOutAbove(Header, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut))
@@ -69,9 +76,6 @@ namespace ProjectCore.GameHud
                             // Call the coroutine to unload assets after animations complete
                             StartCoroutine(UnloadAssets());
                         });
-            Destroy(gameObject);
-            // Optionally kill any ongoing DOTween animations associated with this UI element
-            DOTween.Kill(this);
         }
 
         private IEnumerator UnloadAssets()
@@ -92,7 +96,7 @@ namespace ProjectCore.GameHud
         {
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
-            Hide();
+            HideGameHudBars();
         }
     }
 }
