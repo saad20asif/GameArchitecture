@@ -4,8 +4,13 @@ This game architecture combines the power of the State Pattern, scriptable objec
 
 Architecture Features:
 State Machine for states flow(OnEnter, OnExit, OnPause, OnResume).
+
 Scriptable Objects Variables(Persistent and Non-Persistent)(Could be serialized anywhere and work as a dependency injection).
+
 Scriptable Objects Events(With Parameters, With Return Values).
+
 Json Utility(All Json Related functionalities).
+
 Application Flow Controller(All States Transitions happens here using FSM, all you need to invoke is desired state gameevent from anywhere in the game).
+
 Game Hud(Manages All Ui of the game state, thats how we seperate game/controller logic with the ui)
