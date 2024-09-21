@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 660621220963cb04c958a7d2891b5dbc, type: 3}
+  m_Name: NormalGameState
+  m_EditorClassIdentifier: 
+  PausePreviousState: 0
+  gameHudPrefabName: NormalGameHud
+  GoToLevelCompleteEvent: {fileID: 11400000, guid: b127c607009da264a81f6e3465b0080d, type: 2}
+  GoToLeveLFailEvent: {fileID: 11400000, guid: 2546da7c6ddcb964395a9b72bf972875, type: 2}
