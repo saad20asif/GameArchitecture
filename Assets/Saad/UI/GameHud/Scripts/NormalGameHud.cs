@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using ProjectCore.Events;
 using ProjectCore.TimeUtility;
+using ProjectCore.GameHud;
 
 public class NormalGameHud : GameHud
 {
@@ -43,5 +44,19 @@ public class NormalGameHud : GameHud
             seconds++;
             TimeText.text = TimeManager.FormatTime(seconds);
         }
+    }
+
+    public override void Resume()
+    {
+        base.Resume();
+        Paused = false;
+        print("Normal GameHud Resume Called!");
+    }
+
+    public override void Pause()
+    {
+        base.Pause();
+        Paused = true;
+        print("Normal GameHud Pause Called!");
     }
 }

@@ -13,6 +13,7 @@ namespace ProjectCore.StateMachine
         [SerializeField] private State BootState; // The initial state of the FSM
         [SerializeField] private State CurrentState; // The current active state
         [SerializeField] private Stack<State> PausedStates = new Stack<State>(); // Stack to manage paused states
+        public static int CurrentStateSortingOrder = 0;
 
         // Initializes the FiniteStateMachine with the BootState
         public IEnumerator Init()
@@ -42,55 +43,79 @@ namespace ProjectCore.StateMachine
             CoroutineRunner.instance.StartCoroutine(DoTransition(transition));
         }
 
-        // Performs the state transition
         private IEnumerator DoTransition(Transition transition)
         {
             Debug.Log("DoTransition " + transition.ToState.name);
 
-            if (CurrentState != null)
+            if (CurrentState == null)
+                yield break;
+
+            State nextState = transition.ToState;
+
+            if (nextState.PausePreviousState && !IsStateInPausedStack(nextState))
             {
-                State nextState = transition.ToState;
+                yield return PauseCurrentState();
+            }
+            else
+            {
+                yield return HandleNonPausedState(nextState);
+            }
 
-                if (nextState.PausePreviousState)
-                {
-                    // Pause the current state and push it onto the stack
-                    Debug.Log("Pausing current state.");
-                    yield return CurrentState.Pause();
-                    PausedStates.Push(CurrentState);
-                }
-                else
-                {
-                    // If the next state is not found in the paused stack, clear the stack
-                    if (!IsStateInPausedStack(nextState))
-                    {
-                        Debug.Log("Clearing all paused states.");
-                        while (PausedStates.Count > 0)
-                        {
-                            State pausedState = PausedStates.Pop();
-                            yield return pausedState.Exit();
-                        }
-                    }
+            CurrentState = nextState;
 
-                    // Exit the current state
-                    yield return CurrentState.Exit();
-                }
-
-                CurrentState = nextState;
-
-                if (IsStateInPausedStack(nextState))
-                {
-                    // Resume the next state if it was previously paused
-                    Debug.Log("Resuming paused state: " + nextState.name);
-                    yield return nextState.Resume();
-                    PausedStates.Pop();
-                }
-                else
-                {
-                    // Enter the new state if it was not paused
-                    yield return CurrentState.Enter(this);
-                }
+            if (IsStateInPausedStack(nextState))
+            {
+                yield return ResumePausedState(nextState);
+            }
+            else
+            {
+                yield return EnterNewState(transition);
             }
         }
+
+        private IEnumerator PauseCurrentState()
+        {
+            Debug.Log("Pausing current state.");
+            CurrentStateSortingOrder++;
+            yield return CurrentState.Pause();
+            PausedStates.Push(CurrentState);
+        }
+
+        private IEnumerator HandleNonPausedState(State nextState)
+        {
+            if (!IsStateInPausedStack(nextState))
+            {
+                Debug.Log("Clearing all paused states.");
+                yield return ClearPausedStates();
+            }
+
+            yield return CurrentState.Exit();
+        }
+
+        private IEnumerator ClearPausedStates()
+        {
+            while (PausedStates.Count > 0)
+            {
+                CurrentStateSortingOrder--;
+                State pausedState = PausedStates.Pop();
+                yield return pausedState.Exit();
+            }
+        }
+
+        private IEnumerator ResumePausedState(State nextState)
+        {
+            Debug.Log("Resuming paused state: " + nextState.name);
+            CurrentStateSortingOrder--;
+            yield return nextState.Resume();
+            PausedStates.Pop();
+        }
+
+        private IEnumerator EnterNewState(Transition transition)
+        {
+            yield return transition.Execute();
+            yield return CurrentState.Enter(this);
+        }
+
 
         // Checks if the specified state is in the paused states stack
         private bool IsStateInPausedStack(State nextState)

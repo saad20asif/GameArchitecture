@@ -12,5 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddca997b9a9816a43a2cbfbd567e68c3, type: 3}
   m_Name: FiniteStateMachine
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: PausedStates
+      Entry: 7
+      Data: 0|System.Collections.Generic.Stack`1[[ProjectCore.StateMachine.State,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   BootState: {fileID: 11400000, guid: 3014cc61e65c9b44f9e5b8ea8ef77486, type: 2}
-  CurrentState: {fileID: 11400000, guid: 3014cc61e65c9b44f9e5b8ea8ef77486, type: 2}
+  CurrentState: {fileID: 11400000, guid: b9b3bb32f623d9a4e88b36188597fed0, type: 2}

@@ -893,7 +893,7 @@ Canvas:
   m_GameObject: {fileID: 8851818196481443515}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -974,6 +974,7 @@ MonoBehaviour:
   uiConfig: {fileID: 11400000, guid: bee61dab388a2a94bb19d0de2f3edb63, type: 2}
   UIPanel: {fileID: 1659452528115266840}
   fadeDuration: 0.5
+  Paused: 0
   MainMenuState: {fileID: 11400000, guid: b9b3bb32f623d9a4e88b36188597fed0, type: 2}
   PlayBtn: {fileID: 2449054064359674896}
   GoToSpinWheel: {fileID: 3143879218858998483}
