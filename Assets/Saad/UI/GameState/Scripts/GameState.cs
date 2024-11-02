@@ -1,16 +1,22 @@
+using UnityEngine;
+using ProjectCore.UI;
+using ProjectCore.Events;
+using System.Collections;
+using CustomEditorScripts;
 using ProjectCore.GameHud;
 using ProjectCore.StateMachine;
-using ProjectCore.UI;
-using System;
-using System.Collections;
-using UnityEngine;
 
 public abstract class GameState : State
 {
     [SerializeField] private string gameHudPrefabName;  // Name of the prefab in Resources
     protected GameHud gameHudInstance;
     private IShowable _iShowable;
-    
+
+    [ColorFoldoutGroup("StateFlowEvents")][SerializeField] private GameEvent GameStateEnter;
+    [ColorFoldoutGroup("StateFlowEvents")][SerializeField] private GameEvent GameStatePaused;
+    [ColorFoldoutGroup("StateFlowEvents")][SerializeField] private GameEvent GameStateResumed;
+    [ColorFoldoutGroup("StateFlowEvents")][SerializeField] private GameEvent GameStateExit;
+
     public override IEnumerator Enter(IState listener)
     {
         yield return base.Enter(listener);
@@ -41,6 +47,7 @@ public abstract class GameState : State
         {
             Debug.LogWarning("GameHud prefab name is not assigned.");
         }
+        GameStateEnter.Invoke();
     }
 
     public override IEnumerator Exit()
@@ -53,18 +60,22 @@ public abstract class GameState : State
         }
 
         yield return base.Exit();
+        GameStateExit.Invoke();
+
     }
 
     public override IEnumerator Pause()
     {
         yield return base.Pause();
         _iShowable.Pause();
+        GameStatePaused.Invoke();
     }
 
     public override IEnumerator Resume()
     {
         yield return base.Resume();
         _iShowable.Resume();
+        GameStateResumed.Invoke();
     }
 
 
