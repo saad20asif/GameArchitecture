@@ -129,7 +129,7 @@ namespace ProjectCore.StateMachine
             yield return CurrentState.Exit();
         }
 
-        private IEnumerator ClearPausedStates()
+        public IEnumerator ClearPausedStates()
         {
             while (PausedStates.Count > 0)
             {
@@ -138,14 +138,13 @@ namespace ProjectCore.StateMachine
                 yield return paused.Exit();
             }
         }
-
         private IEnumerator ResumePausedState(State target)
         {
             CurrentStateSortingOrder--;
             yield return target.Resume();
             PausedStates.Pop();
         }
-
+        // It will keep popping states until it finds the state which needs to be resumed
         public IEnumerator JumpTo(State target)
         {
             if (PausedStates.Contains(target))
@@ -172,7 +171,9 @@ namespace ProjectCore.StateMachine
 
         private bool IsStateInPausedStack(State state)
         {
-            return PausedStates.Count > 0 && PausedStates.Contains(state); ;
+            return PausedStates.Count > 0 && PausedStates.Contains(state);
         }
+
+        
     }
 }
