@@ -1,7 +1,5 @@
-using ProjectCore.Events;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using ProjectCore.Events;
 
 [CreateAssetMenu(fileName = "RateUsState", menuName = "ProjectCore/State Machine/States/RateUsState")]
 public class RateUsState : UiViewState

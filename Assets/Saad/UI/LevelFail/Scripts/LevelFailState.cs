@@ -4,10 +4,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "LevelFailState", menuName = "ProjectCore/State Machine/States/LevelFail State")]
 public class LevelFailState : UiViewState
 {
-    [SerializeField] private GameEvent GoToMainMenuEvent;
+    [SerializeField] private GameEventWithInt GoToMainMenuEvent;
     
     public void GotoMainMenu()
     {
-        GoToMainMenuEvent.Invoke();
+        GoToMainMenuEvent.Raise(1);
     }
 }

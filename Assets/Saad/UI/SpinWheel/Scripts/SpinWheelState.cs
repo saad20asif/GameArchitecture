@@ -1,15 +1,17 @@
 using ProjectCore.Events;
+using ProjectCore.UI;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SpinWheelState", menuName = "ProjectCore/State Machine/States/SpinWheelState")]
 public class SpinWheelState : UiViewState
 {
-    [SerializeField] private GameEvent GoToMainMenuEvent;
+    [SerializeField] private GameEventWithInt GoToMainMenuEvent;
     [SerializeField] private GameEvent GoToRateUsEvent;
 
     public void GoToMainMenu()
     {
-        GoToMainMenuEvent.Invoke();
+        int index = (int)UICloseReasons.FullScreenPlacement;
+        GoToMainMenuEvent.Raise(index);
     }
     public void GoToRateUs()
     {
