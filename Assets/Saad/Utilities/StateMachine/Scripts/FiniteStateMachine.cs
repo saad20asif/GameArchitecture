@@ -1,25 +1,39 @@
+using ProjectCore.UI;
 using Sirenix.OdinInspector;
-using Sirenix.Serialization;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+
 namespace ProjectCore.StateMachine
 {
-
     [CreateAssetMenu(fileName = "FiniteStateMachine", menuName = "ProjectCore/State Machine/Basic FSM")]
     public class FiniteStateMachine : SerializedScriptableObject, IState
     {
-        [SerializeField] private State BootState; // The initial state of the FSM
-        [SerializeField] private State CurrentState; // The current active state
-        [SerializeField] private Stack<State> PausedStates = new Stack<State>(); // Stack to manage paused states
+        [SerializeField] private State BootState;
+        [SerializeField] private State CurrentState;
+        [SerializeField] private Stack<State> PausedStates = new Stack<State>();
         public static int CurrentStateSortingOrder = 0;
 
-        // Initializes the FiniteStateMachine with the BootState
+        private enum ClosePolicy { ClearAll, PopUntil, PopOne }
+
+        private readonly Dictionary<UICloseReasons, ClosePolicy> _closePolicies = new()
+        {
+            { UICloseReasons.Home, ClosePolicy.ClearAll },
+            { UICloseReasons.DailyLogin, ClosePolicy.ClearAll },
+            { UICloseReasons.ShowFullScreenPlacement, ClosePolicy.ClearAll },
+
+            { UICloseReasons.ResumeAny, ClosePolicy.PopUntil },
+            { UICloseReasons.ResumeGame, ClosePolicy.PopOne },
+            { UICloseReasons.Revive, ClosePolicy.PopOne },
+            { UICloseReasons.FullScreenPlacement, ClosePolicy.PopOne },
+
+            { UICloseReasons.Game, ClosePolicy.PopUntil },
+            { UICloseReasons.SkipLevel, ClosePolicy.PopUntil },
+        };
+
         public IEnumerator Init()
         {
-            Debug.Log("FiniteStateMachine Init called");
-
             if (BootState == null)
             {
                 Debug.LogWarning("Please assign a boot state in FiniteStateMachine to start the game!");
@@ -28,31 +42,64 @@ namespace ProjectCore.StateMachine
 
             CurrentState = BootState;
             yield return CurrentState.Enter(this);
-            PausedStates.Clear(); // Clear paused states stack
+            PausedStates.Clear();
         }
 
-        // Implements the TransitionTo method from the IState interface
-        public void TransitionTo(Transition transition)
+        public void TransitionTo(Transition transition, UICloseReasons closeReason = UICloseReasons.ResumeAny)
         {
             if (transition == null || transition.ToState == null)
             {
                 Debug.LogWarning("Invalid transition or target state.");
                 return;
             }
-
-            CoroutineRunner.instance.StartCoroutine(DoTransition(transition));
+            CoroutineRunner.instance.StartCoroutine(DoTransition(transition, closeReason));
         }
 
-        private IEnumerator DoTransition(Transition transition)
+        private IEnumerator DoTransition(Transition transition, UICloseReasons closeReason)
         {
-            Debug.Log("DoTransition " + transition.ToState.name);
+            var nextState = transition.ToState;
+            var policy = _closePolicies.ContainsKey(closeReason)
+                ? _closePolicies[closeReason]
+                : ClosePolicy.PopOne;
 
-            if (CurrentState == null)
-                yield break;
+            Debug.Log($"Next: {nextState.name}, Policy: {policy}");
 
-            State nextState = transition.ToState;
+            // Already paused?
+            if (PausedStates.Contains(nextState))
+            {
+                switch (policy)
+                {
+                    case ClosePolicy.PopUntil:
+                        yield return JumpTo(nextState);
+                        yield break;
 
-            if (nextState.PausePreviousState && !IsStateInPausedStack(nextState))
+                    case ClosePolicy.ClearAll:
+                        // exit current then clear all paused
+                        yield return CurrentState.Exit();
+                        yield return ClearPausedStates();
+                        break;
+
+                    case ClosePolicy.PopOne:
+                        if (PausedStates.Peek() == nextState)
+                        {
+                            // exit current, then resume target
+                            yield return CurrentState.Exit();
+                            yield return ResumePausedState(nextState);
+                            CurrentState = nextState;
+                            yield break;
+                        }
+                        else
+                        {
+                            // exit current, then clear all paused
+                            yield return CurrentState.Exit();
+                            yield return ClearPausedStates();
+                        }
+                        break;
+                }
+            }
+
+            // Fresh transition or after clearing
+            if (nextState.PausePreviousState)
             {
                 yield return PauseCurrentState();
             }
@@ -62,20 +109,12 @@ namespace ProjectCore.StateMachine
             }
 
             CurrentState = nextState;
-
-            if (IsStateInPausedStack(nextState))
-            {
-                yield return ResumePausedState(nextState);
-            }
-            else
-            {
-                yield return EnterNewState(transition);
-            }
+            yield return transition.Execute();
+            yield return CurrentState.Enter(this);
         }
 
         private IEnumerator PauseCurrentState()
         {
-            Debug.Log("Pausing current state.");
             CurrentStateSortingOrder++;
             yield return CurrentState.Pause();
             PausedStates.Push(CurrentState);
@@ -85,10 +124,8 @@ namespace ProjectCore.StateMachine
         {
             if (!IsStateInPausedStack(nextState))
             {
-                Debug.Log("Clearing all paused states.");
                 yield return ClearPausedStates();
             }
-
             yield return CurrentState.Exit();
         }
 
@@ -97,32 +134,45 @@ namespace ProjectCore.StateMachine
             while (PausedStates.Count > 0)
             {
                 CurrentStateSortingOrder--;
-                State pausedState = PausedStates.Pop();
-                yield return pausedState.Exit();
+                var paused = PausedStates.Pop();
+                yield return paused.Exit();
             }
         }
 
-        private IEnumerator ResumePausedState(State nextState)
+        private IEnumerator ResumePausedState(State target)
         {
-            Debug.Log("Resuming paused state: " + nextState.name);
             CurrentStateSortingOrder--;
-            yield return nextState.Resume();
+            yield return target.Resume();
             PausedStates.Pop();
         }
 
-        private IEnumerator EnterNewState(Transition transition)
+        public IEnumerator JumpTo(State target)
         {
-            yield return transition.Execute();
-            yield return CurrentState.Enter(this);
+            if (PausedStates.Contains(target))
+            {
+                while (PausedStates.Peek() != target)
+                {
+                    var popped = PausedStates.Pop();
+                    CurrentStateSortingOrder--;
+                    yield return popped.Exit();
+                }
+                yield return CurrentState.Exit();
+                yield return target.Resume();
+                PausedStates.Pop();
+                CurrentState = target;
+            }
+            else
+            {
+                yield return CurrentState.Exit();
+                yield return ClearPausedStates();
+                CurrentState = target;
+                yield return CurrentState.Enter(this);
+            }
         }
 
-
-        // Checks if the specified state is in the paused states stack
-        private bool IsStateInPausedStack(State nextState)
+        private bool IsStateInPausedStack(State state)
         {
-            //if(PausedStates.Count > 0)
-            //Debug.Log("peek : " + PausedStates.Peek()+ "  nextState : "+ nextState);
-            return PausedStates.Count > 0 && PausedStates.Peek() == nextState;
+            return PausedStates.Count > 0 && PausedStates.Contains(state); ;
         }
     }
 }
