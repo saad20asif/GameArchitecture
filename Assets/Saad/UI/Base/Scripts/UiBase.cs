@@ -52,6 +52,7 @@ namespace ProjectCore.UI
             // Start the scale-out animation
             ScaleOut(UIPanel).OnComplete(() =>
             {
+                print($"{gameObject.name} is destroyed");
                 _canvasGroup.interactable = false;
                 _canvasGroup.blocksRaycasts = false;
                 Destroy(gameObject);
