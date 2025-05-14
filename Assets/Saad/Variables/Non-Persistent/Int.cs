@@ -17,6 +17,9 @@ namespace ProjectCore.Variables
         }
         public virtual void SetValue(int value)
         { Value = value; }
+        
+        public virtual void SetDefaultValue(int value)
+        { DefaultValue = value; }
 
         public virtual void Increment(int _increment)
         { Value += _increment; }

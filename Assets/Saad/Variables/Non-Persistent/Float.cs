@@ -17,6 +17,19 @@ namespace ProjectCore.Variables
         }
         public virtual void SetValue(float value)
         { Value = value; }
+        
+        public virtual void SetDefaultValue(float value)
+        { DefaultValue = value; }
+        
+        public virtual float GetDefaultValue() 
+		{ return DefaultValue; }
+
         public virtual float GetValue() { return Value; }
+        
+        public virtual void Increment(float _increment)
+        { Value += _increment; }
+
+        public virtual void Decrement(float _decrement)
+        { Value -= _decrement; }
     }
 }
