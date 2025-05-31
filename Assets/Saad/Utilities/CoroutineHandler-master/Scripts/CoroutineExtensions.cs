@@ -1,0 +1,49 @@
+﻿using System;
+using System.Collections;
+using UnityEngine;
+
+
+namespace THEBADDEST.Coroutines
+{
+
+
+	public static class CoroutineExtensions
+	{
+
+		public static UnityEngine.Coroutine StartStaticCoroutine(this object o,IEnumerator enumerator)
+		{
+			return CoroutineHandler.StartStaticCoroutine(enumerator);
+		}
+		public static void StopStaticCoroutine(this object o,Coroutine coroutine)
+		{
+			CoroutineHandler.StopStaticCoroutine(coroutine);
+		}
+		public static UnityEngine.Coroutine AfterWait(this MonoBehaviour mono, CoroutineMethod action, float seconds, bool realTime = false)
+		{
+			return CoroutineHandler.AfterWait(mono, action, seconds, realTime);
+		}
+
+		public static UnityEngine.Coroutine AfterWait(this MonoBehaviour mono, params CoroutineSequence[] sequences)
+		{
+			return CoroutineHandler.AfterWait(mono, sequences);
+		}
+
+		public static UnityEngine.Coroutine AfterWait(this MonoBehaviour mono, CoroutineMethod action, Func<bool> condition)
+		{
+			return CoroutineHandler.AfterWait(mono, action, condition);
+		}
+
+		public static UnityEngine.Coroutine WaitLoop(this MonoBehaviour mono, CoroutineMethod action, Func<bool> condition, float seconds = 0, bool realTime = false)
+		{
+			return CoroutineHandler.WaitLoop(mono, action, condition, seconds, realTime);
+		}
+
+		public static void RunIndependently(this IEnumerator enumerator)
+		{
+			CoroutineHandler.StartStaticCoroutine(enumerator);
+		}
+
+	}
+
+
+}
