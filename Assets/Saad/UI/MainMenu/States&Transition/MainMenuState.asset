@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MainMenuState
   m_EditorClassIdentifier: 
   PausePreviousState: 0
-  prefabName: MainMenu
+  stateViewPool: {fileID: 11400000, guid: 8598a034367793e43b219b3b5a46ef2f, type: 2}
   GoToGameEvent: {fileID: 11400000, guid: 99e262760043c71408dedc66f3328693, type: 2}
   GoToSpinWheelEvent: {fileID: 11400000, guid: 65f9b06937345ee459f45c189949770d, type: 2}

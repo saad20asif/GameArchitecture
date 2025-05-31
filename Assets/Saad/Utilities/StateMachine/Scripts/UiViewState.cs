@@ -1,75 +1,48 @@
-using ProjectCore.StateMachine;
 using ProjectCore.UI;
-using System.Collections;
 using UnityEngine;
+using System.Collections;
 
-public class UiViewState : State
+namespace ProjectCore.StateMachine
 {
-    [SerializeField] protected string prefabName;
-    protected GameObject prefabInstance;
-    private IShowable _iShowable;
-
-    public override IEnumerator Enter(IState _listener)
+    public abstract class UIViewState : State
     {
-        yield return base.Enter(_listener);
+        [SerializeField] private StateViewPoolSO stateViewPool;
 
-        // Load and instantiate the prefab
-        prefabInstance = Instantiate(Resources.Load<GameObject>(prefabName));
+        private UiBase _uiInstance;
 
-        if (prefabInstance != null)
+        public override IEnumerator Enter(IState previous)
         {
-            _iShowable = prefabInstance.GetComponent<UiBase>();
-            if (_iShowable != null)
+            yield return base.Enter(previous);
+
+            var viewGO = stateViewPool.GetOrCreateView(this, FiniteStateMachine.ViewRoot);
+            if (viewGO == null)
+                yield break;
+
+            _uiInstance = viewGO.GetComponent<UiBase>();
+            viewGO.SetActive(true);
+            _uiInstance.Show();
+        }
+
+        public override IEnumerator Exit()
+        {
+            if (_uiInstance != null)
             {
-                _iShowable.Show();
+                _uiInstance.Hide(); // Assume Hide() just disables now, not destroys
             }
-            else
-            {
-                Debug.LogWarning($"Prefab {prefabName} does not have a UiBase component.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"Prefab with name {prefabName} could not be found in Resources!");
-        }
-    }
 
-    public override IEnumerator Pause()
-    {
-        if (_iShowable != null)
-        {
-            _iShowable.Pause();
+            yield return base.Exit();
         }
 
-        yield return base.Pause();
-    }
-
-    public override IEnumerator Resume()
-    {
-        if (_iShowable != null)
+        public override IEnumerator Pause()
         {
-            _iShowable.Resume();
+            _uiInstance?.Pause();
+            yield return base.Pause();
         }
 
-        yield return base.Resume();
-    }
-
-    public override IEnumerator Exit()
-    {
-        if (_iShowable != null)
+        public override IEnumerator Resume()
         {
-            _iShowable.Hide();
-        }
-
-        yield return base.Exit(); // Call base Exit method
-    }
-
-    private void OnDestroy()
-    {
-        // Ensure that the prefab instance is properly cleaned up
-        if (prefabInstance != null)
-        {
-            Destroy(prefabInstance);
+            _uiInstance?.Resume();
+            yield return base.Resume();
         }
     }
 }

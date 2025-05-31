@@ -1,8 +1,6 @@
 using DG.Tweening;
-using ProjectCore.StateMachine;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.Rendering;
+using ProjectCore.StateMachine;
 
 namespace ProjectCore.UI
 {
@@ -10,6 +8,7 @@ namespace ProjectCore.UI
     {
         private Canvas _canvas;
         private CanvasGroup _canvasGroup;
+
         [SerializeField] protected RectTransform UIPanel;
         [SerializeField] protected float fadeDuration = 0.5f;
         [SerializeField] protected bool Paused = false;
@@ -20,22 +19,28 @@ namespace ProjectCore.UI
             {
                 _canvas = GetComponent<Canvas>();
                 _canvasGroup = GetComponent<CanvasGroup>();
+
                 if (_canvas.worldCamera == null)
                 {
                     _canvas.worldCamera = Camera.main;
                 }
+
                 if (_canvasGroup == null)
                 {
                     _canvasGroup = gameObject.AddComponent<CanvasGroup>();
                 }
+
                 _canvas.sortingOrder = FiniteStateMachine.CurrentStateSortingOrder;
             }
         }
 
         public virtual void Show()
         {
+            gameObject.SetActive(true);
+            _canvasGroup.alpha = 0;
             _canvasGroup.interactable = true;
             _canvasGroup.blocksRaycasts = true;
+
             FadeIn(_canvasGroup);
             ScaleIn(UIPanel);
         }
@@ -45,31 +50,19 @@ namespace ProjectCore.UI
             if (_canvasGroup == null || UIPanel == null)
             {
                 Debug.LogWarning("CanvasGroup or UIPanel is not assigned.");
-                Destroy(gameObject);
                 return;
             }
 
             // Start the scale-out animation
             ScaleOut(UIPanel).OnComplete(() =>
             {
-                print($"{gameObject.name} is destroyed");
                 _canvasGroup.interactable = false;
                 _canvasGroup.blocksRaycasts = false;
-                Destroy(gameObject);
-                StartCoroutine(UnloadAssets());
+                gameObject.SetActive(false); // ✅ Reuse instead of Destroy
             });
-            // Optionally kill any ongoing DOTween animations associated with this UI element
+
             DOTween.Kill(this);
         }
-
-        private IEnumerator UnloadAssets()
-        {
-            // Wait a frame to ensure the Destroy() call has been processed
-            yield return null;
-            // Call Resources.UnloadUnusedAssets to free up memory
-            yield return Resources.UnloadUnusedAssets();
-        }
-
 
         public virtual void Pause()
         {

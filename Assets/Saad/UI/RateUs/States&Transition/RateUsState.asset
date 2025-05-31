@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: RateUsState
   m_EditorClassIdentifier: 
   PausePreviousState: 1
-  prefabName: RateUs
+  stateViewPool: {fileID: 11400000, guid: 8598a034367793e43b219b3b5a46ef2f, type: 2}
   GoToSpinWheelEvent: {fileID: 11400000, guid: 65f9b06937345ee459f45c189949770d, type: 2}

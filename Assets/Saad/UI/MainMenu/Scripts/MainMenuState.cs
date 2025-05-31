@@ -1,9 +1,10 @@
 using ProjectCore.Events;
 using System.Collections;
+using ProjectCore.StateMachine;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "MainMenuState", menuName = "ProjectCore/State Machine/States/MainMenuState")]
-public class MainMenuState : UiViewState
+public class MainMenuState : UIViewState
 {
     [SerializeField] private GameEvent GoToGameEvent;
     [SerializeField] private GameEvent GoToSpinWheelEvent;

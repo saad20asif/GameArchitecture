@@ -1,8 +1,7 @@
+using UnityEngine;
+using ProjectCore.UI;
 using ProjectCore.Events;
 using ProjectCore.StateMachine;
-using ProjectCore.UI;
-using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class ApplicationFlowController : MonoBehaviour
 {

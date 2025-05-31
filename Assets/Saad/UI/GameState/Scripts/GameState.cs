@@ -11,6 +11,7 @@ public abstract class GameState : State
     [SerializeField] private string gameHudPrefabName;  // Name of the prefab in Resources
     protected GameHud gameHudInstance;
     private IShowable _iShowable;
+    
 
     [ColorFoldoutGroup("StateFlowEvents")][SerializeField] private GameEvent GameStateEnter;
     [ColorFoldoutGroup("StateFlowEvents")][SerializeField] private GameEvent GameStatePaused;

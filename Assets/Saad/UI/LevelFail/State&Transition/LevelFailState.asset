@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: LevelFailState
   m_EditorClassIdentifier: 
   PausePreviousState: 1
-  prefabName: LevelFailed
+  stateViewPool: {fileID: 11400000, guid: 8598a034367793e43b219b3b5a46ef2f, type: 2}
   GoToMainMenuEvent: {fileID: 11400000, guid: 96a48ba26c1f6f54b829a8ee4eafd819, type: 2}
