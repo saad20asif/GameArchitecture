@@ -27,7 +27,7 @@ namespace ProjectCore.Application
             // Wait for the scene to activate
             yield return new WaitUntil(() => _asyncLoad.isDone);
             SetGameSceneAsActiveScene(); // Set the newly loaded game scene as the active scene
-
+            SetupStateRoots();
             _applicationFlowController.Boot();
         }
         private void SetGameSceneAsActiveScene()
@@ -54,6 +54,29 @@ namespace ProjectCore.Application
             _asyncLoad.allowSceneActivation = false;
             yield break;
         }
+        private void SetupStateRoots()
+        {
+            if (StateRootManager.IsInitialized)
+                return;
+
+            // Find the GameScene root
+            Scene gameScene = SceneManager.GetSceneByName(_sceneName);
+            if (!gameScene.IsValid())
+            {
+                Debug.LogError("GameScene is invalid. Cannot setup state roots.");
+                return;
+            }
+
+            // Create root objects under the loaded GameScene
+            GameObject uiRoot = new GameObject("UIViewStates");
+            GameObject gameRoot = new GameObject("GameState");
+
+            SceneManager.MoveGameObjectToScene(uiRoot, gameScene);
+            SceneManager.MoveGameObjectToScene(gameRoot, gameScene);
+
+            StateRootManager.Initialize(uiRoot.transform, gameRoot.transform);
+        }
+
     }
 
 }

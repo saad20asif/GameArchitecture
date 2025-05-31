@@ -14,7 +14,7 @@ namespace ProjectCore.StateMachine
         {
             yield return base.Enter(previous);
 
-            var viewGO = stateViewPool.GetOrCreateView(this, FiniteStateMachine.ViewRoot);
+            var viewGO = stateViewPool.GetOrCreateView(this,StateRootManager.UIViewRoot);
             if (viewGO == null)
                 yield break;
 

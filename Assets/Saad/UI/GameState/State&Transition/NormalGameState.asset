@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: NormalGameState
   m_EditorClassIdentifier: 
   PausePreviousState: 0
-  gameHudPrefabName: NormalGameHud
+  gameHudPrefab: {fileID: -6659117397910672460, guid: 3b8915a5a9f25eb46ba5d43b4cf4478f, type: 3}
+  gameplayPrefabName: Gameplay
   GameStateEnter: {fileID: 11400000, guid: 23cf083acd94ed64b9e7cd4c77488027, type: 2}
   GameStatePaused: {fileID: 11400000, guid: f6ca014ff8ab5334391f7b529b50b179, type: 2}
   GameStateResumed: {fileID: 11400000, guid: 8a7179a8563753743be1cf28dd3a054b, type: 2}

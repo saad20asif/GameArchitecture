@@ -16,22 +16,6 @@ namespace ProjectCore.StateMachine
         public static int CurrentStateSortingOrder = 0;
 
         private enum ClosePolicy { ClearAll, PopUntil, PopOne }
-        
-        private static Transform _viewRoot;
-
-        public static Transform ViewRoot
-        {
-            get
-            {
-                if (_viewRoot == null)
-                {
-                    var viewRootGO = new GameObject("[FSM_ViewRoot]");
-                    _viewRoot = viewRootGO.transform;
-                }
-                return _viewRoot;
-            }
-        }
-
 
         private readonly Dictionary<UICloseReasons, ClosePolicy> _closePolicies = new()
         {
