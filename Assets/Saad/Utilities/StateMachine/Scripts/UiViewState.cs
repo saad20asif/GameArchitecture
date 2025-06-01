@@ -1,12 +1,14 @@
 using ProjectCore.UI;
 using UnityEngine;
 using System.Collections;
+using ProjectCore.PoolSystem;
 
 namespace ProjectCore.StateMachine
 {
     public abstract class UIViewState : State
     {
-        [SerializeField] private StateViewPoolSO stateViewPool;
+        [SerializeField] private string stateId;
+        [SerializeField] private PoolManagerSO poolManagerSO;
 
         private UiBase _uiInstance;
 
@@ -14,12 +16,13 @@ namespace ProjectCore.StateMachine
         {
             yield return base.Enter(previous);
 
-            var viewGO = stateViewPool.GetOrCreateView(this,StateRootManager.UIViewRoot);
-            if (viewGO == null)
+            var view = poolManagerSO.GetComponent<UiBase>(stateId);
+
+            if (view == null)
                 yield break;
 
-            _uiInstance = viewGO.GetComponent<UiBase>();
-            viewGO.SetActive(true);
+            _uiInstance = view.GetComponent<UiBase>();
+            view.gameObject.SetActive(true);
             _uiInstance.Show();
         }
 
@@ -27,7 +30,11 @@ namespace ProjectCore.StateMachine
         {
             if (_uiInstance != null)
             {
-                _uiInstance.Hide(); // Assume Hide() just disables now, not destroys
+                _uiInstance.Hide(() =>
+                {
+                    Debug.Log($"{stateId} released");
+                    poolManagerSO.Release(stateId, _uiInstance);
+                }); // Assume Hide() just disables now, not destroys
             }
 
             yield return base.Exit();

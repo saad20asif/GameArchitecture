@@ -27,13 +27,4 @@ public class MainMenuView : UiBase
     {
         MainMenuState.GoToSpinWheel();
     }
-    public override void Show()
-    {
-        base.Show();
-    }
-
-    public override void Hide()
-    {
-        base.Hide();
-    }
 }

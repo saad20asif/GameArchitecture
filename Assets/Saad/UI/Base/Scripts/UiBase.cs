@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 using ProjectCore.StateMachine;
@@ -43,9 +44,10 @@ namespace ProjectCore.UI
 
             FadeIn(_canvasGroup);
             ScaleIn(UIPanel);
+            
         }
 
-        public virtual void Hide()
+        public virtual void Hide(Action callback)
         {
             if (_canvasGroup == null || UIPanel == null)
             {
@@ -59,6 +61,7 @@ namespace ProjectCore.UI
                 _canvasGroup.interactable = false;
                 _canvasGroup.blocksRaycasts = false;
                 gameObject.SetActive(false); // ✅ Reuse instead of Destroy
+                callback.Invoke();
             });
 
             DOTween.Kill(this);

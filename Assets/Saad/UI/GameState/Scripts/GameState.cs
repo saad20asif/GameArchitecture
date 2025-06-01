@@ -63,7 +63,10 @@ public abstract class GameState : State
         // 1. Hide HUD
         if (gameHudInstance != null)
         {
-            gameHudInstance.Hide(); // Don’t destroy, reuse via pooling
+            gameHudInstance.Hide(() =>
+            {
+                
+            }); // Don’t destroy, reuse via pooling
         }
 
         // 2. Destroy gameplay world

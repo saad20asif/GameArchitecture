@@ -1,3 +1,4 @@
+using System;
 using CustomEditorScripts;
 using DG.Tweening;
 using ProjectCore.StateMachine;
@@ -57,15 +58,15 @@ namespace ProjectCore.GameHud
             HudAnimations.SlideInFromBelow(_headerInitialPosition, Footer, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
         }
 
-        public virtual void Hide()
+        public virtual void Hide(Action callback =null)
         {
             // Slide out animations for Header and Footer
-            HideGameHudBars();
+            HideGameHudBars(callback);
             Destroy(gameObject);
             // Optionally kill any ongoing DOTween animations associated with this UI element
             DOTween.Kill(this);
         }
-        private void HideGameHudBars()
+        private void HideGameHudBars(Action callback = null)
         {
             Sequence hideSequence = DOTween.Sequence();
 
@@ -73,8 +74,9 @@ namespace ProjectCore.GameHud
                         .Join(HudAnimations.SlideOutBelow(Footer, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut))
                         .OnComplete(() =>
                         {
+                            callback.Invoke();
                             // Call the coroutine to unload assets after animations complete
-                            StartCoroutine(UnloadAssets());
+                            //StartCoroutine(UnloadAssets());
                         });
         }
 

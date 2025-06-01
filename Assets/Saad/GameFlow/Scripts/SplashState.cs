@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using ProjectCore.PoolSystem;
 using ProjectCore.StateMachine;
 using UnityEngine.SceneManagement;
 using ProjectCore.Variables;
@@ -11,6 +12,7 @@ namespace ProjectCore.Application
     {
         AsyncOperation _asyncLoad;
         [SerializeField] private Float SceneLoadingProgress;
+        [SerializeField] private PoolManagerSO poolManagerSO;
         private ApplicationFlowController _applicationFlowController;
         private string _sceneName = "GameScene";
         public override IEnumerator Enter(IState _listener)
@@ -28,6 +30,7 @@ namespace ProjectCore.Application
             yield return new WaitUntil(() => _asyncLoad.isDone);
             SetGameSceneAsActiveScene(); // Set the newly loaded game scene as the active scene
             SetupStateRoots();
+            poolManagerSO.Initialize(StateRootManager.UIViewRoot);
             _applicationFlowController.Boot();
         }
         private void SetGameSceneAsActiveScene()
