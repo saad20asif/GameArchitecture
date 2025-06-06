@@ -1,28 +1,51 @@
-using ProjectCore.UI;
 using UnityEngine;
 using System.Collections;
+using ProjectCore.UI;
 using ProjectCore.PoolSystem;
 
 namespace ProjectCore.StateMachine
 {
     public abstract class UIViewState : State
     {
+        [Header("Unique ID for Pool or Resource Lookup")]
         [SerializeField] private string stateId;
-        [SerializeField] private PoolManagerSO poolManagerSO;
+
+        [Header("Pooling Configuration")]
+        [Tooltip("Enable to use PoolManager. Disable to load prefab from Resources.")]
+        [SerializeField] private bool usePooling = true;
+        [SerializeField, Tooltip("Only assign if pooling is enabled")]
+        private PoolManagerSO poolManagerSO;
 
         private UiBase _uiInstance;
+        private GameObject _spawnedInstance;
 
         public override IEnumerator Enter(IState previous)
         {
             yield return base.Enter(previous);
 
-            var view = poolManagerSO.GetComponent<UiBase>(stateId);
+            if (usePooling)
+            {
+                _uiInstance = poolManagerSO.GetComponent<UiBase>(stateId);
+            }
+            else
+            {
+                var prefab = Resources.Load<GameObject>(stateId);
+                if (prefab == null)
+                {
+                    Debug.LogError($"[UIViewState] Prefab not found in Resources at path: {stateId}");
+                    yield break;
+                }
 
-            if (view == null)
-                yield break;
+                _spawnedInstance = Object.Instantiate(prefab);
+                _uiInstance = _spawnedInstance.GetComponent<UiBase>();
 
-            _uiInstance = view.GetComponent<UiBase>();
-            view.gameObject.SetActive(true);
+                if (_uiInstance == null)
+                {
+                    Debug.LogError($"[UIViewState] Instantiated object at '{stateId}' is missing UiBase component.");
+                    yield break;
+                }
+            }
+
             _uiInstance.Show();
         }
 
@@ -32,9 +55,15 @@ namespace ProjectCore.StateMachine
             {
                 _uiInstance.Hide(() =>
                 {
-                    Debug.Log($"{stateId} released");
-                    poolManagerSO.Release(stateId, _uiInstance);
-                }); // Assume Hide() just disables now, not destroys
+                    if (usePooling)
+                    {
+                        poolManagerSO.Release(stateId, _uiInstance);
+                    }
+                    else if (_spawnedInstance != null)
+                    {
+                        Object.Destroy(_spawnedInstance);
+                    }
+                });
             }
 
             yield return base.Exit();

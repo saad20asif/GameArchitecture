@@ -13,11 +13,6 @@ MonoBehaviour:
   m_Name: UIStatesPooler
   m_EditorClassIdentifier: 
   _poolConfigs:
-  - PoolID: main_menu
-    Prefab: {fileID: 8851818196481443515, guid: 9a2f904289890274d9e0fdc40e01b6ae, type: 3}
-    DefaultCapacity: 1
-    MaxSize: 1
-    Prewarm: 0
   - PoolID: spin_wheel
     Prefab: {fileID: 8684215832980734760, guid: f579844a64fb0a54b80f0c693e4a985d, type: 3}
     DefaultCapacity: 1

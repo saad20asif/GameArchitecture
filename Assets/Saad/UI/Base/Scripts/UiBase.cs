@@ -31,6 +31,7 @@ namespace ProjectCore.UI
                     _canvasGroup = gameObject.AddComponent<CanvasGroup>();
                 }
 
+                _canvas.planeDistance = 5;
                 _canvas.sortingOrder = FiniteStateMachine.CurrentStateSortingOrder;
             }
         }
