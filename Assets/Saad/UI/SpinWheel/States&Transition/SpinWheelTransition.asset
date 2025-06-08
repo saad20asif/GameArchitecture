@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: SpinWheelTransition
   m_EditorClassIdentifier: 
   ToState: {fileID: 11400000, guid: 0f2de33f14715024d8c1441ece63caa9, type: 2}
+  closePolicy: 0

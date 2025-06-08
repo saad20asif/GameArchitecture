@@ -7,6 +7,13 @@ using UnityEngine;
 
 namespace ProjectCore.StateMachine
 {
+    public enum ClosePolicy
+    {
+        Default,   // ← Add this for fallback
+        ClearAll,
+        PopUntil,
+        PopOne
+    }
     [CreateAssetMenu(fileName = "FiniteStateMachine", menuName = "ProjectCore/State Machine/Basic FSM")]
     public class FiniteStateMachine : SerializedScriptableObject, IState
     {
@@ -16,12 +23,14 @@ namespace ProjectCore.StateMachine
         private readonly HashSet<State> _pausedStateLookup = new HashSet<State>();
         public static int CurrentStateSortingOrder = 0;
         
-        private ClosePolicy GetPolicy(UICloseReasons reason) =>
-            _closePolicies.TryGetValue(reason, out var policy) ? policy : ClosePolicy.PopOne;
-        
+        private ClosePolicy GetPolicy(UICloseReasons reason, Transition transition)
+        {
+            if (transition != null && transition.closePolicy != ClosePolicy.Default)
+                return transition.closePolicy;
 
+            return _closePolicies.TryGetValue(reason, out var policy) ? policy : ClosePolicy.PopOne;
+        }
 
-        private enum ClosePolicy { ClearAll, PopUntil, PopOne }
 
         private readonly Dictionary<UICloseReasons, ClosePolicy> _closePolicies = new()
         {
@@ -65,7 +74,8 @@ namespace ProjectCore.StateMachine
         private IEnumerator DoTransition(Transition transition, UICloseReasons closeReason)
         {
             var nextState = transition.ToState;
-            var policy = GetPolicy(closeReason);
+            var policy = GetPolicy(closeReason, transition);
+
 
             Debug.Log($"Next: {nextState.name}, Policy: {policy}");
 
