@@ -1,5 +1,7 @@
-using UnityEngine;
+using System;
 using ProjectCore.UI;
+using System.Collections;
+using UnityEngine;
 using ProjectCore.Events;
 using ProjectCore.StateMachine;
 
@@ -55,33 +57,52 @@ public class ApplicationFlowController : MonoBehaviour
 
     private void GoToMainMenu(int reasonId)
     {
-        UICloseReasons reason = (UICloseReasons)reasonId;
-        print("reason : " + reason);
-        FiniteStateMachine.TransitionTo(MainMenuTransition, reason);
+        if (Enum.IsDefined(typeof(UICloseReasons), reasonId))
+        {
+            UICloseReasons reason = (UICloseReasons)reasonId;
+            Debug.Log("reason: " + reason);
+            StartCoroutine(GoToMainMenuRoutine());
+        }
+        else
+        {
+            Debug.LogError("Invalid UICloseReasons value: " + reasonId);
+        }
+    }
+
+    private IEnumerator GoToMainMenuRoutine()
+    {
+        yield return FiniteStateMachine.ClearPausedStates();
+        FiniteStateMachine.TransitionTo(MainMenuTransition);
     }
 
     private void GoToSpinWheel()
     {
-        FiniteStateMachine.TransitionTo(SpinWheelTransition, UICloseReasons.Game);
+        FiniteStateMachine.TransitionTo(SpinWheelTransition, pauseCurrent: true);
     }
 
     private void GoToGame()
     {
-        FiniteStateMachine.TransitionTo(GameTransition, UICloseReasons.ResumeGame);
+        StartCoroutine(GoToGameRoutine());
+    }
+
+    private IEnumerator GoToGameRoutine()
+    {
+        yield return FiniteStateMachine.PopPausedState();
+        FiniteStateMachine.TransitionTo(GameTransition);
     }
 
     private void GoToLevelComplete()
     {
-        FiniteStateMachine.TransitionTo(LevelCompleteTransition, UICloseReasons.FullScreenPlacement);
+        FiniteStateMachine.TransitionTo(LevelCompleteTransition, pauseCurrent: true);
     }
 
     private void GoToLevelFail()
     {
-        FiniteStateMachine.TransitionTo(LevelFailTransition, UICloseReasons.FullScreenPlacement);
+        FiniteStateMachine.TransitionTo(LevelFailTransition, pauseCurrent: true);
     }
 
     private void GoToRateUs()
     {
-        FiniteStateMachine.TransitionTo(RateUsTransition, UICloseReasons.ShowFullScreenPlacement);
+        FiniteStateMachine.TransitionTo(RateUsTransition, pauseCurrent: true);
     }
 }

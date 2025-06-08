@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using ProjectCore.UI;
 using ProjectCore.PoolSystem;
+using Sirenix.OdinInspector;
 
 namespace ProjectCore.StateMachine
 {
@@ -11,8 +12,10 @@ namespace ProjectCore.StateMachine
 
         [SerializeField] protected bool usePooling = true;
 
-        [SerializeField, Tooltip("Only assign if pooling is enabled")]
-        private PoolManagerSO poolManagerSO;
+        [ShowIf("@usePooling")]
+        [SerializeField, Required]
+        [InfoBox("Ensure prefab is registered in PoolManagerSO.", InfoMessageType.None)]
+        private PoolManagerSO uIStatesPooler;
 
         private UiBase _uiInstance;
         private GameObject _spawnedInstance;
@@ -25,7 +28,7 @@ namespace ProjectCore.StateMachine
 
             if (usePooling)
             {
-                viewObject = poolManagerSO.Get(stateId);
+                viewObject = uIStatesPooler.Get(stateId);
                 if (viewObject == null)
                 {
                     Debug.LogError($"[UIViewState] No pooled GameObject found for stateId: {stateId}");
@@ -65,7 +68,7 @@ namespace ProjectCore.StateMachine
                 {
                     if (usePooling)
                     {
-                        poolManagerSO.Release(stateId, _uiInstance.gameObject);
+                        uIStatesPooler.Release(stateId, _uiInstance.gameObject);
                     }
                     else if (_spawnedInstance != null)
                     {
