@@ -23,6 +23,7 @@ namespace ProjectCore.StateMachine
         [SerializeField] private Stack<State> PausedStates = new Stack<State>();
         private readonly HashSet<State> _pausedStateLookup = new HashSet<State>();
         public static int CurrentStateSortingOrder = 0;
+        private Coroutine _transitionCoroutine;
         
         private ClosePolicy GetPolicy(UICloseReasons reason, Transition transition)
         {
@@ -68,7 +69,11 @@ namespace ProjectCore.StateMachine
                 Debug.LogWarning("Invalid transition or target state.");
                 return;
             }
-            CoroutineHandler.StartStaticCoroutine(DoTransition(transition, closeReason));
+
+            if (_transitionCoroutine != null)
+                CoroutineHandler.StopStaticCoroutine(_transitionCoroutine);
+            
+            _transitionCoroutine = CoroutineHandler.StartStaticCoroutine(DoTransition(transition, closeReason));
         }
         
 
