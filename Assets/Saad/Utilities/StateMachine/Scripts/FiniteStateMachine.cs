@@ -2,6 +2,7 @@ using ProjectCore.UI;
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
+using THEBADDEST.Coroutines;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -67,7 +68,7 @@ namespace ProjectCore.StateMachine
                 Debug.LogWarning("Invalid transition or target state.");
                 return;
             }
-            CoroutineRunner.instance.StartCoroutine(DoTransition(transition, closeReason));
+            CoroutineHandler.StartStaticCoroutine(DoTransition(transition, closeReason));
         }
         
 
