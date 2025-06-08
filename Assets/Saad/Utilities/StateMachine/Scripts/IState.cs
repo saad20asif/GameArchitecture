@@ -7,5 +7,6 @@ namespace ProjectCore.StateMachine
     {
         void TransitionTo(Transition transition, UICloseReasons closeReason = UICloseReasons.ResumeAny);
         IEnumerator ClearPausedStates();
+        IEnumerator ReloadCurrentState();
     }
 }

@@ -139,7 +139,16 @@ namespace ProjectCore.StateMachine
                     break;
             }
         }
+        public IEnumerator ReloadCurrentState()
+        {
+            Debug.Log($"Reloading state: {CurrentState.name}");
 
+            OnStateExited?.Invoke(CurrentState);
+            yield return CurrentState.Exit();
+
+            OnStateEntered?.Invoke(CurrentState);
+            yield return CurrentState.Enter(this);
+        }
         private IEnumerator HandleFreshTransition(Transition transition, State nextState)
         {
             if (nextState.PausePreviousState)

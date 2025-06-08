@@ -5,12 +5,11 @@ using ProjectCore.PoolSystem;
 
 namespace ProjectCore.StateMachine
 {
-    public abstract class UIViewState : State
+    public class UIViewState : State
     {
-        [Header("Unique ID for Pool or Resource Lookup")]
-        [SerializeField] private string stateId;
+        [SerializeField] protected string stateId;
 
-        [SerializeField] private bool usePooling = true;
+        [SerializeField] protected bool usePooling = true;
 
         [SerializeField, Tooltip("Only assign if pooling is enabled")]
         private PoolManagerSO poolManagerSO;

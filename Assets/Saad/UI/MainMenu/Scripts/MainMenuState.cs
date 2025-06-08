@@ -1,6 +1,8 @@
 using ProjectCore.Events;
 using System.Collections;
 using ProjectCore.StateMachine;
+using Sirenix.OdinInspector;
+using THEBADDEST.Coroutines;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "MainMenuState", menuName = "ProjectCore/State Machine/States/MainMenuState")]
@@ -30,5 +32,10 @@ public class MainMenuState : UIViewState
     {
         yield return base.Resume();
         Debug.Log("MainMenu Resume Called!");
+    }
+    [Button]
+    public void ReloadState()
+    {
+        CoroutineHandler.StartStaticCoroutine(Listener.ReloadCurrentState());
     }
 }
