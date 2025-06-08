@@ -87,6 +87,18 @@ namespace ProjectCore.StateMachine
         {
             var nextState = transition.ToState;
             var policy = GetPolicy(closeReason, transition);
+            
+            if (CurrentState == nextState)
+            {
+                Debug.Log($"Already in state {nextState.name}, skipping redundant transition.");
+                yield break;
+            }
+
+            if (_pausedStateLookup.Contains(nextState))
+            {
+                Debug.LogWarning($"State '{nextState.name}' is already paused. Use resume transitions instead.");
+                yield break;
+            }
 
             Debug.Log($"Next: {nextState.name}, Policy: {policy}");
 
@@ -149,11 +161,13 @@ namespace ProjectCore.StateMachine
 
         private IEnumerator PauseCurrentState()
         {
-            if (_pausedStateLookup.Contains(CurrentState))
+            #if UNITY_EDITOR
+            if (PausedStates.Contains(CurrentState))
             {
-                Debug.LogWarning($"Trying to pause state '{CurrentState.name}' which is already paused.");
-                yield break;
+                Debug.LogError($"State '{CurrentState.name}' is already in the paused stack! Cannot push again.");
             }
+            #endif
+
 
             currentStateSortingOrder.Increment(1);
             yield return CurrentState.Pause();
