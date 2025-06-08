@@ -19,11 +19,11 @@ public class UIViewStateEditor : Editor
         if (usePoolingProp.boolValue)
         {
             EditorGUILayout.PropertyField(poolManagerProp);
-            EditorGUILayout.HelpBox("Ensure prefab is registered in PoolManagerSO.", MessageType.Info);
+            EditorGUILayout.HelpBox("Ensure prefab is registered in PoolManagerSO.", MessageType.None);
         }
         else
         {
-            EditorGUILayout.HelpBox("Prefab must be in Resources folder, named as stateId.", MessageType.Warning);
+            EditorGUILayout.HelpBox("Prefab must be in Resources folder, named as stateId.", MessageType.None);
         }
 
         serializedObject.ApplyModifiedProperties();

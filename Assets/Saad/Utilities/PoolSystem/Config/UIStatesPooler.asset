@@ -13,22 +13,27 @@ MonoBehaviour:
   m_Name: UIStatesPooler
   m_EditorClassIdentifier: 
   _poolConfigs:
-  - PoolID: spin_wheel
+  - PoolID: MainMenu
+    Prefab: {fileID: 8851818196481443515, guid: 9a2f904289890274d9e0fdc40e01b6ae, type: 3}
+    DefaultCapacity: 1
+    MaxSize: 1
+    Prewarm: 0
+  - PoolID: SpinWheel
     Prefab: {fileID: 8684215832980734760, guid: f579844a64fb0a54b80f0c693e4a985d, type: 3}
     DefaultCapacity: 1
     MaxSize: 1
     Prewarm: 0
-  - PoolID: rate_us
+  - PoolID: RateUs
     Prefab: {fileID: 6177578455419592694, guid: ccfcfea739f624147990aef7bb6f6bb8, type: 3}
     DefaultCapacity: 1
     MaxSize: 1
     Prewarm: 0
-  - PoolID: level_complete
+  - PoolID: LevelComplete
     Prefab: {fileID: 1268598500359922055, guid: 4d63d3dace21fca4ca906e018cf45d37, type: 3}
     DefaultCapacity: 1
     MaxSize: 1
     Prewarm: 0
-  - PoolID: level_fail
+  - PoolID: LevelFailed
     Prefab: {fileID: 977605141068256061, guid: ecb26ea4b9198af46b7a393de68657b9, type: 3}
     DefaultCapacity: 1
     MaxSize: 1

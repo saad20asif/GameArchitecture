@@ -10,9 +10,8 @@ namespace ProjectCore.StateMachine
         [Header("Unique ID for Pool or Resource Lookup")]
         [SerializeField] private string stateId;
 
-        [Header("Pooling Configuration")]
-        [Tooltip("Enable to use PoolManager. Disable to load prefab from Resources.")]
         [SerializeField] private bool usePooling = true;
+
         [SerializeField, Tooltip("Only assign if pooling is enabled")]
         private PoolManagerSO poolManagerSO;
 
@@ -23,9 +22,16 @@ namespace ProjectCore.StateMachine
         {
             yield return base.Enter(previous);
 
+            GameObject viewObject = null;
+
             if (usePooling)
             {
-                _uiInstance = poolManagerSO.GetComponent<UiBase>(stateId);
+                viewObject = poolManagerSO.Get(stateId);
+                if (viewObject == null)
+                {
+                    Debug.LogError($"[UIViewState] No pooled GameObject found for stateId: {stateId}");
+                    yield break;
+                }
             }
             else
             {
@@ -36,16 +42,18 @@ namespace ProjectCore.StateMachine
                     yield break;
                 }
 
-                _spawnedInstance = Object.Instantiate(prefab);
-                _uiInstance = _spawnedInstance.GetComponent<UiBase>();
-
-                if (_uiInstance == null)
-                {
-                    Debug.LogError($"[UIViewState] Instantiated object at '{stateId}' is missing UiBase component.");
-                    yield break;
-                }
+                viewObject = Instantiate(prefab);
+                _spawnedInstance = viewObject;
             }
 
+            _uiInstance = viewObject.GetComponent<UiBase>();
+            if (_uiInstance == null)
+            {
+                Debug.LogError($"[UIViewState] GameObject at '{stateId}' does not contain UiBase component.");
+                yield break;
+            }
+
+            viewObject.SetActive(true);
             _uiInstance.Show();
         }
 
@@ -57,11 +65,11 @@ namespace ProjectCore.StateMachine
                 {
                     if (usePooling)
                     {
-                        poolManagerSO.Release(stateId, _uiInstance);
+                        poolManagerSO.Release(stateId, _uiInstance.gameObject);
                     }
                     else if (_spawnedInstance != null)
                     {
-                        Object.Destroy(_spawnedInstance);
+                        Destroy(_spawnedInstance);
                     }
                 });
             }
