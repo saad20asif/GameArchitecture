@@ -13,7 +13,13 @@ namespace ProjectCore.StateMachine
         [SerializeField] private State BootState;
         [SerializeField] private State CurrentState;
         [SerializeField] private Stack<State> PausedStates = new Stack<State>();
+        private readonly HashSet<State> _pausedStateLookup = new HashSet<State>();
         public static int CurrentStateSortingOrder = 0;
+        
+        private ClosePolicy GetPolicy(UICloseReasons reason) =>
+            _closePolicies.TryGetValue(reason, out var policy) ? policy : ClosePolicy.PopOne;
+        
+
 
         private enum ClosePolicy { ClearAll, PopUntil, PopOne }
 
@@ -54,51 +60,53 @@ namespace ProjectCore.StateMachine
             }
             CoroutineRunner.instance.StartCoroutine(DoTransition(transition, closeReason));
         }
+        
 
         private IEnumerator DoTransition(Transition transition, UICloseReasons closeReason)
         {
             var nextState = transition.ToState;
-            var policy = _closePolicies.ContainsKey(closeReason)
-                ? _closePolicies[closeReason]
-                : ClosePolicy.PopOne;
+            var policy = GetPolicy(closeReason);
 
             Debug.Log($"Next: {nextState.name}, Policy: {policy}");
 
-            // Already paused?
-            if (PausedStates.Contains(nextState))
+            if (_pausedStateLookup.Contains(nextState))
             {
-                switch (policy)
-                {
-                    case ClosePolicy.PopUntil:
-                        yield return JumpTo(nextState);
-                        yield break;
-
-                    case ClosePolicy.ClearAll:
-                        // exit current then clear all paused
-                        yield return CurrentState.Exit();
-                        yield return ClearPausedStates();
-                        break;
-
-                    case ClosePolicy.PopOne:
-                        if (PausedStates.Peek() == nextState)
-                        {
-                            // exit current, then resume target
-                            yield return CurrentState.Exit();
-                            yield return ResumePausedState(nextState);
-                            CurrentState = nextState;
-                            yield break;
-                        }
-                        else
-                        {
-                            // exit current, then clear all paused
-                            yield return CurrentState.Exit();
-                            yield return ClearPausedStates();
-                        }
-                        break;
-                }
+                yield return HandlePausedTransition(policy, nextState);
+                yield break;
             }
 
-            // Fresh transition or after clearing
+            yield return HandleFreshTransition(transition, nextState);
+        }
+        private IEnumerator HandlePausedTransition(ClosePolicy policy, State nextState)
+        {
+            switch (policy)
+            {
+                case ClosePolicy.PopUntil:
+                    yield return JumpTo(nextState);
+                    break;
+
+                case ClosePolicy.ClearAll:
+                    yield return CurrentState.Exit();
+                    yield return ClearPausedStates();
+                    break;
+
+                case ClosePolicy.PopOne:
+                    if (PausedStates.Peek() == nextState)
+                    {
+                        yield return CurrentState.Exit();
+                        yield return ResumePausedState(nextState);
+                        CurrentState = nextState;
+                    }
+                    else
+                    {
+                        yield return CurrentState.Exit();
+                        yield return ClearPausedStates();
+                    }
+                    break;
+            }
+        }
+        private IEnumerator HandleFreshTransition(Transition transition, State nextState)
+        {
             if (nextState.PausePreviousState)
             {
                 yield return PauseCurrentState();
@@ -113,12 +121,21 @@ namespace ProjectCore.StateMachine
             yield return CurrentState.Enter(this);
         }
 
+
         private IEnumerator PauseCurrentState()
         {
+            if (_pausedStateLookup.Contains(CurrentState))
+            {
+                Debug.LogWarning($"Trying to pause state '{CurrentState.name}' which is already paused.");
+                yield break;
+            }
+
             CurrentStateSortingOrder++;
             yield return CurrentState.Pause();
             PausedStates.Push(CurrentState);
+            _pausedStateLookup.Add(CurrentState);
         }
+
 
         private IEnumerator HandleNonPausedState(State nextState)
         {
@@ -135,29 +152,42 @@ namespace ProjectCore.StateMachine
             {
                 CurrentStateSortingOrder--;
                 var paused = PausedStates.Pop();
+                _pausedStateLookup.Remove(paused);
                 yield return paused.Exit();
             }
         }
+
         private IEnumerator ResumePausedState(State target)
         {
+            if (PausedStates.Peek() != target)
+            {
+                Debug.LogWarning($"Trying to resume non-top state '{target.name}'. This is not allowed.");
+                yield break;
+            }
+
             CurrentStateSortingOrder--;
             yield return target.Resume();
             PausedStates.Pop();
+            _pausedStateLookup.Remove(target);
         }
+
         // It will keep popping states until it finds the state which needs to be resumed
         public IEnumerator JumpTo(State target)
         {
-            if (PausedStates.Contains(target))
+            if (_pausedStateLookup.Contains(target))
             {
                 while (PausedStates.Peek() != target)
                 {
                     var popped = PausedStates.Pop();
+                    _pausedStateLookup.Remove(popped);
                     CurrentStateSortingOrder--;
                     yield return popped.Exit();
                 }
+
                 yield return CurrentState.Exit();
                 yield return target.Resume();
                 PausedStates.Pop();
+                _pausedStateLookup.Remove(target);
                 CurrentState = target;
             }
             else
@@ -168,6 +198,7 @@ namespace ProjectCore.StateMachine
                 yield return CurrentState.Enter(this);
             }
         }
+
 
         private bool IsStateInPausedStack(State state)
         {
