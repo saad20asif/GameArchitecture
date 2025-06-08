@@ -18,8 +18,3 @@ MonoBehaviour:
     DefaultCapacity: 1
     MaxSize: 1
     Prewarm: 0
-  - PoolID: Gameplay
-    Prefab: {fileID: 4851650558008953366, guid: 57f0d7805fd04b343b4375d7320b5d12, type: 3}
-    DefaultCapacity: 1
-    MaxSize: 1
-    Prewarm: 0

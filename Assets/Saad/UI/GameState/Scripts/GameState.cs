@@ -5,25 +5,21 @@ using System.Collections;
 using ProjectCore.GameHud;
 using ProjectCore.StateMachine;
 using ProjectCore.PoolSystem;
+using Sirenix.OdinInspector;
 
 public abstract class GameState : State
 {
-    [Header("Gameplay Config")]
-    [Tooltip("Prefab name under Resources folder for gameplay object")]
     [SerializeField] private string gameplayPrefabId;
-
-    [Tooltip("Use pooling for gameplay instance")]
-    [SerializeField] private bool usePoolingForGameplay = true;
-
-    [Header("HUD Config")]
-    [Tooltip("Unique ID used for pooling or Resources loading")]
     [SerializeField] private string hudPrefabId;
+    
+    [SerializeField] private bool poolGameplay = true;
+    [SerializeField] private bool poolGameHud = true;
+    
+    [ShowIf("@poolGameplay || poolGameHud")]
+    [SerializeField, Required]
+    [InfoBox("Ensure prefab is registered in PoolManagerSO.", InfoMessageType.None)]
+    private PoolManagerSO gameStatePooler;
 
-    [Tooltip("Use pooling for GameHud")]
-    [SerializeField] private bool usePoolingForGameHud = true;
-
-    [Tooltip("Only assign if pooling is enabled")]
-    [SerializeField] private PoolManagerSO gameStatePooler;
 
     [Header("State Events")]
     [SerializeField] private GameEvent GameStateEnter;
@@ -43,7 +39,7 @@ public abstract class GameState : State
         // 1. Load Gameplay
         if (!string.IsNullOrEmpty(gameplayPrefabId))
         {
-            if (usePoolingForGameplay)
+            if (poolGameplay)
             {
                 gameplayInstance = gameStatePooler.Get(gameplayPrefabId);
             }
@@ -52,13 +48,12 @@ public abstract class GameState : State
                 var gameplayPrefab = Resources.Load<GameObject>(gameplayPrefabId);
                 if (gameplayPrefab != null)
                 {
-                    gameplayInstance = Instantiate(gameplayPrefab);
+                    gameplayInstance = Instantiate(gameplayPrefab,StateRootManager.GameplayNonPooled);
                 }
                 else
                 {
                     Debug.LogWarning($"Gameplay prefab '{gameplayPrefabId}' not found in Resources.");
                 }
-                gameplayInstance.transform.SetParent(StateRootManager.GameplayNonPooled);
             }
 
             //if (gameplayInstance != null)
@@ -66,7 +61,7 @@ public abstract class GameState : State
         }
 
         // 2. Load HUD
-        if (usePoolingForGameHud)
+        if (poolGameHud)
         {
             _spawnedHud = gameStatePooler.Get(hudPrefabId);
             gameHudInstance = _spawnedHud.GetComponent<GameHud>();
@@ -104,7 +99,7 @@ public abstract class GameState : State
         {
             gameHudInstance.Hide(() =>
             {
-                if (usePoolingForGameHud)
+                if (poolGameHud)
                 {
                     gameStatePooler.Release(hudPrefabId, _spawnedHud);
                 }
@@ -118,7 +113,7 @@ public abstract class GameState : State
         // 2. Remove gameplay
         if (gameplayInstance != null)
         {
-            if (usePoolingForGameplay)
+            if (poolGameplay)
             {
                 gameStatePooler.Release(gameplayPrefabId, gameplayInstance);
             }

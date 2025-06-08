@@ -17,7 +17,7 @@ public static class StateRootManager
         UINonPooled = uiNonPooled;
         Gameplay = gameplay;
         GameplayPooled = gameplayPooled;
-        gameplayNonPooled = gameplayPooled;
+        GameplayNonPooled = gameplayNonPooled;
         IsInitialized = true;
     }
 

@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PausePreviousState: 0
   gameplayPrefabId: Gameplay
-  usePoolingForGameplay: 1
   hudPrefabId: NormalGameHud
-  usePoolingForGameHud: 1
+  poolGameplay: 0
+  poolGameHud: 1
   gameStatePooler: {fileID: 11400000, guid: 6eed7c212c7ccc346b2173d056c6831e, type: 2}
   GameStateEnter: {fileID: 11400000, guid: 23cf083acd94ed64b9e7cd4c77488027, type: 2}
   GameStatePaused: {fileID: 11400000, guid: f6ca014ff8ab5334391f7b529b50b179, type: 2}
