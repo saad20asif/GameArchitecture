@@ -2,9 +2,9 @@ using ProjectCore.UI;
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
+using ProjectCore.Variables;
 using THEBADDEST.Coroutines;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace ProjectCore.StateMachine
 {
@@ -24,7 +24,7 @@ namespace ProjectCore.StateMachine
         [SerializeField] private Stack<State> PausedStates = new();
         private readonly HashSet<State> _pausedStateLookup = new();
 
-        public static int CurrentStateSortingOrder = 0;
+        [SerializeField] private  Int currentStateSortingOrder;
         private Coroutine _transitionCoroutine;
 
         public event System.Action<State> OnStateEntered;
@@ -155,7 +155,7 @@ namespace ProjectCore.StateMachine
                 yield break;
             }
 
-            CurrentStateSortingOrder++;
+            currentStateSortingOrder.Increment(1);
             yield return CurrentState.Pause();
             OnStatePaused?.Invoke(CurrentState);
             PausedStates.Push(CurrentState);
@@ -182,7 +182,7 @@ namespace ProjectCore.StateMachine
         {
             while (PausedStates.Count > 0)
             {
-                CurrentStateSortingOrder--;
+                currentStateSortingOrder.Decrement(1);
                 var paused = PausedStates.Pop();
                 _pausedStateLookup.Remove(paused);
                 yield return paused.Exit();
@@ -198,7 +198,7 @@ namespace ProjectCore.StateMachine
                 yield break;
             }
 
-            CurrentStateSortingOrder--;
+            currentStateSortingOrder.Decrement(1);
             yield return target.Resume();
             OnStateResumed?.Invoke(target);
             PausedStates.Pop();
@@ -213,7 +213,7 @@ namespace ProjectCore.StateMachine
                 {
                     var popped = PausedStates.Pop();
                     _pausedStateLookup.Remove(popped);
-                    CurrentStateSortingOrder--;
+                    currentStateSortingOrder.Decrement(1);
                     yield return popped.Exit();
                     OnStateExited?.Invoke(popped);
                 }

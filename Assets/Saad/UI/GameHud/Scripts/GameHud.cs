@@ -5,6 +5,7 @@ using ProjectCore.StateMachine;
 using ProjectCore.UI;
 using Sirenix.OdinInspector;
 using System.Collections;
+using ProjectCore.Variables;
 using UnityEngine;
 
 namespace ProjectCore.GameHud
@@ -28,6 +29,8 @@ namespace ProjectCore.GameHud
 
         private Canvas _canvas;
         private CanvasGroup _canvasGroup;
+        
+        [SerializeField] private Int currentStateSortingOrder;
 
         protected virtual void Awake()
         {
@@ -43,7 +46,7 @@ namespace ProjectCore.GameHud
                 {
                     _canvasGroup = gameObject.AddComponent<CanvasGroup>();
                 }
-                _canvas.sortingOrder = FiniteStateMachine.CurrentStateSortingOrder;
+                _canvas.sortingOrder = currentStateSortingOrder.GetValue();
             }
             // Store the initial positions of Header and Footer
             _headerInitialPosition = Header.anchoredPosition;

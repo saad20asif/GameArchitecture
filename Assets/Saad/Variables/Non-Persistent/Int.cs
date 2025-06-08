@@ -26,6 +26,6 @@ namespace ProjectCore.Variables
 
         public virtual void Decrement(int _decrement)
         { Value -= _decrement; }
-        public virtual float GetValue() { return Value; }
+        public virtual int GetValue() { return Value; }
     }
 }

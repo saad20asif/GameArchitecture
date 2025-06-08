@@ -2425,6 +2425,7 @@ MonoBehaviour:
   Header: {fileID: 6763954658148067228}
   Footer: {fileID: 1599760829814306869}
   Middle: {fileID: 3876480911011738682}
+  currentStateSortingOrder: {fileID: 11400000, guid: df6db5c4b66674c41bf055fb436f721a, type: 2}
   LevelCompleteBtn: {fileID: 5071216020438773026}
   LevelFailBtn: {fileID: 3789595537888071604}
   NormalGameState: {fileID: 11400000, guid: 02edefa8922b05148afeaaa43630bd75, type: 2}

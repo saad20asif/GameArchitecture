@@ -2,6 +2,7 @@ using System;
 using DG.Tweening;
 using UnityEngine;
 using ProjectCore.StateMachine;
+using ProjectCore.Variables;
 
 namespace ProjectCore.UI
 {
@@ -9,7 +10,7 @@ namespace ProjectCore.UI
     {
         private Canvas _canvas;
         private CanvasGroup _canvasGroup;
-
+        [SerializeField] private Int currentStateSortingOrder;
         [SerializeField] protected RectTransform UIPanel;
         [SerializeField] protected float fadeDuration = 0.5f;
         [SerializeField] protected bool Paused = false;
@@ -32,7 +33,7 @@ namespace ProjectCore.UI
                 }
 
                 _canvas.planeDistance = 5;
-                _canvas.sortingOrder = FiniteStateMachine.CurrentStateSortingOrder;
+                _canvas.sortingOrder = currentStateSortingOrder.GetValue();
             }
         }
 
