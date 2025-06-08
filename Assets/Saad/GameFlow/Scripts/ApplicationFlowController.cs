@@ -9,6 +9,10 @@ public class ApplicationFlowController : MonoBehaviour
 {
     [SerializeField] private FiniteStateMachine FiniteStateMachine;
 
+    [Header("Common")] 
+    [SerializeField] private GameEvent backBtnPressedEvent;
+    
+    
     [Header("MainMenu")]
     [SerializeField] private GameEventWithInt GoToMainMenuEvent;
     [SerializeField] private Transition MainMenuTransition;
@@ -35,6 +39,7 @@ public class ApplicationFlowController : MonoBehaviour
 
     private void OnEnable()
     {
+        backBtnPressedEvent.Subscribe(OnBackButtonPressed);
         GoToMainMenuEvent.Subscribe(GoToMainMenu);
         GoToSpinWheelEvent.Subscribe(GoToSpinWheel);
         GoToGameEvent.Subscribe(GoToGame);
@@ -45,6 +50,7 @@ public class ApplicationFlowController : MonoBehaviour
 
     private void OnDisable()
     {
+        backBtnPressedEvent.UnSubscribe(OnBackButtonPressed);
         GoToMainMenuEvent.UnSubscribe(GoToMainMenu);
         GoToSpinWheelEvent.UnSubscribe(GoToSpinWheel);
         GoToGameEvent.UnSubscribe(GoToGame);
@@ -74,7 +80,10 @@ public class ApplicationFlowController : MonoBehaviour
         yield return FiniteStateMachine.ClearPausedStates();
         FiniteStateMachine.TransitionTo(MainMenuTransition);
     }
-
+    public void OnBackButtonPressed()
+    {
+        StartCoroutine(FiniteStateMachine.PopPausedState());
+    }
     private void GoToSpinWheel()
     {
         FiniteStateMachine.TransitionTo(SpinWheelTransition, pauseCurrent: true);

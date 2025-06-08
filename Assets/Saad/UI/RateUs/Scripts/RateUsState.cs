@@ -5,10 +5,10 @@ using ProjectCore.StateMachine;
 [CreateAssetMenu(fileName = "RateUsState", menuName = "ProjectCore/State Machine/States/RateUsState")]
 public class RateUsState : UIViewState
 {
-    [SerializeField] private GameEvent GoToSpinWheelEvent;
+    [SerializeField] private GameEvent backBtnPressedEvent;
 
-    public void GoToSpinWheel()
+    public void GoBack()
     {
-        GoToSpinWheelEvent.Invoke();
+        backBtnPressedEvent.Invoke();
     }
 }

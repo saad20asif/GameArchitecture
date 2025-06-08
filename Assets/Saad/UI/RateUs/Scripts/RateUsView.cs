@@ -18,6 +18,6 @@ public class RateUsView : UiBase
     private void OnBackBtnClicked()
     {
         print("OnBackBtnClicked");
-        RateUsState.GoToSpinWheel();
+        RateUsState.GoBack();
     }
 }

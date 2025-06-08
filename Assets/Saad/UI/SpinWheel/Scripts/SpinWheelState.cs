@@ -6,13 +6,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "SpinWheelState", menuName = "ProjectCore/State Machine/States/SpinWheelState")]
 public class SpinWheelState : UIViewState
 {
-    [SerializeField] private GameEventWithInt GoToMainMenuEvent;
+    [SerializeField] private GameEvent backBtnPressedEvent;
     [SerializeField] private GameEvent GoToRateUsEvent;
 
-    public void GoToMainMenu()
+    public void GoBack()
     {
-        int index = (int)UICloseReasons.FullScreenPlacement;
-        GoToMainMenuEvent.Raise(index);
+        backBtnPressedEvent.Invoke();
     }
     public void GoToRateUs()
     {
