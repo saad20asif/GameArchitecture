@@ -139,11 +139,13 @@ namespace ProjectCore.StateMachine
                 yield return HandleNonPausedState(nextState);
             }
 
-            CurrentState = nextState;
             yield return transition.Execute();
-            yield return CurrentState.Enter(this);
+            yield return nextState.Enter(this);
+
+            CurrentState = nextState;
             OnStateEntered?.Invoke(CurrentState);
         }
+
 
         private IEnumerator PauseCurrentState()
         {
