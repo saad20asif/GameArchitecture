@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FiniteStateMachine: {fileID: 11400000, guid: a870bbea6abe8404cb307e5b551daf37, type: 2}
-  fsmConfig: {fileID: 11400000, guid: 85f65553e40d9274ab3d7753c53a6818, type: 2}
   GoToMainMenuEvent: {fileID: 11400000, guid: 96a48ba26c1f6f54b829a8ee4eafd819, type: 2}
   MainMenuTransition: {fileID: 11400000, guid: 293e98774410a3d4fbb4d767f579a6d5, type: 2}
   GoToSpinWheelEvent: {fileID: 11400000, guid: 65f9b06937345ee459f45c189949770d, type: 2}
