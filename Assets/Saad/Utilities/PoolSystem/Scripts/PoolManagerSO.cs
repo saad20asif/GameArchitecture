@@ -37,6 +37,7 @@ namespace ProjectCore.PoolSystem
 
         private void CreatePools()
         {
+            _gameObjectPools.Clear();
             foreach (var config in _poolConfigs)
             {
                 var parent = new GameObject($"{config.PoolID}_Pool").transform;
@@ -81,7 +82,7 @@ namespace ProjectCore.PoolSystem
         {
             if (_gameObjectPools.TryGetValue(poolId, out var pool))
                 return pool.Get();
-            
+            Debug.Log(poolId+" "+name);
             throw new KeyNotFoundException($"Pool {poolId} not found");
         }
 

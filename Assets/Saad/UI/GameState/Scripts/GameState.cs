@@ -2,60 +2,99 @@ using UnityEngine;
 using ProjectCore.UI;
 using ProjectCore.Events;
 using System.Collections;
-using CustomEditorScripts;
 using ProjectCore.GameHud;
 using ProjectCore.StateMachine;
+using ProjectCore.PoolSystem;
 
 public abstract class GameState : State
 {
-    [Header("References")]
-    [SerializeField] private GameHud gameHudPrefab;  // Drag reference in Inspector
-    [SerializeField] private string gameplayPrefabName; // Load from Resources
+    [Header("Gameplay Config")]
+    [Tooltip("Prefab name under Resources folder for gameplay object")]
+    [SerializeField] private string gameplayPrefabId;
+
+    [Tooltip("Use pooling for gameplay instance")]
+    [SerializeField] private bool usePoolingForGameplay = true;
+
+    [Header("HUD Config")]
+    [Tooltip("Unique ID used for pooling or Resources loading")]
+    [SerializeField] private string hudPrefabId;
+
+    [Tooltip("Use pooling for GameHud")]
+    [SerializeField] private bool usePoolingForGameHud = true;
+
+    [Tooltip("Only assign if pooling is enabled")]
+    [SerializeField] private PoolManagerSO gameStatePooler;
+
+    [Header("State Events")]
+    [SerializeField] private GameEvent GameStateEnter;
+    [SerializeField] private GameEvent GameStatePaused;
+    [SerializeField] private GameEvent GameStateResumed;
+    [SerializeField] private GameEvent GameStateExit;
 
     protected GameHud gameHudInstance;
     private IShowable _iShowable;
     private GameObject gameplayInstance;
+    private GameObject _spawnedHud;
 
-    [ColorFoldoutGroup("StateFlowEvents")]
-    [SerializeField] private GameEvent GameStateEnter;
-    [ColorFoldoutGroup("StateFlowEvents")]
-    [SerializeField] private GameEvent GameStatePaused;
-    [ColorFoldoutGroup("StateFlowEvents")]
-    [SerializeField] private GameEvent GameStateResumed;
-    [ColorFoldoutGroup("StateFlowEvents")]
-    [SerializeField] private GameEvent GameStateExit;
-
-    public override IEnumerator Enter(IState listener)
+    public override IEnumerator Enter(IState previous)
     {
-        yield return base.Enter(listener);
+        yield return base.Enter(previous);
 
-        // 1. Instantiate gameplay world if any
-        if (!string.IsNullOrEmpty(gameplayPrefabName))
+        // 1. Load Gameplay
+        if (!string.IsNullOrEmpty(gameplayPrefabId))
         {
-            var gameplayPrefab = Resources.Load<GameObject>(gameplayPrefabName);
-            if (gameplayPrefab != null)
+            if (usePoolingForGameplay)
             {
-                gameplayInstance = Instantiate(gameplayPrefab,StateRootManager.GameStateRoot);
+                gameplayInstance = gameStatePooler.Get(gameplayPrefabId);
             }
             else
             {
-                Debug.LogWarning($"Gameplay prefab '{gameplayPrefabName}' not found in Resources.");
+                var gameplayPrefab = Resources.Load<GameObject>(gameplayPrefabId);
+                if (gameplayPrefab != null)
+                {
+                    gameplayInstance = Instantiate(gameplayPrefab);
+                }
+                else
+                {
+                    Debug.LogWarning($"Gameplay prefab '{gameplayPrefabId}' not found in Resources.");
+                }
+                gameplayInstance.transform.SetParent(StateRootManager.GameplayNonPooled);
             }
+
+            //if (gameplayInstance != null)
+                //gameplayInstance.transform.SetParent(StateRootManager.Gameplay, false);
         }
 
-        // 2. Instantiate HUD
-        if (gameHudPrefab != null && gameHudInstance == null)
+        // 2. Load HUD
+        if (usePoolingForGameHud)
         {
-            gameHudInstance = Instantiate(gameHudPrefab, StateRootManager.GameStateRoot);
+            _spawnedHud = gameStatePooler.Get(hudPrefabId);
+            gameHudInstance = _spawnedHud.GetComponent<GameHud>();
+        }
+        else
+        {
+            var hudPrefab = Resources.Load<GameObject>(hudPrefabId);
+            if (hudPrefab == null)
+            {
+                Debug.LogError($"[GameState] HUD prefab '{hudPrefabId}' not found in Resources.");
+                yield break;
+            }
+
+            _spawnedHud = Instantiate(hudPrefab, StateRootManager.GameplayNonPooled);
+            gameHudInstance = _spawnedHud.GetComponent<GameHud>();
+        }
+
+        if (gameHudInstance != null)
+        {
             _iShowable = gameHudInstance;
             gameHudInstance.Show();
         }
         else
         {
-            Debug.LogWarning("GameHud prefab is missing or already instantiated.");
+            Debug.LogError($"[GameState] HUD instance is missing or missing GameHud component.");
         }
 
-        GameStateEnter.Invoke();
+        GameStateEnter?.Invoke();
     }
 
     public override IEnumerator Exit()
@@ -65,32 +104,47 @@ public abstract class GameState : State
         {
             gameHudInstance.Hide(() =>
             {
-                
-            }); // Don’t destroy, reuse via pooling
+                if (usePoolingForGameHud)
+                {
+                    gameStatePooler.Release(hudPrefabId, _spawnedHud);
+                }
+                else if (_spawnedHud != null)
+                {
+                    Destroy(_spawnedHud);
+                }
+            });
         }
 
-        // 2. Destroy gameplay world
+        // 2. Remove gameplay
         if (gameplayInstance != null)
         {
-            Destroy(gameplayInstance);
+            if (usePoolingForGameplay)
+            {
+                gameStatePooler.Release(gameplayPrefabId, gameplayInstance);
+            }
+            else
+            {
+                Destroy(gameplayInstance);
+            }
+
             gameplayInstance = null;
         }
 
         yield return base.Exit();
-        GameStateExit.Invoke();
+        GameStateExit?.Invoke();
     }
 
     public override IEnumerator Pause()
     {
         yield return base.Pause();
         _iShowable?.Pause();
-        GameStatePaused.Invoke();
+        GameStatePaused?.Invoke();
     }
 
     public override IEnumerator Resume()
     {
         yield return base.Resume();
         _iShowable?.Resume();
-        GameStateResumed.Invoke();
+        GameStateResumed?.Invoke();
     }
 }

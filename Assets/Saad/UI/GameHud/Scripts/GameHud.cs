@@ -53,7 +53,8 @@ namespace ProjectCore.GameHud
         public virtual void Show()
         {
             //Debug.Log("GameHud Show called!");
-
+            _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true;
             HudAnimations.SlideInFromAbove(_headerInitialPosition, Header, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
             HudAnimations.SlideInFromBelow(_headerInitialPosition, Footer, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
         }
@@ -62,7 +63,7 @@ namespace ProjectCore.GameHud
         {
             // Slide out animations for Header and Footer
             HideGameHudBars(callback);
-            Destroy(gameObject);
+            //Destroy(gameObject);
             // Optionally kill any ongoing DOTween animations associated with this UI element
             DOTween.Kill(this);
         }
