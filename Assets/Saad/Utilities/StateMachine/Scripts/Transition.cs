@@ -16,7 +16,6 @@ namespace ProjectCore.StateMachine
 
         public virtual IEnumerator Execute()
         {
-            Debug.LogError(name + " transition executed!");
             yield break;
         }
     }

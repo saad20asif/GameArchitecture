@@ -1,155 +1,155 @@
 using System;
-using ProjectCore.UI;
 using System.Collections;
 using UnityEngine;
 using ProjectCore.Events;
 using ProjectCore.StateMachine;
+using ProjectCore.UI;
 
 public class ApplicationFlowController : MonoBehaviour
 {
+    // Reference to the finite state machine that handles state logic
     [SerializeField] private FiniteStateMachine FiniteStateMachine;
 
-    [Header("Common")] 
+    // Generic UI events and state transition triggers
+    [Header("Common")]
     [SerializeField] private GameEvent backBtnPressedEvent;
-    
-    
+
+    // Event and transition for Main Menu
     [Header("MainMenu")]
     [SerializeField] private GameEventWithInt GoToMainMenuEvent;
     [SerializeField] private Transition MainMenuTransition;
 
+    // Spin wheel screen
     [Header("SpinWheel")]
     [SerializeField] private GameEvent GoToSpinWheelEvent;
     [SerializeField] private Transition SpinWheelTransition;
 
+    // Gameplay state
     [Header("GameState")]
     [SerializeField] private GameEvent GoToGameEvent;
     [SerializeField] private Transition GameTransition;
 
+    // Level Complete screen
     [Header("LevelComplete")]
     [SerializeField] private GameEvent GoToLevelCompleteEvent;
     [SerializeField] private Transition LevelCompleteTransition;
 
+    // Level Fail screen
     [Header("LevelFail")]
     [SerializeField] private GameEvent GoToLevelFailEvent;
     [SerializeField] private Transition LevelFailTransition;
 
+    // Rate Us popup
     [Header("RateUs")]
     [SerializeField] private GameEvent GoToRateUsEvent;
     [SerializeField] private Transition RateUsTransition;
 
     private void OnEnable()
     {
+        // Subscribe to all events to handle state transitions
         backBtnPressedEvent.Subscribe(OnBackButtonPressed);
         GoToMainMenuEvent.Subscribe(GoToMainMenu);
-        GoToSpinWheelEvent.Subscribe(GoToSpinWheel);
-        GoToGameEvent.Subscribe(GoToGame);
-        GoToLevelCompleteEvent.Subscribe(GoToLevelComplete);
-        GoToLevelFailEvent.Subscribe(GoToLevelFail);
-        GoToRateUsEvent.Subscribe(GoToRateUs);
+        GoToSpinWheelEvent.Subscribe(() => GoTo(SpinWheelTransition, UICloseReasons.FullScreenPlacement));
+        GoToGameEvent.Subscribe(() => GoTo(GameTransition, UICloseReasons.Game));
+        GoToLevelCompleteEvent.Subscribe(() => GoTo(LevelCompleteTransition, UICloseReasons.FullScreenPlacement));
+        GoToLevelFailEvent.Subscribe(() => GoTo(LevelFailTransition, UICloseReasons.FullScreenPlacement));
+        GoToRateUsEvent.Subscribe(() => GoTo(RateUsTransition, UICloseReasons.FullScreenPlacement));
     }
 
     private void OnDisable()
     {
+        // Unsubscribe to avoid memory leaks
         backBtnPressedEvent.UnSubscribe(OnBackButtonPressed);
         GoToMainMenuEvent.UnSubscribe(GoToMainMenu);
-        GoToSpinWheelEvent.UnSubscribe(GoToSpinWheel);
-        GoToGameEvent.UnSubscribe(GoToGame);
-        GoToLevelCompleteEvent.UnSubscribe(GoToLevelComplete);
-        GoToLevelFailEvent.UnSubscribe(GoToLevelFail);
-        GoToRateUsEvent.UnSubscribe(GoToRateUs);
+        GoToSpinWheelEvent.UnSubscribe(() => GoTo(SpinWheelTransition, UICloseReasons.FullScreenPlacement));
+        GoToGameEvent.UnSubscribe(() => GoTo(GameTransition, UICloseReasons.Game));
+        GoToLevelCompleteEvent.UnSubscribe(() => GoTo(LevelCompleteTransition, UICloseReasons.FullScreenPlacement));
+        GoToLevelFailEvent.UnSubscribe(() => GoTo(LevelFailTransition, UICloseReasons.FullScreenPlacement));
+        GoToRateUsEvent.UnSubscribe(() => GoTo(RateUsTransition, UICloseReasons.FullScreenPlacement));
     }
 
-    public void Boot() => GoToMainMenu(0);
-    
-    private ClosePolicy GetPolicyForReason(UICloseReasons reason)
+    // Called when app starts — boots to main menu
+    public void Boot()
     {
-        switch (reason)
+        StartCoroutine(HandleTransition(MainMenuTransition, GetPolicyForReason(UICloseReasons.Home), ShouldPauseCurrent(UICloseReasons.Home)));
+    }
+
+    // Convert int to enum safely and handle main menu navigation
+    private void GoToMainMenu(int reasonId)
+    {
+        if (!Enum.IsDefined(typeof(UICloseReasons), reasonId))
         {
-            case UICloseReasons.Home:
-                return ClosePolicy.ClearAll;
-            case UICloseReasons.Game:
-                return ClosePolicy.ClearAll;
-            case UICloseReasons.ResumeGame:
-                return ClosePolicy.PopOne;
-            case UICloseReasons.ShowFullScreenPlacement:
-                return ClosePolicy.Default;
-            default:
-                return ClosePolicy.Default;
+            Debug.LogError($"Invalid UICloseReasons value: {reasonId}");
+            return;
         }
+
+        UICloseReasons reason = (UICloseReasons)reasonId;
+        GoTo(MainMenuTransition, reason);
     }
-    private bool ShouldPauseCurrent(UICloseReasons reason)
+
+    // Generic transition handler using FSM and close policy
+    private void GoTo(Transition transition, UICloseReasons reason)
     {
-        return reason == UICloseReasons.ShowFullScreenPlacement; // Pause for ads, not for others
+        StartCoroutine(HandleTransition(
+            transition,
+            GetPolicyForReason(reason),   // Determine how to clean up paused states
+            ShouldPauseCurrent(reason)    // Determine if current state should be paused
+        ));
     }
-    private IEnumerator HandleTransition(Transition transition, ClosePolicy policy, bool pauseCurrent)
+
+    // Performs the transition based on close policy logic
+    private IEnumerator HandleTransition(Transition transition, ClosePolicy defaultPolicy, bool pauseCurrent)
     {
+        // If transition overrides default policy, use that instead
+        var policy = transition.closePolicy != ClosePolicy.Default ? transition.closePolicy : defaultPolicy;
+        Debug.Log("policy : " + policy);
+
+        // Execute state cleanup depending on policy
         switch (policy)
         {
             case ClosePolicy.ClearAll:
                 yield return FiniteStateMachine.ClearPausedStates();
                 break;
+
             case ClosePolicy.PopOne:
                 yield return FiniteStateMachine.PopPausedState();
                 break;
+
             case ClosePolicy.PopUntil:
                 yield return FiniteStateMachine.JumpTo(transition.ToState);
-                break;
+                yield break; // Skip FSM.TransitionTo since JumpTo already resumes the state
         }
+
+        // Apply transition (pause or replace current)
         FiniteStateMachine.TransitionTo(transition, pauseCurrent);
     }
 
-    private void GoToMainMenu(int reasonId)
-    {
-        if (Enum.IsDefined(typeof(UICloseReasons), reasonId))
-        {
-            UICloseReasons reason = (UICloseReasons)reasonId;
-            Debug.Log("reason: " + reason);
-            StartCoroutine(GoToMainMenuRoutine());
-        }
-        else
-        {
-            Debug.LogError("Invalid UICloseReasons value: " + reasonId);
-        }
-    }
-
-    private IEnumerator GoToMainMenuRoutine()
-    {
-        yield return FiniteStateMachine.ClearPausedStates();
-        FiniteStateMachine.TransitionTo(MainMenuTransition);
-    }
-    public void OnBackButtonPressed()
+    // Handles back button behavior (usually resume previous UI state)
+    private void OnBackButtonPressed()
     {
         StartCoroutine(FiniteStateMachine.PopPausedState());
     }
-    private void GoToSpinWheel()
+
+    // Maps logical reason to stack close behavior
+    private ClosePolicy GetPolicyForReason(UICloseReasons reason)
     {
-        FiniteStateMachine.TransitionTo(SpinWheelTransition, pauseCurrent: true);
+        return reason switch
+        {
+            UICloseReasons.Home => ClosePolicy.ClearAll,
+            UICloseReasons.Game => ClosePolicy.ClearAll,
+            UICloseReasons.ResumeGame => ClosePolicy.PopOne,
+            UICloseReasons.Revive => ClosePolicy.PopOne,
+            UICloseReasons.SkipLevel => ClosePolicy.PopOne,
+            UICloseReasons.ResumeAny => ClosePolicy.PopUntil,
+            _ => ClosePolicy.Default
+        };
     }
 
-    private void GoToGame()
+    // Determines whether to pause current state before pushing new one
+    private bool ShouldPauseCurrent(UICloseReasons reason)
     {
-        StartCoroutine(GoToGameRoutine());
+        return reason == UICloseReasons.ShowFullScreenPlacement ||
+               reason == UICloseReasons.FullScreenPlacement ||
+               reason == UICloseReasons.DailyLogin;
     }
-
-    private IEnumerator GoToGameRoutine()
-    {
-        yield return FiniteStateMachine.PopPausedState();
-        FiniteStateMachine.TransitionTo(GameTransition);
-    }
-
-    private void GoToLevelComplete()
-    {
-        FiniteStateMachine.TransitionTo(LevelCompleteTransition, pauseCurrent: true);
-    }
-
-    private void GoToLevelFail()
-    {
-        FiniteStateMachine.TransitionTo(LevelFailTransition, pauseCurrent: true);
-    }
-
-    private void GoToRateUs()
-    {
-        FiniteStateMachine.TransitionTo(RateUsTransition, pauseCurrent: true);
-    }
-    
 }
