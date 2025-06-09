@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a325d613c65bd8a44a7b77d71af6cd6b, type: 3}
+  m_Name: UIStatesPooler
+  m_EditorClassIdentifier: 
+  _poolConfigs:
+  - PoolID: MainMenu
+    Prefab: {fileID: 8851818196481443515, guid: 9a2f904289890274d9e0fdc40e01b6ae, type: 3}
+    DefaultCapacity: 1
+    MaxSize: 1
+    Prewarm: 0
+  - PoolID: LevelComplete
+    Prefab: {fileID: 1268598500359922055, guid: 4d63d3dace21fca4ca906e018cf45d37, type: 3}
+    DefaultCapacity: 1
+    MaxSize: 1
+    Prewarm: 0
+  - PoolID: LevelFailed
+    Prefab: {fileID: 977605141068256061, guid: ecb26ea4b9198af46b7a393de68657b9, type: 3}
+    DefaultCapacity: 1
+    MaxSize: 1
+    Prewarm: 0
