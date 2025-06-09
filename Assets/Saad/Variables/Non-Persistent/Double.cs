@@ -17,5 +17,11 @@ namespace ProjectCore.Variables
         public virtual void SetValue(double value)
         { Value = value; }
         public virtual double GetValue() { return Value; }
+        public virtual void SetDefaultValue(double value)
+        { DefaultValue = value; }
+        
+        public virtual double GetDefaultValue() 
+        { return DefaultValue; }
+
     }
 }

@@ -1,75 +1,95 @@
-using ProjectCore.StateMachine;
-using ProjectCore.UI;
-using System.Collections;
 using UnityEngine;
+using System.Collections;
+using ProjectCore.UI;
+using ProjectCore.PoolSystem;
+using Sirenix.OdinInspector;
 
-public class UiViewState : State
+namespace ProjectCore.StateMachine
 {
-    [SerializeField] protected string prefabName;
-    protected GameObject prefabInstance;
-    private IShowable _iShowable;
-
-    public override IEnumerator Enter(IState _listener)
+    public class UIViewState : State
     {
-        yield return base.Enter(_listener);
+        [SerializeField] protected string stateId;
 
-        // Load and instantiate the prefab
-        prefabInstance = Instantiate(Resources.Load<GameObject>(prefabName));
+        [SerializeField] protected bool usePooling = true;
 
-        if (prefabInstance != null)
+        [ShowIf("@usePooling")]
+        [SerializeField, Required]
+        [InfoBox("Ensure prefab is registered in PoolManagerSO.", InfoMessageType.None)]
+        private PoolManagerSO uIStatesPooler;
+
+        private UiBase _uiInstance;
+        private GameObject _spawnedInstance;
+
+        public override IEnumerator Enter(IState previous)
         {
-            _iShowable = prefabInstance.GetComponent<UiBase>();
-            if (_iShowable != null)
+            yield return base.Enter(previous);
+
+            GameObject viewObject = null;
+
+            if (usePooling)
             {
-                _iShowable.Show();
+                viewObject = uIStatesPooler.Get(stateId);
+                if (viewObject == null)
+                {
+                    Debug.LogError($"[UIViewState] No pooled GameObject found for stateId: {stateId}");
+                    yield break;
+                }
             }
             else
             {
-                Debug.LogWarning($"Prefab {prefabName} does not have a UiBase component.");
+                var prefab = Resources.Load<GameObject>(stateId);
+                if (prefab == null)
+                {
+                    Debug.LogError($"[UIViewState] Prefab not found in Resources at path: {stateId}");
+                    yield break;
+                }
+
+                viewObject = Instantiate(prefab);
+                viewObject.transform.SetParent(StateRootManager.UINonPooled);
+                _spawnedInstance = viewObject;
             }
-        }
-        else
-        {
-            Debug.LogWarning($"Prefab with name {prefabName} could not be found in Resources!");
-        }
-    }
 
-    public override IEnumerator Pause()
-    {
-        if (_iShowable != null)
-        {
-            _iShowable.Pause();
+            _uiInstance = viewObject.GetComponent<UiBase>();
+            if (_uiInstance == null)
+            {
+                Debug.LogError($"[UIViewState] GameObject at '{stateId}' does not contain UiBase component.");
+                yield break;
+            }
+
+            viewObject.SetActive(true);
+            _uiInstance.Show();
         }
 
-        yield return base.Pause();
-    }
-
-    public override IEnumerator Resume()
-    {
-        if (_iShowable != null)
+        public override IEnumerator Exit()
         {
-            _iShowable.Resume();
+            if (_uiInstance != null)
+            {
+                _uiInstance.Hide(() =>
+                {
+                    if (usePooling)
+                    {
+                        uIStatesPooler.Release(stateId, _uiInstance.gameObject);
+                    }
+                    else if (_spawnedInstance != null)
+                    {
+                        Destroy(_spawnedInstance);
+                    }
+                });
+            }
+
+            yield return base.Exit();
         }
 
-        yield return base.Resume();
-    }
-
-    public override IEnumerator Exit()
-    {
-        if (_iShowable != null)
+        public override IEnumerator Pause()
         {
-            _iShowable.Hide();
+            _uiInstance?.Pause();
+            yield return base.Pause();
         }
 
-        yield return base.Exit(); // Call base Exit method
-    }
-
-    private void OnDestroy()
-    {
-        // Ensure that the prefab instance is properly cleaned up
-        if (prefabInstance != null)
+        public override IEnumerator Resume()
         {
-            Destroy(prefabInstance);
+            _uiInstance?.Resume();
+            yield return base.Resume();
         }
     }
 }

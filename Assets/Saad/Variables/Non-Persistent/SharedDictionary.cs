@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Sirenix.Serialization;
 using Sirenix.OdinInspector;
 
-public class SharedDictionary<K,V> : SerializedScriptableObject
+public abstract class SharedDictionary<K,V> : SerializedScriptableObject
 {
     [OdinSerialize]
     protected Dictionary<K, V> keyValuePairs;

@@ -7,7 +7,7 @@ namespace ProjectCore.Events
     {
         [Button]
         [GUIColor(1, 1, 0.5f)]
-        protected override void Raise(int t)
+        public override void Raise(int t)
         {
             base.Raise(t);
         }

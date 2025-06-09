@@ -1,9 +1,11 @@
+using System;
 using CustomEditorScripts;
 using DG.Tweening;
 using ProjectCore.StateMachine;
 using ProjectCore.UI;
 using Sirenix.OdinInspector;
 using System.Collections;
+using ProjectCore.Variables;
 using UnityEngine;
 
 namespace ProjectCore.GameHud
@@ -27,6 +29,8 @@ namespace ProjectCore.GameHud
 
         private Canvas _canvas;
         private CanvasGroup _canvasGroup;
+        
+        [SerializeField] private Int currentStateSortingOrder;
 
         protected virtual void Awake()
         {
@@ -42,7 +46,7 @@ namespace ProjectCore.GameHud
                 {
                     _canvasGroup = gameObject.AddComponent<CanvasGroup>();
                 }
-                _canvas.sortingOrder = FiniteStateMachine.CurrentStateSortingOrder;
+                _canvas.sortingOrder = currentStateSortingOrder.GetValue();
             }
             // Store the initial positions of Header and Footer
             _headerInitialPosition = Header.anchoredPosition;
@@ -52,20 +56,21 @@ namespace ProjectCore.GameHud
         public virtual void Show()
         {
             //Debug.Log("GameHud Show called!");
-
+            _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true;
             HudAnimations.SlideInFromAbove(_headerInitialPosition, Header, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
             HudAnimations.SlideInFromBelow(_headerInitialPosition, Footer, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
         }
 
-        public virtual void Hide()
+        public virtual void Hide(Action callback =null)
         {
             // Slide out animations for Header and Footer
-            HideGameHudBars();
-            Destroy(gameObject);
+            HideGameHudBars(callback);
+            //Destroy(gameObject);
             // Optionally kill any ongoing DOTween animations associated with this UI element
             DOTween.Kill(this);
         }
-        private void HideGameHudBars()
+        private void HideGameHudBars(Action callback = null)
         {
             Sequence hideSequence = DOTween.Sequence();
 
@@ -73,8 +78,9 @@ namespace ProjectCore.GameHud
                         .Join(HudAnimations.SlideOutBelow(Footer, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut))
                         .OnComplete(() =>
                         {
+                            callback.Invoke();
                             // Call the coroutine to unload assets after animations complete
-                            StartCoroutine(UnloadAssets());
+                            //StartCoroutine(UnloadAssets());
                         });
         }
 

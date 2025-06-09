@@ -21,7 +21,7 @@ public class SpinWheelView : UiBase
     private void OnBackBtnClicked()
     {
         //print("OnBackBtnClicked");
-        SpinWheelState.GoToMainMenu();
+        SpinWheelState.GoBack();
     }
     private void OnRateUsBtnClicked()
     {

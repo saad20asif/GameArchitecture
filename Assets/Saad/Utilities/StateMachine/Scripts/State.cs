@@ -1,6 +1,5 @@
-using System;
-using System.Collections;
 using UnityEngine;
+using System.Collections;
 
 namespace ProjectCore.StateMachine
 {
@@ -10,7 +9,7 @@ namespace ProjectCore.StateMachine
         public bool PausePreviousState = false;
 
         // Enter method which accepts an IState listener, which is nothing but FSM refernce, but in a controlled manner
-        // Which means you can only access IState Transition method not all FSM prperties!  (Yeah Thats great!!!)
+        // Which means you can only access IState Transition method not all FSM prperties!  
         // We pass the FiniteStateMachine instance (which implements IState) to allow the state to call TransitionTo
         public virtual IEnumerator Enter(IState listener)
         {

@@ -1,11 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace ProjectCore.StateMachine
 {
     public interface IState
     {
-        void TransitionTo(Transition transition);
+        void TransitionTo(Transition transition, bool pauseCurrent = false);
+        IEnumerator ClearPausedStates();
+        IEnumerator ReloadCurrentState();
     }
 }

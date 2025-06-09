@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: RateUsTransition
   m_EditorClassIdentifier: 
   ToState: {fileID: 11400000, guid: 1205ba5ce7e48da42bab6e91ff36f1c2, type: 2}
+  closePolicy: 0

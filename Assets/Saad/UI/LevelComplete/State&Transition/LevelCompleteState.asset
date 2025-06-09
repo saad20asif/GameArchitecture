@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: LevelCompleteState
   m_EditorClassIdentifier: 
   PausePreviousState: 1
-  prefabName: LevelComplete
-  GoToMainMenuEvent: {fileID: 11400000, guid: 99e262760043c71408dedc66f3328693, type: 2}
+  stateId: LevelComplete
+  usePooling: 1
+  uIStatesPooler: {fileID: 11400000, guid: 0c9e29a0676273041bc3a9cddff8c570, type: 2}
+  GoToMainMenuEvent: {fileID: 11400000, guid: 96a48ba26c1f6f54b829a8ee4eafd819, type: 2}

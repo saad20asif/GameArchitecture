@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: SpinWheelState
   m_EditorClassIdentifier: 
   PausePreviousState: 1
-  prefabName: SpinWheel
-  GoToMainMenuEvent: {fileID: 11400000, guid: e22c32f43b1567c498322833dd0d4d52, type: 2}
+  stateId: SpinWheel
+  usePooling: 0
+  uIStatesPooler: {fileID: 0}
+  backBtnPressedEvent: {fileID: 11400000, guid: 991403f9e1b00374abd3b1e13d5ffc0a, type: 2}
   GoToRateUsEvent: {fileID: 11400000, guid: 85b2fcbdf70890f478056871336c2382, type: 2}

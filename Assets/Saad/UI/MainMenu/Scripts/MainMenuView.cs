@@ -1,5 +1,4 @@
 using ProjectCore.UI;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,14 +25,5 @@ public class MainMenuView : UiBase
     private void OnSpinWheelClicked()
     {
         MainMenuState.GoToSpinWheel();
-    }
-    public override void Show()
-    {
-        base.Show();
-    }
-
-    public override void Hide()
-    {
-        base.Hide();
     }
 }

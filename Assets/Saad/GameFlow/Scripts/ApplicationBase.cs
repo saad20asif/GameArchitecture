@@ -14,6 +14,7 @@ namespace ProjectCore.Application
         [SerializeField] private Float SceneLoadingProgress;
         [SerializeField] private FiniteStateMachine FiniteStateMachine;
         [SerializeField] private TimeMachine TimeMachine;
+        
         private Coroutine _timeMachineCo;
 
         private IEnumerator Start()

@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c6aae3cc90376444b9763fc3479108d, type: 3}
   m_Name: SplashState
   m_EditorClassIdentifier: 
+  PausePreviousState: 0
   SceneLoadingProgress: {fileID: 11400000, guid: 22107114a96b20045afafc0cc1f2c931, type: 2}
+  uIStatesPooler: {fileID: 11400000, guid: 0c9e29a0676273041bc3a9cddff8c570, type: 2}
+  gameStatePooler: {fileID: 11400000, guid: 6eed7c212c7ccc346b2173d056c6831e, type: 2}

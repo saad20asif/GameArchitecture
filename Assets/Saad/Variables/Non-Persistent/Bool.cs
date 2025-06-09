@@ -18,5 +18,11 @@ namespace ProjectCore.Variables
         public virtual void SetValue(bool value)
         { Value = value; }
         public virtual bool GetValue() { return Value; }
+        
+        public virtual void SetDefaultValue(bool value)
+        { DefaultValue = value; }
+        
+        public virtual bool GetDefaultValue() 
+        { return DefaultValue; }
     }
 }

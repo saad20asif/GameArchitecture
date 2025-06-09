@@ -1,88 +1,65 @@
-using UnityEngine;
-using ProjectCore.StateMachine;
 using ProjectCore.Events;
+using ProjectCore.StateMachine;
+using ProjectCore.UI;
+using UnityEngine;
 
-namespace ProjectCore.Application
+public class ApplicationFlowController : BaseApplicationFlowController<Transition>
 {
-    public class ApplicationFlowController : MonoBehaviour
+    [Header("MainMenu")]
+    [SerializeField] private GameEventWithInt GoToMainMenuEvent;
+    [SerializeField] private Transition MainMenuTransition;
+
+    [Header("SpinWheel")]
+    [SerializeField] private GameEvent GoToSpinWheelEvent;
+    [SerializeField] private Transition SpinWheelTransition;
+
+    [Header("Game")]
+    [SerializeField] private GameEvent GoToGameEvent;
+    [SerializeField] private Transition GameTransition;
+
+    [Header("Level Complete / Fail")]
+    [SerializeField] private GameEvent GoToLevelCompleteEvent;
+    [SerializeField] private Transition LevelCompleteTransition;
+    [SerializeField] private GameEvent GoToLevelFailEvent;
+    [SerializeField] private Transition LevelFailTransition;
+
+    [Header("Rate Us")]
+    [SerializeField] private GameEvent GoToRateUsEvent;
+    [SerializeField] private Transition RateUsTransition;
+
+    public void Boot()
     {
-        [SerializeField] private FiniteStateMachine FiniteStateMachine;
+        BootFlow(MainMenuTransition, UICloseReasons.Home);
+    }
 
-        [Header("MainMenu")]
-        [SerializeField] private GameEvent GoToMainMenuEvent;
-        [SerializeField] private Transition MainMenuTransition;
+    protected override void RegisterFlowEvents()
+    {
+        GoToMainMenuEvent.Subscribe(GoToMainMenu);
+        GoToSpinWheelEvent.Subscribe(() => GoTo(SpinWheelTransition, UICloseReasons.FullScreenPlacement));
+        GoToGameEvent.Subscribe(() => GoTo(GameTransition, UICloseReasons.Game));
+        GoToLevelCompleteEvent.Subscribe(() => GoTo(LevelCompleteTransition, UICloseReasons.FullScreenPlacement));
+        GoToLevelFailEvent.Subscribe(() => GoTo(LevelFailTransition, UICloseReasons.FullScreenPlacement));
+        GoToRateUsEvent.Subscribe(() => GoTo(RateUsTransition, UICloseReasons.FullScreenPlacement));
+    }
 
-        [Header("SpinWheel")]
-        [SerializeField] private GameEvent GoToSpinWheelEvent;
-        [SerializeField] private Transition SpinWheelTransition;
+    protected override void UnregisterFlowEvents()
+    {
+        GoToMainMenuEvent.UnSubscribe(GoToMainMenu);
+        GoToSpinWheelEvent.UnSubscribe(() => GoTo(SpinWheelTransition, UICloseReasons.FullScreenPlacement));
+        GoToGameEvent.UnSubscribe(() => GoTo(GameTransition, UICloseReasons.Game));
+        GoToLevelCompleteEvent.UnSubscribe(() => GoTo(LevelCompleteTransition, UICloseReasons.FullScreenPlacement));
+        GoToLevelFailEvent.UnSubscribe(() => GoTo(LevelFailTransition, UICloseReasons.FullScreenPlacement));
+        GoToRateUsEvent.UnSubscribe(() => GoTo(RateUsTransition, UICloseReasons.FullScreenPlacement));
+    }
 
-        [Header("GameState")]
-        [SerializeField] private GameEvent GoToGameEvent;
-        [SerializeField] private Transition GameTransition;
-
-        [Header("LevelComplete")]
-        [SerializeField] private GameEvent GoToLevelCompleteEvent;
-        [SerializeField] private Transition LevelCompleteTransition;
-
-        [Header("LevelFail")]
-        [SerializeField] private GameEvent GoToLevelFailEvent;
-        [SerializeField] private Transition LevelFailTransition;
-        
-        [Header("RateUs")]
-        [SerializeField] private GameEvent GoToRateUsEvent;
-        [SerializeField] private Transition RateUsTransition;
-
-        private void OnEnable()
+    private void GoToMainMenu(int reasonId)
+    {
+        if (!System.Enum.IsDefined(typeof(UICloseReasons), reasonId))
         {
-            GoToMainMenuEvent.Subscribe(GoToMainMenu);
-            GoToSpinWheelEvent.Subscribe(GoToSpinWheel);
-            GoToGameEvent.Subscribe(GoToGame);
-            GoToLevelCompleteEvent.Subscribe(GoToLevelComplete);
-            GoToLevelFailEvent.Subscribe(GoToLevelFail);
-            GoToRateUsEvent.Subscribe(GoToRateUs);
+            Debug.LogError($"Invalid UICloseReasons: {reasonId}");
+            return;
         }
 
-        private void OnDisable()
-        {
-            GoToMainMenuEvent.UnSubscribe(GoToMainMenu);
-            GoToSpinWheelEvent.UnSubscribe(GoToSpinWheel);
-            GoToGameEvent.UnSubscribe(GoToGame);
-            GoToLevelCompleteEvent.UnSubscribe(GoToLevelComplete);
-            GoToLevelFailEvent.UnSubscribe(GoToLevelFail);
-            GoToRateUsEvent.UnSubscribe(GoToRateUs);
-        }
-        public void Boot()
-        {
-            GoToMainMenu();
-        }
-
-        private void GoToMainMenu()
-        {
-            FiniteStateMachine.TransitionTo(MainMenuTransition);
-        }
-        private void GoToSpinWheel()
-        {
-            FiniteStateMachine.TransitionTo(SpinWheelTransition);
-        }
-
-        private void GoToGame()
-        {
-            FiniteStateMachine.TransitionTo(GameTransition);
-        }
-
-        private void GoToLevelComplete()
-        {
-            FiniteStateMachine.TransitionTo(LevelCompleteTransition);
-        }
-
-        private void GoToLevelFail()
-        {
-            FiniteStateMachine.TransitionTo(LevelFailTransition);
-        }
-        private void GoToRateUs()
-        {
-            FiniteStateMachine.TransitionTo(RateUsTransition);
-        }
-
+        GoTo(MainMenuTransition, (UICloseReasons)reasonId);
     }
 }

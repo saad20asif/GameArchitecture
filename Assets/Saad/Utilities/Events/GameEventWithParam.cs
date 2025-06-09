@@ -16,12 +16,12 @@ namespace ProjectCore.Events
             Handler += handler;
         }
 
-        public void Unsubscribe(GameEventWithHandler<T> handler)
+        public void UnSubscribe(GameEventWithHandler<T> handler)
         {
             Handler -= handler;
         }
 
-        protected virtual void Raise(T t)
+        public virtual void Raise(T t)
         {
             if (Handler != null)
             {
@@ -48,7 +48,7 @@ namespace ProjectCore.Events
             Handler -= handler;
         }
 
-        protected virtual void Raise(T1 t1, T2 t2)
+        public virtual void Raise(T1 t1, T2 t2)
         {
             if (Handler != null)
             {
@@ -75,7 +75,7 @@ namespace ProjectCore.Events
             Handler -= handler;
         }
 
-        protected virtual void Raise(T1 t1, T2 t2, T3 t3)
+        public virtual void Raise(T1 t1, T2 t2, T3 t3)
         {
             if (Handler != null)
             {

@@ -36,3 +36,4 @@ MonoBehaviour:
       Data: 
   BootState: {fileID: 11400000, guid: 3014cc61e65c9b44f9e5b8ea8ef77486, type: 2}
   CurrentState: {fileID: 11400000, guid: b9b3bb32f623d9a4e88b36188597fed0, type: 2}
+  currentStateSortingOrder: {fileID: 11400000, guid: df6db5c4b66674c41bf055fb436f721a, type: 2}

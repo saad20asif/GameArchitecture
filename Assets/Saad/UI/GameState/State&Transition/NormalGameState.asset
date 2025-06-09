@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: NormalGameState
   m_EditorClassIdentifier: 
   PausePreviousState: 0
-  gameHudPrefabName: NormalGameHud
+  gameplayPrefabId: Gameplay
+  hudPrefabId: NormalGameHud
+  poolGameplay: 0
+  poolGameHud: 1
+  gameStatePooler: {fileID: 11400000, guid: 6eed7c212c7ccc346b2173d056c6831e, type: 2}
   GameStateEnter: {fileID: 11400000, guid: 23cf083acd94ed64b9e7cd4c77488027, type: 2}
   GameStatePaused: {fileID: 11400000, guid: f6ca014ff8ab5334391f7b529b50b179, type: 2}
   GameStateResumed: {fileID: 11400000, guid: 8a7179a8563753743be1cf28dd3a054b, type: 2}
