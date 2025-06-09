@@ -17,5 +17,12 @@ namespace ProjectCore.UI
         /// <summary>Special case: show full screen placement popup.</summary>
         ShowFullScreenPlacement // 8
     }
+    public enum ClosePolicy
+    {
+        Default,
+        ClearAll,
+        PopUntil,
+        PopOne
+    }
 }
 

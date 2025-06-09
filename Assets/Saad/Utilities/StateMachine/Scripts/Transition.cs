@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using ProjectCore.UI;
 using Sirenix.OdinInspector;
 
 namespace ProjectCore.StateMachine

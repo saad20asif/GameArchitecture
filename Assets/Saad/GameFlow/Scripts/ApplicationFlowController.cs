@@ -60,6 +60,43 @@ public class ApplicationFlowController : MonoBehaviour
     }
 
     public void Boot() => GoToMainMenu(0);
+    
+    private ClosePolicy GetPolicyForReason(UICloseReasons reason)
+    {
+        switch (reason)
+        {
+            case UICloseReasons.Home:
+                return ClosePolicy.ClearAll;
+            case UICloseReasons.Game:
+                return ClosePolicy.ClearAll;
+            case UICloseReasons.ResumeGame:
+                return ClosePolicy.PopOne;
+            case UICloseReasons.ShowFullScreenPlacement:
+                return ClosePolicy.Default;
+            default:
+                return ClosePolicy.Default;
+        }
+    }
+    private bool ShouldPauseCurrent(UICloseReasons reason)
+    {
+        return reason == UICloseReasons.ShowFullScreenPlacement; // Pause for ads, not for others
+    }
+    private IEnumerator HandleTransition(Transition transition, ClosePolicy policy, bool pauseCurrent)
+    {
+        switch (policy)
+        {
+            case ClosePolicy.ClearAll:
+                yield return FiniteStateMachine.ClearPausedStates();
+                break;
+            case ClosePolicy.PopOne:
+                yield return FiniteStateMachine.PopPausedState();
+                break;
+            case ClosePolicy.PopUntil:
+                yield return FiniteStateMachine.JumpTo(transition.ToState);
+                break;
+        }
+        FiniteStateMachine.TransitionTo(transition, pauseCurrent);
+    }
 
     private void GoToMainMenu(int reasonId)
     {
@@ -114,4 +151,5 @@ public class ApplicationFlowController : MonoBehaviour
     {
         FiniteStateMachine.TransitionTo(RateUsTransition, pauseCurrent: true);
     }
+    
 }

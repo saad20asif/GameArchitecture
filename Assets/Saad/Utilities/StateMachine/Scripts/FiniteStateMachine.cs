@@ -7,14 +7,6 @@ using UnityEngine;
 
 namespace ProjectCore.StateMachine
 {
-    public enum ClosePolicy
-    {
-        Default,
-        ClearAll,
-        PopUntil,
-        PopOne
-    }
-
     [CreateAssetMenu(fileName = "FiniteStateMachine", menuName = "ProjectCore/State Machine/Basic FSM")]
     public class FiniteStateMachine : SerializedScriptableObject, IState
     {
