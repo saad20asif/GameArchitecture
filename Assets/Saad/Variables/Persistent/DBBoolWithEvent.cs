@@ -1,13 +1,17 @@
 using UnityEngine;
 using ProjectCore.Events;
 
-[CreateAssetMenu(fileName = "vDBBoolWithEvent_", menuName = "ProjectCore/Variables/Persistent/DBBoolWithEvent")]
-public class DBBoolWithEvent : DBBool
+namespace ProjectCore.Variables
 {
-    [SerializeField] protected GameEvent GameEvent;
-    public override void SetValue(bool value)
+    [CreateAssetMenu(fileName = "vDBBoolWithEvent_", menuName = "ProjectCore/Variables/Persistent/DBBoolWithEvent")]
+    public class DBBoolWithEvent : DBBool
     {
-        base.SetValue(value);
-        GameEvent.Invoke();
+        [SerializeField] protected GameEvent GameEvent;
+        public override void SetValue(bool value)
+        {
+            base.SetValue(value);
+            GameEvent.Invoke();
+        }
     }
 }
+

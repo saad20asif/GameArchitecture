@@ -1,55 +1,62 @@
 using ProjectCore.Helpers;
-using ProjectCore.Variables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "vDBBool_", menuName = "ProjectCore/Variables/Persistent/DBBool")]
-public class DBBool : Bool
+namespace ProjectCore.Variables
 {
-    private string _key;
-
-    private void OnEnable()
+    [CreateAssetMenu(fileName = "vDBBool_", menuName = "ProjectCore/Variables/Persistent/DBBool")]
+    public class DBBool : Bool
     {
-        Load();
-    }
+        [SerializeField] private string _key;
 
-    public override void SetValue(bool value)
-    {
-        base.SetValue(value);
-        Save();
-    }
-
-    [Button(ButtonSizes.Small)]
-    private void Save()
-    {
-        PlayerPrefs.SetInt(_key, Value ? 1 : 0);
-        PlayerPrefs.Save(); // Ensure the data is saved
-    }
-
-    public virtual bool GetBool(string key)
-    {
-        return PlayerPrefs.GetInt(key) == 1;
-    }
-
-    private void Load()
-    {
-        if (string.IsNullOrEmpty(_key))
+        private void OnEnable()
         {
-            _key = KeyRegistry.GenerateKey(name);
-            Debug.Log("Generated key: " + _key);
+            Load();
         }
-
-        // Check if the key exists in PlayerPrefs
-        if (PlayerPrefs.HasKey(_key))
+        [Button]
+        private void ValidateKey()
         {
-            // Load value from PlayerPrefs using the generated key
-            Value = GetBool(_key);
+            KeyValidator.UnregisterAllFrom(this); // Avoid stale entries from previous validations
+            KeyValidator.IsKeyUnique(_key,this);
         }
-        else
+        public override void SetValue(bool value)
         {
-            // If the key doesn't exist, use the default value and save it to PlayerPrefs
-            Value = DefaultValue;
+            base.SetValue(value);
             Save();
+        }
+
+        [Button(ButtonSizes.Small)]
+        private void Save()
+        {
+            PlayerPrefs.SetInt(_key, Value ? 1 : 0);
+            PlayerPrefs.Save(); // Ensure the data is saved
+        }
+
+        public virtual bool GetBool(string key)
+        {
+            return PlayerPrefs.GetInt(key) == 1;
+        }
+
+        private void Load()
+        {
+            if (string.IsNullOrEmpty(_key))
+            {
+                Debug.LogError($"{name} has an empty key. Skipping load.");
+                return;
+            }
+            // Check if the key exists in PlayerPrefs
+            if (PlayerPrefs.HasKey(_key))
+            {
+                // Load value from PlayerPrefs using the generated key
+                Value = GetBool(_key);
+            }
+            else
+            {
+                // If the key doesn't exist, use the default value and save it to PlayerPrefs
+                Value = DefaultValue;
+                Save();
+            }
         }
     }
 }
+

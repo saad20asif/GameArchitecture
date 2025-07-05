@@ -4,42 +4,49 @@ using ProjectCore.Helpers;
 using ProjectCore.Variables;
 using Sirenix.OdinInspector;
 
-[CreateAssetMenu(fileName = "vDBString_", menuName = "ProjectCore/Variables/Persistent/DBString")]
-public class DBString : SharedString
+namespace ProjectCore.Variables
 {
-    private string _key;
-    private void OnEnable()
+    [CreateAssetMenu(fileName = "vDBString_", menuName = "ProjectCore/Variables/Persistent/DBString")]
+    public class DBString : SharedString
     {
-        Load();
-    }
-    public override void SetValue(string value)
-    {
-        base.SetValue(value);
-    }
-    [Button(ButtonSizes.Small)]
-    private void Save()
-    {
-        PlayerPrefs.SetString(_key, Value);
-        PlayerPrefs.Save(); // Ensure the data is saved
-    }
-    private void Load()
-    {
-        if (string.IsNullOrEmpty(_key))
+        [SerializeField] private string _key;
+    
+        [Button]
+        private void ValidateKey()
         {
-            _key = KeyRegistry.GenerateKey(name);
+            KeyValidator.UnregisterAllFrom(this); // Avoid stale entries from previous validations
+            KeyValidator.IsKeyUnique(_key,this);
         }
-
-        // Check if the key exists in PlayerPrefs
-        if (PlayerPrefs.HasKey(_key))
+        private void OnEnable()
         {
-            // Load value from PlayerPrefs using the generated key
-            Value = PlayerPrefs.GetString(_key);
+            Load();
         }
-        else
+        public override void SetValue(string value)
         {
-            // If the key doesn't exist, use the default value and save it to PlayerPrefs
-            Value = DefaultValue;
+            base.SetValue(value);
             Save();
+        }
+        [Button(ButtonSizes.Small)]
+        private void Save()
+        {
+            PlayerPrefs.SetString(_key, Value);
+            PlayerPrefs.Save(); // Ensure the data is saved
+        }
+        private void Load()
+        {
+            // Check if the key exists in PlayerPrefs
+            if (PlayerPrefs.HasKey(_key))
+            {
+                // Load value from PlayerPrefs using the generated key
+                Value = PlayerPrefs.GetString(_key);
+            }
+            else
+            {
+                // If the key doesn't exist, use the default value and save it to PlayerPrefs
+                Value = DefaultValue;
+                Save();
+            }
         }
     }
 }
+
