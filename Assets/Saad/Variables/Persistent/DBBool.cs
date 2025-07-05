@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vDBBool_", menuName = "ProjectCore/Variables/Persistent/DBBool")]
+    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Persistent/DBBool")]
     public class DBBool : Bool
     {
         [SerializeField] private string _key;

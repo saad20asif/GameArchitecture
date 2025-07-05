@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vDBInt_", menuName = "ProjectCore/Variables/Persistent/DBInt")]
+    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Persistent/DBInt")]
     public class DBInt : Int
     {
         [SerializeField]private string _key;

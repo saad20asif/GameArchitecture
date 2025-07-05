@@ -6,7 +6,7 @@ using Sirenix.OdinInspector;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vDBString_", menuName = "ProjectCore/Variables/Persistent/DBString")]
+    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Persistent/DBString")]
     public class DBString : SharedString
     {
         [SerializeField] private string _key;

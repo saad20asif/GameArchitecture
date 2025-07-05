@@ -3,7 +3,7 @@ using ProjectCore.Events;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vStringWithEvent_", menuName = "ProjectCore/Variables/Non-Persistent/StringWithEvent")]
+    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Non-Persistent/StringWithEvent")]
     public class StringWithEvent : SharedString
     {
         [SerializeField] protected GameEvent GameEvent;

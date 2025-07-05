@@ -2,7 +2,7 @@ using UnityEngine;
 using ProjectCore.Events;
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vDBIntWithEvent_", menuName = "ProjectCore/Variables/Persistent/DBIntWithEvent")]
+    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Persistent/DBIntWithEvent")]
     public class DBIntWithEvent : DBInt
     {
         [SerializeField] protected GameEvent GameEvent;

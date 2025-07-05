@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vDBStringWithEvent_", menuName = "ProjectCore/Variables/Persistent/DBStringWithEvent")]
+    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Persistent/DBStringWithEvent")]
     public class DBStringWithEvent : DBString
     {
         [SerializeField] protected GameEvent GameEvent;

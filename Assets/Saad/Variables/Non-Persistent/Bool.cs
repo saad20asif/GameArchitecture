@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vBool_", menuName = "ProjectCore/Variables/Non-Persistent/Bool")]
+    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Non-Persistent/Bool")]
     public class Bool : ScriptableObject
     {
         [SerializeField] protected bool Value;

@@ -3,7 +3,7 @@ using ProjectCore.Events;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vDBBoolWithEvent_", menuName = "ProjectCore/Variables/Persistent/DBBoolWithEvent")]
+    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Persistent/DBBoolWithEvent")]
     public class DBBoolWithEvent : DBBool
     {
         [SerializeField] protected GameEvent GameEvent;

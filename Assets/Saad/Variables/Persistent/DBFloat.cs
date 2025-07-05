@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vDBFloat_", menuName = "ProjectCore/Variables/Persistent/DBFloat")]
+    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Persistent/DBFloat")]
     public class DBFloat : Float
     {
         [SerializeField] private string _key;

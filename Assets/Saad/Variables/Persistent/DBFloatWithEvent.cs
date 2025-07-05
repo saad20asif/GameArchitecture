@@ -3,7 +3,7 @@ using ProjectCore.Events;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "vDBFloatWithEvent_", menuName = "ProjectCore/Variables/Persistent/DBFloatWithEvent")]
+    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Persistent/DBFloatWithEvent")]
     public class DBFloatWithEvent : DBFloat
     {
         [SerializeField] protected GameEvent GameEvent;
