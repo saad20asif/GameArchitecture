@@ -45,7 +45,7 @@ namespace ProjectCore.StateMachine
                 }
 
                 viewObject = Instantiate(prefab);
-                viewObject.transform.SetParent(StateRootManager.UINonPooled);
+                viewObject.transform.SetParent(StateRootManager.States);
                 _spawnedInstance = viewObject;
             }
 

@@ -129,10 +129,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiConfig: {fileID: 11400000, guid: bee61dab388a2a94bb19d0de2f3edb63, type: 2}
-  currentStateSortingOrder: {fileID: 11400000, guid: df6db5c4b66674c41bf055fb436f721a, type: 2}
+  animationConfig: {fileID: 11400000, guid: 839573f5e6fc9e146b0d81150e1938d7, type: 2}
   UIPanel: {fileID: 7235724554297631605}
-  fadeDuration: 0.5
-  Paused: 0
+  currentStateSortingOrder: {fileID: 11400000, guid: df6db5c4b66674c41bf055fb436f721a, type: 2}
+  _animator: {fileID: 0}
   NextBtn: {fileID: 4499114141251606542}
   LevelCompleteState: {fileID: 11400000, guid: 46bff324d4bd23441af1dad97fc564f4, type: 2}
 --- !u!1 &2106843994707653360

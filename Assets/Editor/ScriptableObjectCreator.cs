@@ -75,16 +75,12 @@ public static class ScriptableObjectCreator
     private static void CreateVector3Int() => CreateAsset<SharedVector3Int>("v_");
     
 
-
     // Events
     [MenuItem(MenuRoot + "Game Events/Basic %&e", false, 40)]
     private static void CreateGameEvent() => CreateAsset<GameEvent>("e_");
     
     [MenuItem(MenuRoot + "Game Events/EventWithInt %&i", false, 41)]
     private static void CreateGameEventWithInt() => CreateAsset<GameEventWithInt>("e_");
-    
-    // Variables With Events
-    
     
 
     // Utility function

@@ -12,8 +12,7 @@ namespace ProjectCore.Application
     {
         AsyncOperation _asyncLoad;
         [SerializeField] private Float SceneLoadingProgress;
-        [SerializeField] private PoolManagerSO uIStatesPooler;
-        [SerializeField] private PoolManagerSO gameStatePooler;
+        [SerializeField] private PoolManagerSO statesPooler;
         private ApplicationFlowController _applicationFlowController;
         private string _sceneName = "GameScene";
         public override IEnumerator Enter(IState _listener)
@@ -39,8 +38,7 @@ namespace ProjectCore.Application
 
         private void InitializerPoolers()
         {
-            uIStatesPooler.Initialize(StateRootManager.UIPooled);
-            gameStatePooler.Initialize(StateRootManager.GameplayPooled);
+            statesPooler.Initialize(StateRootManager.States);
         }
         private void SetGameSceneAsActiveScene()
         {
@@ -80,27 +78,9 @@ namespace ProjectCore.Application
             }
 
             // Create root objects under the loaded GameScene
-            GameObject ui        =     new GameObject("-------------------UI-------------------");
-            GameObject uiPooled    =     new GameObject("POOLED");
-            GameObject uiNonPooled =     new GameObject("NON-POOLED");
+            GameObject states        =     new GameObject("-------------------STATES-------------------");
 
-            uiPooled.transform.parent = uiNonPooled.transform.parent = ui.transform;
-  
-            GameObject gamePlay  =     new GameObject("----------------GAMEPLAY----------------");
-            GameObject gamePlayPooled    =     new GameObject("POOLED");
-            GameObject gamePlayNonPooled =     new GameObject("NON-POOLED");
-
-            gamePlayPooled.transform.parent = gamePlayNonPooled.transform.parent = gamePlay.transform;
-            //SceneManager.MoveGameObjectToScene(ui, gameScene);
-            //SceneManager.MoveGameObjectToScene(gamePlay, gameScene);
-
-            StateRootManager.Initialize(
-                ui.transform,
-                uiPooled.transform,
-                uiNonPooled.transform,
-                gamePlay.transform,
-                gamePlayPooled.transform,
-                gamePlayNonPooled.transform);
+            StateRootManager.Initialize(states.transform);
         }
 
     }

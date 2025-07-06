@@ -15,5 +15,5 @@ MonoBehaviour:
   PausePreviousState: 1
   stateId: RateUs
   usePooling: 0
-  uIStatesPooler: {fileID: 0}
+  uIStatesPooler: {fileID: 11400000, guid: 0c9e29a0676273041bc3a9cddff8c570, type: 2}
   backBtnPressedEvent: {fileID: 11400000, guid: 991403f9e1b00374abd3b1e13d5ffc0a, type: 2}
