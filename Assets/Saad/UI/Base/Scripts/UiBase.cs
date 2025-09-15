@@ -12,7 +12,7 @@ namespace ProjectCore.UI
         
         private Canvas _canvas;
         private CanvasGroup _canvasGroup;
-        [SerializeField] private Animator _animator;
+
         private UiAnimationSystem _animationSystem;
         
         // Track animation state
@@ -29,7 +29,7 @@ namespace ProjectCore.UI
             if (_canvas.worldCamera == null)
                 _canvas.worldCamera = Camera.main;
             
-            _animationSystem = new UiAnimationSystem(this, _canvasGroup, UIPanel, _animator, animationConfig);
+            _animationSystem = new UiAnimationSystem(this, _canvasGroup, UIPanel, animationConfig);
         }
 
         public virtual void Show()
@@ -81,7 +81,6 @@ namespace ProjectCore.UI
                 
                 // Complete any ongoing animations before pausing
                 _animationSystem.ForceCompleteCurrentAnimation();
-                _animationSystem.PlayAnimation(AnimationPhase.Pause);
             }
         }
 
@@ -93,10 +92,7 @@ namespace ProjectCore.UI
                 
                 // Complete pause animation before resuming
                 _animationSystem.ForceCompleteCurrentAnimation();
-                _animationSystem.PlayAnimation(AnimationPhase.Resume, () =>
-                {
-                    MakeStateInteractable(true);
-                });
+                MakeStateInteractable(true);
             }
         }
 

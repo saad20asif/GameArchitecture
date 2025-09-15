@@ -17,12 +17,12 @@ public class UiAnimationSystem
     private AnimationPhase _currentPhase;
 
     public UiAnimationSystem(MonoBehaviour monoBehaviour, CanvasGroup canvasGroup, 
-        RectTransform uiPanel, Animator animator, StateAnimationConfig config)
+        RectTransform uiPanel, StateAnimationConfig config)
     {
         _monoBehaviour = monoBehaviour;
         _canvasGroup = canvasGroup;
         _uiPanel = uiPanel;
-        _animator = animator;
+
         _config = config;
     }
 
@@ -43,26 +43,11 @@ public class UiAnimationSystem
             _currentAnimationCoroutine = null;
         }
 
-        if (_config.UseCustomAnimation && HasCustomAnimation(phase))
+        PlayDefaultAnimation(phase, () => 
         {
-            PlayCustomAnimation(GetCustomAnimationClip(phase), () => 
-            {
-                if (_animator != null)
-                {
-                    _animator.enabled = false;
-                }
-                _isAnimating = false;
-                onComplete?.Invoke();
-            });
-        }
-        else
-        {
-            PlayDefaultAnimation(phase, () => 
-            {
-                _isAnimating = false;
-                onComplete?.Invoke();
-            });
-        }
+            _isAnimating = false;
+            onComplete?.Invoke();
+        });
     }
 
     public void ForceCompleteCurrentAnimation()
@@ -113,7 +98,6 @@ public class UiAnimationSystem
                 _canvasGroup.alpha = phase switch
                 {
                     AnimationPhase.Enter => 0f,
-                    AnimationPhase.Resume => 0f, // <- start from transparent
                     _ => 1f
                 };
                 break;
@@ -122,7 +106,6 @@ public class UiAnimationSystem
                 _uiPanel.localScale = phase switch
                 {
                     AnimationPhase.Enter => Vector3.zero,
-                    AnimationPhase.Resume => Vector3.zero, // <- start from scaled down
                     _ => Vector3.one
                 };
                 break;
@@ -131,39 +114,11 @@ public class UiAnimationSystem
                 _uiPanel.localPosition = phase switch
                 {
                     AnimationPhase.Enter => new Vector3(Screen.width, currentPos.y, currentPos.z),
-                    AnimationPhase.Resume => new Vector3(Screen.width, currentPos.y, currentPos.z), // <- offscreen
                     _ => new Vector3(0, currentPos.y, currentPos.z)
                 };
                 break;
         }
     }
-
-
-
-    private bool HasCustomAnimation(AnimationPhase phase)
-    {
-        return phase switch
-        {
-            AnimationPhase.Enter => _config.CustomEnterAnimation != null,
-            AnimationPhase.Exit => _config.CustomExitAnimation != null,
-            AnimationPhase.Pause => _config.CustomPauseAnimation != null,
-            AnimationPhase.Resume => _config.CustomResumeAnimation != null,
-            _ => false
-        };
-    }
-
-    private AnimationClip GetCustomAnimationClip(AnimationPhase phase)
-    {
-        return phase switch
-        {
-            AnimationPhase.Enter => _config.CustomEnterAnimation,
-            AnimationPhase.Exit => _config.CustomExitAnimation,
-            AnimationPhase.Pause => _config.CustomPauseAnimation,
-            AnimationPhase.Resume => _config.CustomResumeAnimation,
-            _ => null
-        };
-    }
-
     private void PlayCustomAnimation(AnimationClip clip, Action onComplete)
     {
         if (_animator == null || clip == null) return;
@@ -209,8 +164,6 @@ public class UiAnimationSystem
         {
             AnimationPhase.Enter => _config.EnterAnimationType,
             AnimationPhase.Exit => _config.ExitAnimationType,
-            AnimationPhase.Pause => _config.PauseAnimationType,
-            AnimationPhase.Resume => _config.ResumeAnimationType,
             _ => DefaultAnimationType.None
         };
     }
@@ -232,8 +185,6 @@ public class UiAnimationSystem
         {
             AnimationPhase.Enter => 1f,
             AnimationPhase.Exit => 0f,
-            AnimationPhase.Pause => 0f,
-            AnimationPhase.Resume => 1f,
             _ => 1f
         };
     }
@@ -259,8 +210,6 @@ public class UiAnimationSystem
         {
             AnimationPhase.Enter => Vector3.one,
             AnimationPhase.Exit => Vector3.zero,
-            AnimationPhase.Pause => Vector3.zero,
-            AnimationPhase.Resume => Vector3.one,
             _ => Vector3.one
         };
     }
@@ -282,8 +231,6 @@ public class UiAnimationSystem
         {
             AnimationPhase.Enter => new Vector3(0, _uiPanel.localPosition.y, 0),
             AnimationPhase.Exit => new Vector3(-Screen.width, _uiPanel.localPosition.y, 0),
-            AnimationPhase.Pause => new Vector3(Screen.width, _uiPanel.localPosition.y, 0),
-            AnimationPhase.Resume => new Vector3(0, _uiPanel.localPosition.y, 0),
             _ => _uiPanel.localPosition
         };
     }
@@ -294,8 +241,6 @@ public class UiAnimationSystem
         {
             AnimationPhase.Enter => _config.EnterDuration,
             AnimationPhase.Exit => _config.ExitDuration,
-            AnimationPhase.Pause => _config.PauseDuration,
-            AnimationPhase.Resume => _config.ResumeDuration,
             _ => 0f
         };
     }
@@ -306,8 +251,6 @@ public class UiAnimationSystem
         {
             AnimationPhase.Enter => _config.EnterEase,
             AnimationPhase.Exit => _config.ExitEase,
-            AnimationPhase.Pause => _config.PauseEase,
-            AnimationPhase.Resume => _config.ResumeEase,
             _ => Ease.Linear
         };
     }

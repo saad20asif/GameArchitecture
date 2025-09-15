@@ -12,20 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c60024b8218f0145afd525016674595, type: 3}
   m_Name: StateAnimationConfig
   m_EditorClassIdentifier: 
-  UseCustomAnimation: 0
-  CustomEnterAnimation: {fileID: 0}
-  CustomExitAnimation: {fileID: 0}
-  CustomPauseAnimation: {fileID: 0}
-  CustomResumeAnimation: {fileID: 0}
   EnterAnimationType: 1
   ExitAnimationType: 1
   EnterEase: 27
   ExitEase: 26
-  EnterDuration: 0.5
-  ExitDuration: 0.3
-  PauseAnimationType: 3
-  ResumeAnimationType: 3
-  PauseEase: 1
-  ResumeEase: 1
-  PauseDuration: 0.5
-  ResumeDuration: 0.3
+  EnterDuration: 0.35
+  ExitDuration: 0.2
