@@ -102,7 +102,10 @@ namespace ProjectCore.GameHud
         {
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
-            HideGameHudBars();
+            HideGameHudBars(() =>
+            {
+                print("Gamebars hided!");
+            });
         }
     }
 }

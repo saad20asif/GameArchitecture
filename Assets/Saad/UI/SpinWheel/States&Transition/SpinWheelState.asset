@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PausePreviousState: 1
   stateId: SpinWheel
-  usePooling: 0
-  uIStatesPooler: {fileID: 0}
+  usePooling: 1
+  uIStatesPooler: {fileID: 11400000, guid: 0c9e29a0676273041bc3a9cddff8c570, type: 2}
   backBtnPressedEvent: {fileID: 11400000, guid: 991403f9e1b00374abd3b1e13d5ffc0a, type: 2}
   GoToRateUsEvent: {fileID: 11400000, guid: 85b2fcbdf70890f478056871336c2382, type: 2}

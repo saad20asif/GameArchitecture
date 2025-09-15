@@ -1,30 +1,27 @@
-using UnityEngine;
 using ProjectCore.Events;
+using UnityEngine;
 
 namespace ProjectCore.Variables
 {
-    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Persistent/DBFloatWithEvent")]
-    public class DBFloatWithEvent : DBFloat
+    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Non-Persistent/FloatWithEvent")]
+    public class FloatWithEvent : Float
     {
         [SerializeField] protected GameEvent GameEvent;
-
         public override void Decrement(float _decrement)
         {
             base.Decrement(_decrement);
-            GameEvent.Invoke();
+            GameEvent?.Invoke();
         }
-
         public override void Increment(float _increment)
         {
             base.Increment(_increment);
-            GameEvent.Invoke();
+            GameEvent?.Invoke();
         }
 
         public override void SetValue(float value)
         {
             base.SetValue(value);
-            GameEvent.Invoke();
+            GameEvent?.Invoke();
         }
     }
 }
-

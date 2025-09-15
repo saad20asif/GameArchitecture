@@ -1236,10 +1236,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiConfig: {fileID: 11400000, guid: bee61dab388a2a94bb19d0de2f3edb63, type: 2}
-  currentStateSortingOrder: {fileID: 11400000, guid: df6db5c4b66674c41bf055fb436f721a, type: 2}
+  animationConfig: {fileID: 11400000, guid: 839573f5e6fc9e146b0d81150e1938d7, type: 2}
   UIPanel: {fileID: 4850700620338720938}
-  fadeDuration: 0.5
-  Paused: 0
+  currentStateSortingOrder: {fileID: 11400000, guid: df6db5c4b66674c41bf055fb436f721a, type: 2}
+  _animator: {fileID: 0}
   Back: {fileID: 7782532488290293347}
   RateUsBtn: {fileID: 5979388144733880523}
   SpinWheelState: {fileID: 11400000, guid: 0f2de33f14715024d8c1441ece63caa9, type: 2}

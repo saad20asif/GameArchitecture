@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a325d613c65bd8a44a7b77d71af6cd6b, type: 3}
-  m_Name: UIStatesPooler
+  m_Name: StatesPooler
   m_EditorClassIdentifier: 
   _poolConfigs:
   - PoolID: MainMenu
@@ -25,6 +25,21 @@ MonoBehaviour:
     Prewarm: 0
   - PoolID: LevelFailed
     Prefab: {fileID: 977605141068256061, guid: ecb26ea4b9198af46b7a393de68657b9, type: 3}
+    DefaultCapacity: 1
+    MaxSize: 1
+    Prewarm: 0
+  - PoolID: NormalGameHud
+    Prefab: {fileID: 7633631358616875587, guid: 3b8915a5a9f25eb46ba5d43b4cf4478f, type: 3}
+    DefaultCapacity: 1
+    MaxSize: 1
+    Prewarm: 0
+  - PoolID: Gameplay
+    Prefab: {fileID: 4851650558008953366, guid: 57f0d7805fd04b343b4375d7320b5d12, type: 3}
+    DefaultCapacity: 1
+    MaxSize: 1
+    Prewarm: 0
+  - PoolID: SpinWheel
+    Prefab: {fileID: 8684215832980734760, guid: f579844a64fb0a54b80f0c693e4a985d, type: 3}
     DefaultCapacity: 1
     MaxSize: 1
     Prewarm: 0

@@ -1,86 +1,107 @@
 using System;
-using DG.Tweening;
 using UnityEngine;
-using ProjectCore.StateMachine;
 using ProjectCore.Variables;
 
 namespace ProjectCore.UI
 {
-    public abstract class UiBase : UiAnimations, IShowable
+    public abstract class UiBase : MonoBehaviour, IShowable
     {
+        [SerializeField] protected StateAnimationConfig animationConfig;
+        [SerializeField] protected RectTransform UIPanel;
+        [SerializeField] private Int currentStateSortingOrder;
+        
         private Canvas _canvas;
         private CanvasGroup _canvasGroup;
-        [SerializeField] private Int currentStateSortingOrder;
-        [SerializeField] protected RectTransform UIPanel;
-        [SerializeField] protected float fadeDuration = 0.5f;
-        [SerializeField] protected bool Paused = false;
 
+        private UiAnimationSystem _animationSystem;
+        
+        // Track animation state
+        private Action _pendingHideCallback;
+        private bool _isHiding;
+        
         protected virtual void Awake()
         {
-            if (_canvasGroup == null)
-            {
-                _canvas = GetComponent<Canvas>();
-                _canvasGroup = GetComponent<CanvasGroup>();
-
-                if (_canvas.worldCamera == null)
-                {
-                    _canvas.worldCamera = Camera.main;
-                }
-
-                if (_canvasGroup == null)
-                {
-                    _canvasGroup = gameObject.AddComponent<CanvasGroup>();
-                }
-
-                _canvas.planeDistance = 5;
-                _canvas.sortingOrder = currentStateSortingOrder.GetValue();
-            }
+            _canvas = GetComponent<Canvas>();
+            _canvasGroup = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
+            _canvas.sortingOrder = currentStateSortingOrder.GetValue();
+            _canvas.planeDistance = 5;
+            
+            if (_canvas.worldCamera == null)
+                _canvas.worldCamera = Camera.main;
+            
+            _animationSystem = new UiAnimationSystem(this, _canvasGroup, UIPanel, animationConfig);
         }
 
         public virtual void Show()
         {
             gameObject.SetActive(true);
-            _canvasGroup.alpha = 0;
-            _canvasGroup.interactable = true;
-            _canvasGroup.blocksRaycasts = true;
-
-            FadeIn(_canvasGroup);
-            ScaleIn(UIPanel);
-            
+            _animationSystem.PlayAnimation(AnimationPhase.Enter, () =>
+            {
+                MakeStateInteractable(true);
+            });
         }
 
         public virtual void Hide(Action callback)
         {
-            if (_canvasGroup == null || UIPanel == null)
+            if (_isHiding)
             {
-                Debug.LogWarning("CanvasGroup or UIPanel is not assigned.");
+                // If already hiding, queue the new callback
+                var originalCallback = _pendingHideCallback;
+                _pendingHideCallback = () =>
+                {
+                    originalCallback?.Invoke();
+                    callback?.Invoke();
+                };
                 return;
             }
-
-            // Start the scale-out animation
-            ScaleOut(UIPanel).OnComplete(() =>
+            
+            _isHiding = true;
+            _pendingHideCallback = callback;
+            MakeStateInteractable(false);
+            _animationSystem.PlayAnimation(AnimationPhase.Exit, () =>
             {
-                _canvasGroup.interactable = false;
-                _canvasGroup.blocksRaycasts = false;
-                gameObject.SetActive(false); // ✅ Reuse instead of Destroy
-                callback.Invoke();
+                OnHideComplete();
+                _pendingHideCallback?.Invoke();
+                _isHiding = false;
+                _pendingHideCallback = null;
             });
+        }
 
-            DOTween.Kill(this);
+        private void OnHideComplete()
+        {
+            gameObject.SetActive(false);
         }
 
         public virtual void Pause()
         {
-            _canvasGroup.interactable = false;
-            _canvasGroup.blocksRaycasts = false;
-            Paused = true;
+            if (!Paused)
+            {
+                MakeStateInteractable(false);
+                Paused = true;
+                
+                // Complete any ongoing animations before pausing
+                _animationSystem.ForceCompleteCurrentAnimation();
+            }
         }
 
         public virtual void Resume()
         {
-            _canvasGroup.interactable = true;
-            _canvasGroup.blocksRaycasts = true;
-            Paused = false;
+            if (Paused)
+            {
+                Paused = false;
+                
+                // Complete pause animation before resuming
+                _animationSystem.ForceCompleteCurrentAnimation();
+                MakeStateInteractable(true);
+            }
         }
+
+        protected void MakeStateInteractable(bool flag)
+        {
+            _canvasGroup.interactable = flag;
+            _canvasGroup.blocksRaycasts = flag;
+        }
+
+        public bool Paused { get; set; }
     }
 }
