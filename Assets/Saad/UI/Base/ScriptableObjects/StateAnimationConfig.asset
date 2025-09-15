@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a325d613c65bd8a44a7b77d71af6cd6b, type: 3}
-  m_Name: GameStatePooler
+  m_Script: {fileID: 11500000, guid: 8c60024b8218f0145afd525016674595, type: 3}
+  m_Name: StateAnimationConfig
   m_EditorClassIdentifier: 
-  _poolConfigs:
-  - PoolID: NormalGameHud
-    Prefab: {fileID: 7633631358616875587, guid: 3b8915a5a9f25eb46ba5d43b4cf4478f, type: 3}
-    DefaultCapacity: 1
-    MaxSize: 1
-    Prewarm: 0
+  EnterAnimationType: 1
+  ExitAnimationType: 1
+  EnterEase: 27
+  ExitEase: 26
+  EnterDuration: 0.35
+  ExitDuration: 0.2

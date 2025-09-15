@@ -18,7 +18,7 @@ public abstract class GameState : State
     [ShowIf("@poolGameplay || poolGameHud")]
     [SerializeField, Required]
     [InfoBox("Ensure prefab is registered in PoolManagerSO.", InfoMessageType.None)]
-    private PoolManagerSO gameStatePooler;
+    private PoolManagerSO statePooler;
 
 
     [Header("State Events")]
@@ -41,14 +41,14 @@ public abstract class GameState : State
         {
             if (poolGameplay)
             {
-                gameplayInstance = gameStatePooler.Get(gameplayPrefabId);
+                gameplayInstance = statePooler.Get(gameplayPrefabId);
             }
             else
             {
                 var gameplayPrefab = Resources.Load<GameObject>(gameplayPrefabId);
                 if (gameplayPrefab != null)
                 {
-                    gameplayInstance = Instantiate(gameplayPrefab,StateRootManager.GameplayNonPooled);
+                    gameplayInstance = Instantiate(gameplayPrefab,StateRootManager.States);
                 }
                 else
                 {
@@ -63,7 +63,7 @@ public abstract class GameState : State
         // 2. Load HUD
         if (poolGameHud)
         {
-            _spawnedHud = gameStatePooler.Get(hudPrefabId);
+            _spawnedHud = statePooler.Get(hudPrefabId);
             gameHudInstance = _spawnedHud.GetComponent<GameHud>();
         }
         else
@@ -75,7 +75,7 @@ public abstract class GameState : State
                 yield break;
             }
 
-            _spawnedHud = Instantiate(hudPrefab, StateRootManager.GameplayNonPooled);
+            _spawnedHud = Instantiate(hudPrefab, StateRootManager.States);
             gameHudInstance = _spawnedHud.GetComponent<GameHud>();
         }
 
@@ -99,9 +99,10 @@ public abstract class GameState : State
         {
             gameHudInstance.Hide(() =>
             {
+                Debug.Log("GameHud instance hided.");
                 if (poolGameHud)
                 {
-                    gameStatePooler.Release(hudPrefabId, _spawnedHud);
+                    statePooler.Release(hudPrefabId, _spawnedHud);
                 }
                 else if (_spawnedHud != null)
                 {
@@ -115,7 +116,7 @@ public abstract class GameState : State
         {
             if (poolGameplay)
             {
-                gameStatePooler.Release(gameplayPrefabId, gameplayInstance);
+                statePooler.Release(gameplayPrefabId, gameplayInstance);
             }
             else
             {

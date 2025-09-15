@@ -1,61 +1,65 @@
 using ProjectCore.Helpers;
-using ProjectCore.Variables;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "vDBInt_", menuName = "ProjectCore/Variables/Persistent/DBInt")]
-public class DBInt : Int
+namespace ProjectCore.Variables
 {
-    private string _key;
-    private void OnEnable()
+    [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Persistent/DBInt")]
+    public class DBInt : Int
     {
-        Load();
-    }
+        [SerializeField]private string _key;
 
-    public override void Decrement(int _decrement)
-    {
-        base.Decrement(_decrement);
-        Save();
-    }
-
-    public override void Increment(int _increment)
-    {
-        base.Increment(_increment);
-        Save();
-    }
-
-    public override void SetValue(int value)
-    {
-        base.SetValue(value);
-        Save();
-    }
-
-    [Button(ButtonSizes.Small)]
-    private void Save()
-    {
-        PlayerPrefs.SetInt(_key, Value);
-        PlayerPrefs.Save(); // Ensure the data is saved
-    }
-
-    private void Load()
-    {
-        if (string.IsNullOrEmpty(_key))
+        [Button]
+        private void ValidateKey()
         {
-            _key = KeyRegistry.GenerateKey(name);
-            Debug.Log("Generated key: " + _key);
+            KeyValidator.UnregisterAllFrom(this); // Avoid stale entries from previous validations
+            KeyValidator.IsKeyUnique(_key,this);
         }
-
-        // Check if the key exists in PlayerPrefs
-        if (PlayerPrefs.HasKey(_key))
+        private void OnEnable()
         {
-            // Load value from PlayerPrefs using the generated key
-            Value = PlayerPrefs.GetInt(_key);
+            Load();
         }
-        else
+        public override void Decrement(int _decrement)
         {
-            // If the key doesn't exist, use the default value and save it to PlayerPrefs
-            Value = DefaultValue;
+            base.Decrement(_decrement);
             Save();
+        }
+        public override void Increment(int _increment)
+        {
+            base.Increment(_increment);
+            Save();
+        }
+        public override void SetValue(int value)
+        {
+            base.SetValue(value);
+            Save();
+        }
+        [Button(ButtonSizes.Small)]
+        private void Save()
+        {
+            PlayerPrefs.SetInt(_key, Value);
+            PlayerPrefs.Save(); // Ensure the data is saved
+        }
+        private void Load()
+        {
+            if (string.IsNullOrEmpty(_key))
+            {
+                Debug.LogError($"{name} has an empty key. Skipping load.");
+                return;
+            }
+            // Check if the key exists in PlayerPrefs
+            if (PlayerPrefs.HasKey(_key))
+            {
+                // Load value from PlayerPrefs using the generated key
+                Value = PlayerPrefs.GetInt(_key);
+            }
+            else
+            {
+                // If the key doesn't exist, use the default value and save it to PlayerPrefs
+                Value = DefaultValue;
+                Save();
+            }
         }
     }
 }
+

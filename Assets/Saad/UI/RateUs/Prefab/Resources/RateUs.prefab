@@ -507,10 +507,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiConfig: {fileID: 11400000, guid: bee61dab388a2a94bb19d0de2f3edb63, type: 2}
-  currentStateSortingOrder: {fileID: 11400000, guid: df6db5c4b66674c41bf055fb436f721a, type: 2}
+  animationConfig: {fileID: 11400000, guid: 839573f5e6fc9e146b0d81150e1938d7, type: 2}
   UIPanel: {fileID: 3127916615284388433}
-  fadeDuration: 0.5
-  Paused: 0
+  currentStateSortingOrder: {fileID: 11400000, guid: df6db5c4b66674c41bf055fb436f721a, type: 2}
+  _animator: {fileID: 0}
   Back: {fileID: 1379939217463080007}
   RateUsState: {fileID: 11400000, guid: 1205ba5ce7e48da42bab6e91ff36f1c2, type: 2}
 --- !u!1 &8167951585787200328
