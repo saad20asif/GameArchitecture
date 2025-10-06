@@ -1,7 +1,7 @@
-using ProjectCore.Events;
+using Blues.Core.Events;
 using UnityEngine;
 
-namespace ProjectCore.Variables
+namespace Blues.Core.Variables
 {
     [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Non-Persistent/FloatWithEvent")]
     public class FloatWithEvent : Float

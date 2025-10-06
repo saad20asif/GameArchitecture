@@ -1,4 +1,4 @@
-using ProjectCore.UI;
+using Blues.Core.UI;
 using UnityEngine;
 using UnityEngine.UI;
 

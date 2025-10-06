@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace ProjectCore.Input.SwipeSystem
+namespace Blues.Core.Input.SwipeSystem
 {
     public class SwipeDetector : MonoBehaviour
 {

@@ -1,8 +1,8 @@
-using ProjectCore.Events;
+using Blues.Core.Events;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace ProjectCore.Events
+namespace Blues.Core.Events
 {
     [CreateAssetMenu(fileName = "e_", menuName = "ProjectCore/Events/GameEvent - ReturnInt")]
     public class GameEventWithReturnInt : GameEventWithReturn<int>

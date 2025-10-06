@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections;
-using ProjectCore.Variables;
+using Blues.Core.Variables;
 
-namespace ProjectCore.Application
+namespace Blues.Core.Application
 {
     public class Loading : MonoBehaviour
     {

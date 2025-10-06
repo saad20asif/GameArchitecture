@@ -1,8 +1,8 @@
 using UnityEngine;
-using ProjectCore.Events;
 using System.Collections;
+using Blues.Core.Events;
 
-namespace ProjectCore.TheTimeMachine
+namespace Blues.Core.TheTimeMachine
 {
     [CreateAssetMenu(fileName = "TimeMachine", menuName = "ProjectCore/TimeMachine")]
     public class TimeMachine : ScriptableObject

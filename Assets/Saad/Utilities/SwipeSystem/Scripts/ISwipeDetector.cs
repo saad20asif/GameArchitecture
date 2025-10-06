@@ -1,4 +1,4 @@
-namespace ProjectCore.Input.SwipeSystem
+namespace Blues.Core.Input.SwipeSystem
 {
     public interface ISwipeDetector
     {

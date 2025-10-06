@@ -1,6 +1,7 @@
+using Blues.Core.Events;
 using UnityEngine;
-using ProjectCore.Events;
-namespace ProjectCore.Variables
+
+namespace Blues.Core.Variables
 {
     [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Non-Persistent/BoolWithEvent")]
     public class BoolWithEvent : Bool

@@ -2,7 +2,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Events;
-using ProjectCore.Events;
+using Blues.Core.Events;
 
 public class Delegations : MonoBehaviour
 {

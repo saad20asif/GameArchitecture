@@ -1,11 +1,11 @@
-using ProjectCore.Variables;
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
+using Blues.Core.Variables;
 using THEBADDEST.Coroutines;
 using UnityEngine;
 
-namespace ProjectCore.StateMachine
+namespace Blues.Core.StateMachine
 {
     // ScriptableObject-based FSM controller. Manages entering, exiting, pausing, and resuming states.
     [CreateAssetMenu(fileName = "FiniteStateMachine", menuName = "ProjectCore/State Machine/Basic FSM")]

@@ -3,8 +3,6 @@ using UnityEngine;
 
 namespace THEBADDEST.Coroutines
 {
-
-
 	public delegate void EverySecondActionDelegate();
 
 	[CreateAssetMenu(menuName = "THEBADDEST/Coroutines/TimeMachine", fileName = "TimeMachine", order = 0)]

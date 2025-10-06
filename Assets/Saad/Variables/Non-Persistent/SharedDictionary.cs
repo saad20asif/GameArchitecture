@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Sirenix.Serialization;
 using Sirenix.OdinInspector;
 
-namespace ProjectCore.Variables
+namespace Blues.Core.Variables
 {
     public abstract class SharedDictionary<K,V> : SerializedScriptableObject
     {

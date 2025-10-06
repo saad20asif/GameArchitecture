@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace ProjectCore.StateMachine
+namespace Blues.Core.StateMachine
 {
     public interface IState
     {

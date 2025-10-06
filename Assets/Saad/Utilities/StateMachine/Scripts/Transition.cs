@@ -1,9 +1,9 @@
 using UnityEngine;
 using System.Collections;
-using ProjectCore.UI;
+using Blues.Core.UI;
 using Sirenix.OdinInspector;
 
-namespace ProjectCore.StateMachine
+namespace Blues.Core.StateMachine
 {
     [CreateAssetMenu(fileName = "Transition", menuName = "ProjectCore/State Machine/Transitions/Basic Transition")]
     public class Transition : ScriptableObject

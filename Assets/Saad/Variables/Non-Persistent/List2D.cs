@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 
-namespace ProjectCore.Variables
+namespace Blues.Core.Variables
 {
     public abstract class List2D<T> : SerializedScriptableObject
     {

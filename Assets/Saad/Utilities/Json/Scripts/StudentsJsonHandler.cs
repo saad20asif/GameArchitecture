@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using System.IO;
 using Newtonsoft.Json.Bson;
 using System.Collections.Generic;
-using ProjectCore.Utilities.Json;
+using Blues.Core.Utilities.Json;
 
 [Serializable]
 public struct Address

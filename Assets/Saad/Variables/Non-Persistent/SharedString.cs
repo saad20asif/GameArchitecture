@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProjectCore.Variables
+namespace Blues.Core.Variables
 {
     [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Non-Persistent/SharedString")]
     public class SharedString : ScriptableObject

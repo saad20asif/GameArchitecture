@@ -1,4 +1,4 @@
-namespace ProjectCore.TimeUtility 
+namespace Blues.Core.TimeUtility 
 { 
     public class TimeManager 
     {
