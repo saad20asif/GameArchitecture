@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProjectCore.DesignPatterns.CommandPattern
+namespace Blues.Core.DesignPatterns.CommandPattern
 {
     public class MoveCommand : ICommand
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace ProjectCore.UI
+namespace Blues.Core.UI
 {
     public interface IShowable
     {

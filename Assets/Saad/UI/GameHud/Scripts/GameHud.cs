@@ -1,14 +1,14 @@
 using System;
 using CustomEditorScripts;
 using DG.Tweening;
-using ProjectCore.StateMachine;
-using ProjectCore.UI;
+using Blues.Core.StateMachine;
 using Sirenix.OdinInspector;
 using System.Collections;
-using ProjectCore.Variables;
+using Blues.Core.UI;
+using Blues.Core.Variables;
 using UnityEngine;
 
-namespace ProjectCore.GameHud
+namespace Blues.Core.GameHud
 {
     public class GameHud : MonoBehaviour,IShowable
     {

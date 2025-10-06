@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace ProjectCore.Events
+namespace Blues.Core.Events
 {
     public class GameEventWithReturn<T> : ScriptableObject
     {

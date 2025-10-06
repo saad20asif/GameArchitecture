@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace ProjectCore.StateMachine
+namespace Blues.Core.StateMachine
 {
     [CreateAssetMenu(fileName = "TimedTransition", menuName = "ProjectCore/State Machine/Transitions/Timed")]
     public class TimedTransition : Transition

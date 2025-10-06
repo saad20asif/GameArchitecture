@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProjectCore.DesignPatterns.CommandPattern
+namespace Blues.Core.DesignPatterns.CommandPattern
 {
     public class CommandManager
     {

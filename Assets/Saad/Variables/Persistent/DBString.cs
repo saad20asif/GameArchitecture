@@ -1,10 +1,10 @@
 using System;
+using Blues.Core.Helpers;
 using UnityEngine;
-using ProjectCore.Helpers;
-using ProjectCore.Variables;
+using Blues.Core.Variables;
 using Sirenix.OdinInspector;
 
-namespace ProjectCore.Variables
+namespace Blues.Core.Variables
 {
     [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Persistent/DBString")]
     public class DBString : SharedString

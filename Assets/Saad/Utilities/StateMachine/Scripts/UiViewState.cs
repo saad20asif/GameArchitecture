@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections;
-using ProjectCore.UI;
-using ProjectCore.PoolSystem;
+using Blues.Core.PoolSystem;
+using Blues.Core.UI;
 using Sirenix.OdinInspector;
 
-namespace ProjectCore.StateMachine
+namespace Blues.Core.StateMachine
 {
     public class UIViewState : State
     {

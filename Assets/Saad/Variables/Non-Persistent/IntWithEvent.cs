@@ -1,8 +1,8 @@
-using ProjectCore.Events;
-using ProjectCore.Variables;
+using Blues.Core.Events;
+using Blues.Core.Variables;
 using UnityEngine;
 
-namespace ProjectCore.Variables
+namespace Blues.Core.Variables
 {
     [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Non-Persistent/IntWithEvent")]
     public class IntWithEvent : Int

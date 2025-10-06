@@ -1,5 +1,5 @@
 using UnityEngine;
-using ProjectCore.Input.SwipeSystem;
+using Blues.Core.Input.SwipeSystem;
 
 public class PlayerController : MonoBehaviour
 {

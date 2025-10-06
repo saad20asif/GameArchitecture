@@ -1,5 +1,5 @@
 using UnityEngine;
-using ProjectCore.Events;
+using Blues.Core.Events;
 
 [CreateAssetMenu(fileName = "GameState", menuName = "ProjectCore/State Machine/States/Normal Game State")]
 public class NormalGameState : GameState

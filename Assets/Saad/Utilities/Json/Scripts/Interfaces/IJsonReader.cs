@@ -1,4 +1,4 @@
-namespace ProjectCore.Utilities.Json
+namespace Blues.Core.Utilities.Json
 {
     interface IJsonReader
     {

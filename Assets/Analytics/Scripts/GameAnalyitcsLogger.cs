@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProjectCore.Analytics
+namespace Blues.Core.Analytics
 {
     [CreateAssetMenu(fileName = "GALogger", menuName = "Analytics/ Analytics Game Logger")]
 

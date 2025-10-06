@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace ProjectCore.Helpers
+namespace Blues.Core.Helpers
 {
     public static class KeyValidator
     {

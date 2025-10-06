@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace ProjectCore.Events
+namespace Blues.Core.Events
 {
     public delegate void GameEventWithHandler<T>(T t);
     public delegate void GameEventWithHandler<T1, T2>(T1 t1, T2 t2);

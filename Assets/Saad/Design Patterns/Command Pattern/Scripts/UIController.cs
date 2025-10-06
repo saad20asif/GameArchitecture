@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ProjectCore.DesignPatterns.CommandPattern
+namespace Blues.Core.DesignPatterns.CommandPattern
 {
     public class UIController : MonoBehaviour
     {

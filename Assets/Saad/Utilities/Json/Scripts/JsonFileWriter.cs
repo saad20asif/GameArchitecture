@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 using System.IO;
-namespace ProjectCore.Utilities.Json
+namespace Blues.Core.Utilities.Json
 {
     public class JsonFileWriter : IJsonWriter
     {

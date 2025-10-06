@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
-namespace ProjectCore.PoolSystem
+namespace Blues.Core.PoolSystem
 {
     public class UnityObjectPool<T> : IDisposable where T : class
 {

@@ -1,6 +1,6 @@
 using UnityEngine;
-using ProjectCore.Events;
-using ProjectCore.StateMachine;
+using Blues.Core.Events;
+using Blues.Core.StateMachine;
 
 [CreateAssetMenu(fileName = "RateUsState", menuName = "ProjectCore/State Machine/States/RateUsState")]
 public class RateUsState : UIViewState

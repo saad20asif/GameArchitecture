@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using ProjectCore.StateMachine;
-using ProjectCore.Events;
-using ProjectCore.UI;
+using Blues.Core.StateMachine;
+using Blues.Core.Events;
+using Blues.Core.UI;
 
 public abstract class BaseApplicationFlowController<TTransition> : MonoBehaviour where TTransition : Transition
 {

@@ -1,7 +1,7 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-namespace ProjectCore.Events
+namespace Blues.Core.Events
 {
     [CreateAssetMenu(fileName = "e_", menuName = "ProjectCore/Events/Game Event - Basic")]
     public class GameEvent : ScriptableObject

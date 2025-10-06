@@ -1,7 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 
-namespace ProjectCore.UI
+namespace Blues.Core.UI
 {
     public class UiAnimations : MonoBehaviour
     {

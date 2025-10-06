@@ -1,10 +1,11 @@
 using UnityEngine;
 using System.Collections;
-using ProjectCore.PoolSystem;
-using ProjectCore.StateMachine;
+using Blues.Core.PoolSystem;
+using Blues.Core.StateMachine;
+using Blues.Core.Variables;
 using UnityEngine.SceneManagement;
-using ProjectCore.Variables;
-namespace ProjectCore.Application
+
+namespace Blues.Core.Application
 {
 
     [CreateAssetMenu(fileName = "SplashState", menuName = "ProjectCore/State Machine/States/SplashState")]

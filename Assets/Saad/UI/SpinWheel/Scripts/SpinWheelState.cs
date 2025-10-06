@@ -1,6 +1,6 @@
-using ProjectCore.Events;
-using ProjectCore.StateMachine;
-using ProjectCore.UI;
+using Blues.Core.Events;
+using Blues.Core.StateMachine;
+using Blues.Core.UI;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "SpinWheelState", menuName = "ProjectCore/State Machine/States/SpinWheelState")]

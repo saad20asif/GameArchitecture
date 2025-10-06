@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Newtonsoft.Json;
 
-namespace ProjectCore.Utilities.Json
+namespace Blues.Core.Utilities.Json
 {
     public class JsonPrettyPrinter : MonoBehaviour
     {

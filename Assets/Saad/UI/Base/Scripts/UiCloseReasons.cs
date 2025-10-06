@@ -2,7 +2,7 @@
 /// Reasons for closing or transitioning UI/Game states, driving how paused states are handled.
 /// </summary>
 /// 
-namespace ProjectCore.UI
+namespace Blues.Core.UI
 {
     public enum UICloseReasons
     {

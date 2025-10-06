@@ -1,4 +1,4 @@
-using ProjectCore.StateMachine;
+using Blues.Core.StateMachine;
 using UnityEngine;
 
 public class StateLogger : MonoBehaviour

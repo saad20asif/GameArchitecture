@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProjectCore.Variables
+namespace Blues.Core.Variables
 {
     [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Non-Persistent/SharedVector2Int")]
     public class SharedVector2Int : ScriptableObject

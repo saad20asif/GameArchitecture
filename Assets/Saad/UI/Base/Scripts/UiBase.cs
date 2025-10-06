@@ -1,8 +1,8 @@
 using System;
+using Blues.Core.Variables;
 using UnityEngine;
-using ProjectCore.Variables;
 
-namespace ProjectCore.UI
+namespace Blues.Core.UI
 {
     public abstract class UiBase : MonoBehaviour, IShowable
     {

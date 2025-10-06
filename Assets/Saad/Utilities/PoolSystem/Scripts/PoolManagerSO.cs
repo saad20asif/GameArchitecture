@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace ProjectCore.PoolSystem
+namespace Blues.Core.PoolSystem
 {
     [CreateAssetMenu(menuName = "Pools/Pool Manager")]
     public class PoolManagerSO : ScriptableObject

@@ -1,5 +1,5 @@
-using ProjectCore.Events;
-using ProjectCore.StateMachine;
+using Blues.Core.Events;
+using Blues.Core.StateMachine;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "LevelFailState", menuName = "ProjectCore/State Machine/States/LevelFail State")]

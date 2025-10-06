@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c60024b8218f0145afd525016674595, type: 3}
   m_Name: StateAnimationConfig
   m_EditorClassIdentifier: 
-  EnterAnimationType: 1
-  ExitAnimationType: 1
+  EnterAnimationType: 2
+  ExitAnimationType: 2
   EnterEase: 27
   ExitEase: 26
   EnterDuration: 0.35
