@@ -1,4 +1,4 @@
-namespace ProjectCore.DesignPatterns.CommandPattern
+namespace Blues.Core.DesignPatterns.CommandPattern
 {
     public interface ICommand
     {

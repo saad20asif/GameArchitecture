@@ -1,8 +1,8 @@
-using ProjectCore.Helpers;
+using Blues.Core.Helpers;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace ProjectCore.Variables
+namespace Blues.Core.Variables
 {
     [CreateAssetMenu(fileName = "v_", menuName = "ProjectCore/Variables/Persistent/DBBool")]
     public class DBBool : Bool

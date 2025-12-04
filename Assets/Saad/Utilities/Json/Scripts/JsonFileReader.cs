@@ -1,6 +1,6 @@
 using System.IO;
 using Newtonsoft.Json;
-namespace ProjectCore.Utilities.Json
+namespace Blues.Core.Utilities.Json
 {
     public class JsonFileReader : IJsonReader
     {

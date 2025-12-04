@@ -1,6 +1,6 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
-namespace ProjectCore.Events
+namespace Blues.Core.Events
 {
     [CreateAssetMenu(fileName = "e_", menuName = "ProjectCore/Events/GameEvent - Int")]
     public class GameEventWithInt : GameEventWithParam<int>

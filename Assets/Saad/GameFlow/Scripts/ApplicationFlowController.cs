@@ -1,6 +1,6 @@
-using ProjectCore.Events;
-using ProjectCore.StateMachine;
-using ProjectCore.UI;
+using Blues.Core.Events;
+using Blues.Core.StateMachine;
+using Blues.Core.UI;
 using UnityEngine;
 
 public class ApplicationFlowController : BaseApplicationFlowController<Transition>

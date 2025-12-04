@@ -1,5 +1,5 @@
-using ProjectCore.Events;
-using ProjectCore.Variables;
+using Blues.Core.Events;
+using Blues.Core.Variables;
 using UnityEditor;
 using UnityEngine;
 

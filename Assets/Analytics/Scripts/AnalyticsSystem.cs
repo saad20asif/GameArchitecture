@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace ProjectCore.Analytics
+namespace Blues.Core.Analytics
 {
     [CreateAssetMenu( fileName ="AnalyticSystem", menuName ="Analytics/ Analytic System")]
     public class AnalyticsSystem : ScriptableObject

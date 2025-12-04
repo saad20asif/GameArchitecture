@@ -1,9 +1,9 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using ProjectCore.Events;
-using ProjectCore.TimeUtility;
-using ProjectCore.GameHud;
+using Blues.Core.Events;
+using Blues.Core.TimeUtility;
+using Blues.Core.GameHud;
 
 public class NormalGameHud : GameHud
 {

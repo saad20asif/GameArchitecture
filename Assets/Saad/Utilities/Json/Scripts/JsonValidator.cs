@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace ProjectCore.Utilities.Json
+namespace Blues.Core.Utilities.Json
 {
     public class JsonValidator : MonoBehaviour
     {

@@ -1,5 +1,5 @@
 using UnityEngine;
-using ProjectCore.UI;
+using Blues.Core.UI;
 using UnityEngine.UI;
 
 public class RateUsView : UiBase

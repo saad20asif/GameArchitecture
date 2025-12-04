@@ -43,7 +43,7 @@ namespace THEBADDEST.Coroutines
 		/// </summary>
 		/// <param name="coroutine">The coroutine to start.</param>
 		/// <returns>The coroutine that was started.</returns>
-		public static UnityEngine.Coroutine StartStaticCoroutine(IEnumerator coroutine)
+		public static Coroutine StartStaticCoroutine(IEnumerator coroutine)
 		{
 			return mono.StartCoroutine(coroutine);
 		}

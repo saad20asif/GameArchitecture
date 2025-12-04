@@ -1,11 +1,11 @@
 using UnityEngine;
-using ProjectCore.StateMachine;
 using System.Collections;
-using ProjectCore.Variables;
-using ProjectCore.TheTimeMachine;
+using Blues.Core.StateMachine;
+using Blues.Core.TheTimeMachine;
+using Blues.Core.Variables;
 
 
-namespace ProjectCore.Application
+namespace Blues.Core.Application
 {
     public class ApplicationBase : MonoBehaviour
     {

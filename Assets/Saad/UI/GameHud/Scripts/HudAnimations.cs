@@ -1,7 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 
-namespace ProjectCore.GameHud
+namespace Blues.Core.GameHud
 {
     public static class HudAnimations
     {

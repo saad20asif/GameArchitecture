@@ -3,7 +3,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ProjectCore.Utilities.Json
+namespace Blues.Core.Utilities.Json
 {
     public class JsonEncryptor
     {

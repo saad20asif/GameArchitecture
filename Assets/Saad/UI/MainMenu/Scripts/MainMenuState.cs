@@ -1,6 +1,6 @@
-using ProjectCore.Events;
+using Blues.Core.Events;
 using System.Collections;
-using ProjectCore.StateMachine;
+using Blues.Core.StateMachine;
 using Sirenix.OdinInspector;
 using THEBADDEST.Coroutines;
 using UnityEngine;

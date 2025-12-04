@@ -1,10 +1,10 @@
 using UnityEngine;
-using ProjectCore.UI;
-using ProjectCore.Events;
+using Blues.Core.UI;
+using Blues.Core.Events;
 using System.Collections;
-using ProjectCore.GameHud;
-using ProjectCore.StateMachine;
-using ProjectCore.PoolSystem;
+using Blues.Core.GameHud;
+using Blues.Core.StateMachine;
+using Blues.Core.PoolSystem;
 using Sirenix.OdinInspector;
 
 public abstract class GameState : State
