@@ -15,16 +15,19 @@ namespace Featrues.SpinWheel
         [SerializeField] private SpinWheelData spinWheelData;
         public SpinWheelData loadedSpinWheelData;
 
-        [TabGroup("Slice UI")] public Sprite sliceSprite;
-        [TabGroup("Slice UI")] public Sprite coinSprite;
+
+        [Header("Slice UI")]
+        public Sprite sliceSprite;
+        public Sprite coinSprite;
         
-        [TabGroup("Spin Settings")] public int totalSpins;
-        [TabGroup("Spin Settings")] public int totalIterations;
-        [TabGroup("Spin Settings")] public float spinTime;
+        [Header("Spin Settings")]
+        public int totalIterations;
+        public float spinTime;
+        public AnimationCurve SpinningCurve;
 
-
-        [TabGroup("Test Settings")] public bool isTesting; 
-        [TabGroup("Test Settings")] public int stopIndex;
+        [Header("Test Settings")]
+        public bool isTesting; 
+        public int stopIndex;
 
         public void OnEnable()
         {

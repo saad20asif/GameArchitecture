@@ -82,7 +82,7 @@ namespace Featrues.SpinWheel
                 new Vector3(0, 0, targetRotation),
                 duration,
                 RotateMode.FastBeyond360
-            ).SetEase(Ease.OutCubic)
+            ).SetEase(spinWheelConfigurations.SpinningCurve)
             .OnComplete( ()=>{
                 OnSpinEnded.Invoke();
             });
