@@ -439,7 +439,6 @@ GameObject:
   - component: {fileID: 1667157237803327466}
   - component: {fileID: 6714343596984844242}
   - component: {fileID: 7378279608014187359}
-  - component: {fileID: 2102292482646521351}
   m_Layer: 5
   m_Name: Spin_Panel
   m_TagString: Untagged
@@ -544,20 +543,6 @@ MonoBehaviour:
   OnSpinPressed: {fileID: 11400000, guid: d30ddcb6ce483e34a99f771f67ae67bb, type: 2}
   OnSpinEnded: {fileID: 11400000, guid: 9ff6f75d81b76dc4b82faa4f15001e76, type: 2}
   spinWheelConfigurations: {fileID: 11400000, guid: 6771b31bcfe6ab3478491aee0a52be0f, type: 2}
---- !u!114 &2102292482646521351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2191602363751063235}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b2b3c090fc02ca49a42b057815d1994, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spinWheelConfigurations: {fileID: 11400000, guid: 6771b31bcfe6ab3478491aee0a52be0f, type: 2}
-  OnSpinWheelDataLoaded: {fileID: 11400000, guid: ee3dcb2c091d02845917a2664c3c62d3, type: 2}
 --- !u!1 &2552068914980710729
 GameObject:
   m_ObjectHideFlags: 0
@@ -1668,7 +1653,6 @@ MonoBehaviour:
   UIPanel: {fileID: 7877725656435831846}
   currentStateSortingOrder: {fileID: 11400000, guid: df6db5c4b66674c41bf055fb436f721a, type: 2}
   Back: {fileID: 3695159097781725006}
-  RateUsBtn: {fileID: 0}
   SpinWheelState: {fileID: 11400000, guid: 0f2de33f14715024d8c1441ece63caa9, type: 2}
 --- !u!1 &5692700728188104870
 GameObject:

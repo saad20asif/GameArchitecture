@@ -37,26 +37,13 @@ namespace Featrues.SpinWheel
         }
         private void Subscribe()
         {
-            //wheelDataLoaded.Subscribe(UpdateWheelView);
             wheelDataLoaded.Subscribe(InstantiateWheelSlices);
             OnSliceSelected.Subscribe(SpinTheWheel);
         }
         private void UnSubscribe()
         {
-            //wheelDataLoaded.UnSubscribe( UpdateWheelView);
             wheelDataLoaded.UnSubscribe(InstantiateWheelSlices);
             OnSliceSelected.UnSubscribe(SpinTheWheel);
-        }
-
-        private void UpdateWheelView()
-        {
-            List <SliceData> SlicesData = spinWheelConfigurations.loadedSpinWheelData.SlicesData;
-            for( int i=0; i< SlicesData.Count ; i++)
-            {
-                ViewRefs.slices[i].SetSliceData(SlicesData[i].multiplier);
-                ViewRefs.slices[i].SetSliceUI(spinWheelConfigurations.sliceSprite , spinWheelConfigurations.coinSprite, SlicesData[i].color);
-            }
-            Debug.Log("Updated Wheel UI");
         }
         public void SpinTheWheel()
         {

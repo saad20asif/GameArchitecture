@@ -69,8 +69,40 @@ MonoBehaviour:
       color: {r: 0.7176471, g: 0.3647059, b: 0.96862745, a: 1}
   sliceSprite: {fileID: 21300000, guid: 4be78659f12526d4f9c5798b9d7a7d5f, type: 3}
   coinSprite: {fileID: 21300000, guid: 19f2f34a019441744a2470bdb8795f96, type: 3}
-  totalSpins: 5
-  totalIterations: 2
-  spinTime: 1
+  totalIterations: 8
+  spinTime: 3
+  SpinningCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.44658294
+      value: 0.828195
+      inSlope: 0.64568573
+      outSlope: 0.64568573
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.2629215
+      outWeight: 0.23985034
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   isTesting: 1
   stopIndex: 3

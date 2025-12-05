@@ -148,7 +148,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
-  m_FillAmount: 0
+  m_FillAmount: 0.085
   m_FillClockwise: 1
   m_FillOrigin: 2
   m_UseSpriteMesh: 0
@@ -169,6 +169,9 @@ MonoBehaviour:
   coinImage: {fileID: 7301230352788540272}
   multiplierText: {fileID: 2782247093282575564}
   multiplierCount: 0
+  spacing: 10
+  paddingFromEdge: 10
+  sizeMultiplier: 2
 --- !u!1 &6598856894368476770
 GameObject:
   m_ObjectHideFlags: 0
