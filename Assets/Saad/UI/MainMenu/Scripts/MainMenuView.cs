@@ -2,7 +2,7 @@ using Blues.Core.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenuView : UiBase
+public class MainMenuView : UIBase
 {
     [SerializeField] private MainMenuState MainMenuState;
     [SerializeField] private Button PlayBtn;

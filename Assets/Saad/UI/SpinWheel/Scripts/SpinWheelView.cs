@@ -2,7 +2,7 @@ using Blues.Core.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SpinWheelView : UiBase
+public class SpinWheelView : UIBase
 {
     [SerializeField] private Button Back;
     [SerializeField] private SpinWheelState SpinWheelState;

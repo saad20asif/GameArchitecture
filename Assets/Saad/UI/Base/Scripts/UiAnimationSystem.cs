@@ -205,7 +205,7 @@ public class UiAnimationSystem
 
     private Vector3 GetTargetScale(AnimationPhase phase)
     {
-        Debug.Log($"Getting target scale for {phase}");
+        //Debug.Log($"Getting target scale for {phase}");
         return phase switch
         {
             AnimationPhase.Enter => Vector3.one,

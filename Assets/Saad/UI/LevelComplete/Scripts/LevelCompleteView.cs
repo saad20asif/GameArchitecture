@@ -2,7 +2,7 @@ using Blues.Core.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelCompleteView : UiBase
+public class LevelCompleteView : UIBase
 {
     [SerializeField] private Button NextBtn;
     [SerializeField] private LevelCompleteState LevelCompleteState;

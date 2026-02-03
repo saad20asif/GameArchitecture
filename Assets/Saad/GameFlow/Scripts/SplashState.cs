@@ -3,6 +3,7 @@ using System.Collections;
 using Blues.Core.PoolSystem;
 using Blues.Core.StateMachine;
 using Blues.Core.Variables;
+using ProjectCore.PoolSystem;
 using UnityEngine.SceneManagement;
 
 namespace Blues.Core.Application

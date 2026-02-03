@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Blues.Core.UI
 {
-    public abstract class UiBase : MonoBehaviour, IShowable
+    public abstract class UIBase : MonoBehaviour, IShowable
     {
         [SerializeField] protected StateAnimationConfig animationConfig;
         [SerializeField] protected RectTransform UIPanel;

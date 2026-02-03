@@ -2,7 +2,7 @@ using UnityEngine;
 using Blues.Core.UI;
 using UnityEngine.UI;
 
-public class RateUsView : UiBase
+public class RateUsView : UIBase
 {
     [SerializeField] private Button Back;
     [SerializeField] private RateUsState RateUsState;

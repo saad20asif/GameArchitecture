@@ -1,5 +1,9 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using Blues.Core.Variables;
+using ProjectCore.PoolSystem;
 
 namespace Blues.Core.PoolSystem
 {
@@ -21,68 +25,114 @@ namespace Blues.Core.PoolSystem
         private Dictionary<string, object> _componentPools = new();
         private Transform _poolRoot;
 
+        private static PoolManagerRunner _runner;   // STATIC shared runner
+
+        private bool initialized = false;
+
+        private void OnEnable()
+        {
+            initialized = false;
+        }
+
+        private PoolManagerRunner Runner
+        {
+            get
+            {
+                if (_runner == null)
+                {
+                    GameObject go = new GameObject("PoolManagerRunner");
+                    _runner = go.AddComponent<PoolManagerRunner>();
+                    DontDestroyOnLoad(go);
+                }
+                return _runner;
+            }
+        }
+
         public void Initialize(Transform poolRoot = null)
         {
+            if (initialized)
+                return;
+
             _poolRoot = poolRoot ?? CreatePoolRoot();
             CreatePools();
+
+            // ENSURE RUNNER EXISTS
+            var r = Runner;
         }
 
         private Transform CreatePoolRoot()
         {
             var root = new GameObject("PoolRoot").transform;
-            // Fixed ambiguous reference
-            //DontDestroyOnLoad(root.gameObject);
             return root;
         }
 
         private void CreatePools()
         {
             _gameObjectPools.Clear();
+
             foreach (var config in _poolConfigs)
             {
                 var parent = new GameObject($"{config.PoolID}_Pool").transform;
                 parent.SetParent(_poolRoot);
-                
+
                 var pool = new UnityObjectPool<GameObject>(
                     createFunc: () => CreateGameObject(config.Prefab, parent),
                     onGet: OnGetGameObject,
-                    onRelease: OnReleaseGameObject,
+                    onRelease: go => OnReleaseGameObject(go, parent),
                     defaultCapacity: config.DefaultCapacity,
                     maxSize: config.MaxSize
                 );
-                
+
                 _gameObjectPools.Add(config.PoolID, pool);
-                
-                if (config.Prewarm) pool.Prewarm();
+
+                if (config.Prewarm)
+                    pool.Prewarm();
             }
         }
 
         private GameObject CreateGameObject(GameObject prefab, Transform parent)
         {
-            var instance = UnityEngine.Object.Instantiate(prefab, parent);
+            var instance = Instantiate(prefab, parent);
             instance.SetActive(false);
             return instance;
         }
 
         private void OnGetGameObject(GameObject gameObject)
         {
-            // Reset state if needed
+            gameObject.SetActive(true);
             if (gameObject.TryGetComponent<IPoolable>(out var poolable))
                 poolable.OnPoolGet();
         }
 
-        private void OnReleaseGameObject(GameObject gameObject)
+        private void OnReleaseGameObject(GameObject gameObject, Transform parent)
         {
-            // Clean up if needed
             if (gameObject.TryGetComponent<IPoolable>(out var poolable))
                 poolable.OnPoolRelease();
+
+            gameObject.transform.SetParent(parent);
+            gameObject.SetActive(false);
         }
 
+        // -------------------------------
+        //   DELAYED RELEASE FIXED
+        // -------------------------------
+        public void ReleaseAfterDelay(string poolId, GameObject obj, float delay)
+        {
+            Runner.StartCoroutine(ReleaseDelayedRoutine(poolId, obj, delay));
+        }
+
+        private IEnumerator ReleaseDelayedRoutine(string poolId, GameObject obj, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            Release(poolId, obj);
+        }
+
+        // Standard methods
         public GameObject Get(string poolId)
         {
             if (_gameObjectPools.TryGetValue(poolId, out var pool))
                 return pool.Get();
-            Debug.Log(poolId+" "+name);
+
             throw new KeyNotFoundException($"Pool {poolId} not found");
         }
 
@@ -92,52 +142,6 @@ namespace Blues.Core.PoolSystem
                 pool.Release(gameObject);
             else
                 Destroy(gameObject);
-        }
-
-        public T GetComponent<T>(string poolId) where T : Component
-        {
-            // Get or create component pool
-            if (!_componentPools.TryGetValue(poolId, out var poolObj))
-            {
-                var gameObjectPool = _gameObjectPools[poolId];
-                var componentPool = new UnityObjectPool<T>(
-                    createFunc: () => gameObjectPool.Get().GetComponent<T>(),
-                    onGet: OnGetComponent,
-                    onRelease: OnReleaseComponent,
-                    defaultCapacity: gameObjectPool.CountAll // Match GameObject pool size
-                );
-                
-                _componentPools.Add(poolId, componentPool);
-                return componentPool.Get();
-            }
-            
-            return ((UnityObjectPool<T>)poolObj).Get();
-        }
-
-        public void Release<T>(string poolId, T component) where T : Component
-        {
-            if (_componentPools.TryGetValue(poolId, out var poolObj))
-                ((UnityObjectPool<T>)poolObj).Release(component);
-            else
-            {
-                Debug.Log($"Object {poolId} Destroyed");
-                Destroy(component.gameObject);
-            }
-                
-        }
-
-        private void OnGetComponent<T>(T component) where T : Component
-        {
-            component.gameObject.SetActive(true);
-            if (component is IPoolable poolable)
-                poolable.OnPoolGet();
-        }
-
-        private void OnReleaseComponent<T>(T component) where T : Component
-        {
-            component.gameObject.SetActive(false);
-            if (component is IPoolable poolable)
-                poolable.OnPoolRelease();
         }
     }
 
