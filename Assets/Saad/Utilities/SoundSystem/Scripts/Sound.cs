@@ -1,93 +1,80 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Serialization;
-
+using Sirenix.OdinInspector;
 
 namespace THEBADDEST.SoundSystem
 {
+    [Serializable]
+    [InlineProperty]
+    public class Sound
+    {
+        [SerializeField]
+        [LabelWidth(100)]
+        private string soundName;
+        public string SoundName { get => soundName; set => soundName = value; }
 
+        [Space(5)]
+        [SerializeField]
+        private SoundType type = SoundType.SFX;
+        public SoundType Type { get => type; set => type = value; }
 
-	[Serializable]
-	public class Sound
-	{
-		[SerializeField]private string soundName;
-		public string SoundName
-		{
-			get => soundName;
-			set => soundName = value;
-		}
+        [Space(5)]
+        [SerializeField]
+        private AudioClip audioClip;
+        public AudioClip AudioClip { get => audioClip; set => audioClip = value; }
 
-		[SerializeField]private SoundType type = SoundType.SFX;
-		public SoundType Type
-		{
-			get => type;
-			set => type = value;
-		}
+        [SerializeField]
+        [ShowIf("playRandomClip")]
+        private AudioClip[] audioClips;
+        public AudioClip[] AudioClips { get => audioClips; set => audioClips = value; }
 
-		[SerializeField]private AudioClip audioClip;
-		public AudioClip AudioClip
-		{
-			get => audioClip;
-			set => audioClip = value;
-		}
+        [Space(5)]
+        [SerializeField]
+        private bool loop = false;
+        public bool Loop { get => loop; set => loop = value; }
 
-		[SerializeField]private AudioClip[] audioClips;
-		public AudioClip[] AudioClips
-		{
-			get => audioClips;
-			set => audioClips = value;
-		}
+        [SerializeField]
+        private bool playRandomClip = false;
+        public bool PlayRandomClip { get => playRandomClip; set => playRandomClip = value; }
 
-		[SerializeField]private bool loop = false;
-		public bool Loop
-		{
-			get => loop;
-			set => loop = value;
-		}
+        [SerializeField]
+        private bool playOnAwake = false;
+        public bool PlayOnAwake { get => playOnAwake; set => playOnAwake = value; }
 
-		[SerializeField]private bool playRandomClip = false;
-		public bool PlayRandomClip
-		{
-			get => playRandomClip;
-			set => playRandomClip = value;
-		}
+        [Space(5)]
+        [SerializeField, Range(0, 1)]
+        private float volume = 1;
+        public float Volume { get => volume; set => volume = Mathf.Clamp01(value); }
 
-		[SerializeField]private bool playOnAwake = false;
-		public bool PlayOnAwake
-		{
-			get => playOnAwake;
-			set => playOnAwake = value;
-		}
+        [SerializeField, Range(0.1f, 3)]
+        private float pitch = 1;
+        public float Pitch { get => pitch; set => pitch = Mathf.Clamp(value, 0.1f, 3); }
 
-		[SerializeField, Range(0, 1)] private float volume = 1;
-		public float Volume
-		{
-			get => volume;
-			set => volume = Mathf.Clamp01(value);
-		}
+        [Space(5)]
+        [SerializeField]
+        private bool useRandomPitch;
+        public bool UseRandomPitch { get => useRandomPitch; set => useRandomPitch = value; }
 
-		[SerializeField, Range(0.1f, 3)] private float pitch = 1;
-		public float Pitch
-		{
-			get => pitch;
-			set => pitch = Mathf.Clamp(value, 0.1f, 3);
-		}
+        [ShowIf("useRandomPitch")]
+        [SerializeField]
+        private float minPitch = 0.95f;
+        public float MinPitch { get => minPitch; set => minPitch = value; }
 
-		[HideInInspector] private AudioSource source;
-		public AudioSource Source
-		{
-			get => source;
-			set => source = value;
-		}
-	}
-	public enum SoundType
-	{
+        [ShowIf("useRandomPitch")]
+        [SerializeField]
+        private float maxPitch = 1.05f;
+        public float MaxPitch { get => maxPitch; set => maxPitch = value; }
 
-		SFX,
-		UI,
-		Music
+        [HideInInspector] private AudioSource source;
+        public AudioSource Source { get => source; set => source = value; }
 
-	}
+        [HideInInspector] public bool IsFadingOut;
+    }
 
-
+    public enum SoundType
+    {
+        SFX,
+        UI,
+        Music
+    }
 }

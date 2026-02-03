@@ -1,7 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using THEBADDEST.Coroutines;
-
 
 namespace THEBADDEST.SoundSystem
 {
@@ -24,7 +23,7 @@ namespace THEBADDEST.SoundSystem
 					CachedSettings = Resources.Load<SoundSettings>("SoundSettings");
 					if (CachedSettings == null)
 					{
-						Debug.LogError("SoundSettings not found in Resources folder!");
+						// Debug.LogError("SoundSettings not found in Resources folder!");
 					}
 				}
 				return CachedSettings;
