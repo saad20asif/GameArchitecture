@@ -41,11 +41,11 @@ namespace Featrues.SpinWheel
                 SpinWheelJsonFormat spinwheelJsonData = new SpinWheelJsonFormat(spinWheelData);
                 string json = JsonConvert.SerializeObject(spinwheelJsonData, Formatting.Indented);
                 File.WriteAllText(_filePath, json);
-                Debug.Log("Data written to JSON. at path " + _filePath);
+                //Debug.Log("Data written to JSON. at path " + _filePath);
             }
             else
             {
-                Debug.LogError("spinWheelData not found");
+                //Debug.LogError("spinWheelData not found");
             }
         
         }
@@ -55,13 +55,14 @@ namespace Featrues.SpinWheel
             if (!File.Exists(_filePath))
             {
                 Debug.LogError("Save file not found at: " + _filePath);
-                return false;
+                SaveDataToJson();
+                //return false;
             }
 
             string json = File.ReadAllText(_filePath);
-            Debug.Log(json);
+            //Debug.Log(json);
             SpinWheelJsonFormat loadedJsonData = JsonConvert.DeserializeObject<SpinWheelJsonFormat>(json);
-            loadedJsonData.DebugData();
+            //loadedJsonData.DebugData();
             if (loadedJsonData != null)
             {
                 loadedSpinWheelData.ConvertToSpinWheelData( loadedJsonData); 

@@ -71,7 +71,7 @@ public abstract class GameState : State
             var hudPrefab = Resources.Load<GameObject>(hudPrefabId);
             if (hudPrefab == null)
             {
-                Debug.LogError($"[GameState] HUD prefab '{hudPrefabId}' not found in Resources.");
+                //Debug.LogError($"[GameState] HUD prefab '{hudPrefabId}' not found in Resources.");
                 yield break;
             }
 
@@ -99,7 +99,7 @@ public abstract class GameState : State
         {
             gameHudInstance.Hide(() =>
             {
-                Debug.Log("GameHud instance hided.");
+                //Debug.Log("GameHud instance hided.");
                 if (poolGameHud)
                 {
                     statePooler.Release(hudPrefabId, _spawnedHud);

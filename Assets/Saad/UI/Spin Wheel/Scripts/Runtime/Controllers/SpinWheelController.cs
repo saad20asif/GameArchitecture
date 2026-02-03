@@ -35,7 +35,7 @@ namespace Featrues.SpinWheel
         {
             List<SliceData> slicesData = spinWheelConfigurations.loadedSpinWheelData.SlicesData;
             _nextRewardedIndex = GetRandomSliceIndex(slicesData);
-            slicesData[_nextRewardedIndex].DebugData();
+            //slicesData[_nextRewardedIndex].DebugData();
             RewardedIndex.SetValue(_nextRewardedIndex);
         }
         private int GetRandomSliceIndex(List<SliceData> slices)

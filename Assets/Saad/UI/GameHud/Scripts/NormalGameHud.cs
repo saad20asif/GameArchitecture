@@ -50,13 +50,13 @@ public class NormalGameHud : GameHud
     {
         base.Resume();
         Paused = false;
-        print("Normal GameHud Resume Called!");
+        //print("Normal GameHud Resume Called!");
     }
 
     public override void Pause()
     {
         base.Pause();
         Paused = true;
-        print("Normal GameHud Pause Called!");
+        //print("Normal GameHud Pause Called!");
     }
 }
