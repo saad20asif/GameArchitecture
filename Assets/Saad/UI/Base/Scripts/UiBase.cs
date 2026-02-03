@@ -98,7 +98,7 @@ namespace Blues.Core.UI
 
         protected void MakeStateInteractable(bool flag)
         {
-            _canvasGroup.interactable = flag;
+            //_canvasGroup.interactable = flag;
             _canvasGroup.blocksRaycasts = flag;
         }
 

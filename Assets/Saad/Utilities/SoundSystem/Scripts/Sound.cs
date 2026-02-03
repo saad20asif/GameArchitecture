@@ -2,7 +2,7 @@
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-namespace THEBADDEST.SoundSystem
+namespace Blues.Core.SoundSystem
 {
     [Serializable]
     [InlineProperty]

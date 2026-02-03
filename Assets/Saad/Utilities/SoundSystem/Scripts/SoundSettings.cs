@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 
-namespace THEBADDEST.SoundSystem
+namespace Blues.Core.SoundSystem
 {
 	[CreateAssetMenu(fileName = "SoundSettings", menuName = "THEBADDEST/SoundSystem/SoundSettings", order = 0)]
 	public class SoundSettings : ScriptableObject

@@ -6,7 +6,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using THEBADDEST.Coroutines;
 
-namespace THEBADDEST.SoundSystem
+namespace Blues.Core.SoundSystem
 {
     [CreateAssetMenu(fileName = "SoundService", menuName = "THEBADDEST/SoundSystem/SoundService", order = 0)]
     public class SoundService : ScriptableObject, IList<Sound>

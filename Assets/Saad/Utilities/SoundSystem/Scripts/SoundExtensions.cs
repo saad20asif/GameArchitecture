@@ -1,8 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using THEBADDEST.Coroutines;
 
-namespace THEBADDEST.SoundSystem
+namespace Blues.Core.SoundSystem
 {
 	/// <summary>
 	/// Extension methods for sound-related functionality

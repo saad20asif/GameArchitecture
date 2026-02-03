@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace THEBADDEST.SoundSystem
+namespace Blues.Core.SoundSystem
 {
     public class AudioSourcePool
     {
