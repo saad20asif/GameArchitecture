@@ -18,7 +18,6 @@ namespace Blues.Core.Application
         private string _sceneName = "GameScene";
         public override IEnumerator Enter(IState _listener)
         {
-            Debug.Log("Splash State init has been called!");
             yield return base.Enter(_listener);
 
             _applicationFlowController = Instantiate(Resources.Load<ApplicationFlowController>("ApplicationFlowController"));
@@ -47,16 +46,16 @@ namespace Blues.Core.Application
             if (gameScene.IsValid())
             {
                 SceneManager.SetActiveScene(gameScene);
-                Debug.Log("Game scene activated successfully.");
+                //Debug.Log("Game scene activated successfully.");
             }
-            else
+            /*else
             {
                 Debug.LogWarning("Game scene is not valid.");
-            }
+            }*/
         }
         public override IEnumerator Exit()
         {
-            Debug.Log("Splash State Exit has been called!");
+            //Debug.Log("Splash State Exit has been called!");
             yield return base.Exit();
         }
         private IEnumerator GameSceneLoading()

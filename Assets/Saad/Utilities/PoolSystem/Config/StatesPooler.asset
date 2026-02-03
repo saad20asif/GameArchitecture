@@ -39,7 +39,7 @@ MonoBehaviour:
     MaxSize: 1
     Prewarm: 0
   - PoolID: SpinWheel
-    Prefab: {fileID: 8684215832980734760, guid: f579844a64fb0a54b80f0c693e4a985d, type: 3}
+    Prefab: {fileID: 5555097029527767631, guid: 67f4ee6f9ebebe241884024142b3a9f2, type: 3}
     DefaultCapacity: 1
     MaxSize: 1
     Prewarm: 0

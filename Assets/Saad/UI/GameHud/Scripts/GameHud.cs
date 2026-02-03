@@ -93,7 +93,7 @@ namespace Blues.Core.GameHud
         }
         public virtual void Resume()
         {
-            print("Resssss ");
+            //print("Resssss ");
             _canvasGroup.interactable = true;
             _canvasGroup.blocksRaycasts = true;
             Show();
@@ -104,7 +104,7 @@ namespace Blues.Core.GameHud
             _canvasGroup.blocksRaycasts = false;
             HideGameHudBars(() =>
             {
-                print("Gamebars hided!");
+                //print("Gamebars hided!");
             });
         }
     }

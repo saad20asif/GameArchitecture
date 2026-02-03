@@ -20,7 +20,6 @@ namespace Blues.Core.Application
         private IEnumerator Start()
         {
             UnityEngine.Application.targetFrameRate = AndroidFrameRate;
-            Debug.Log("ApplicationBase Start called");
             _timeMachineCo = StartCoroutine(TimeMachine.Tick());
             yield return FiniteStateMachine.Init();
         }

@@ -17,4 +17,5 @@ MonoBehaviour:
   usePooling: 1
   uIStatesPooler: {fileID: 11400000, guid: 0c9e29a0676273041bc3a9cddff8c570, type: 2}
   backBtnPressedEvent: {fileID: 11400000, guid: 991403f9e1b00374abd3b1e13d5ffc0a, type: 2}
-  GoToRateUsEvent: {fileID: 11400000, guid: 85b2fcbdf70890f478056871336c2382, type: 2}
+  spinWheelConfigurations: {fileID: 11400000, guid: 6771b31bcfe6ab3478491aee0a52be0f, type: 2}
+  OnSpinWheelDataLoaded: {fileID: 11400000, guid: ee3dcb2c091d02845917a2664c3c62d3, type: 2}
