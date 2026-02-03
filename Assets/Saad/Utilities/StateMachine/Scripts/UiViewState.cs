@@ -64,21 +64,21 @@ namespace Blues.Core.StateMachine
         {
             if (_uiInstance != null)
             {
-                _uiInstance.Hide(() =>
+                yield return _uiInstance.Hide(); 
+
+                if (usePooling)
                 {
-                    if (usePooling)
-                    {
-                        uIStatesPooler.Release(stateId, _uiInstance.gameObject);
-                    }
-                    else if (_spawnedInstance != null)
-                    {
-                        Destroy(_spawnedInstance);
-                    }
-                });
+                    uIStatesPooler.Release(stateId, _uiInstance.gameObject);
+                }
+                else if (_spawnedInstance != null)
+                {
+                    Destroy(_spawnedInstance);
+                }
             }
 
             yield return base.Exit();
         }
+
 
         public override IEnumerator Pause()
         {

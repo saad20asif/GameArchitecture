@@ -11,6 +11,7 @@ public class StateAnimationConfig : ScriptableObject
     public Ease ExitEase = Ease.InBack;
     public float EnterDuration = 0.3f;
     public float ExitDuration = 0.3f;
+    public float StartScale = 0.5f;
 }
 
 public enum DefaultAnimationType

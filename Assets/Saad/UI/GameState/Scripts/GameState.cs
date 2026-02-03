@@ -94,21 +94,19 @@ public abstract class GameState : State
 
     public override IEnumerator Exit()
     {
-        // 1. Hide HUD
+        // 1. Hide HUD (WAIT)
         if (gameHudInstance != null)
         {
-            gameHudInstance.Hide(() =>
+            yield return gameHudInstance.Hide();
+
+            if (poolGameHud)
             {
-                //Debug.Log("GameHud instance hided.");
-                if (poolGameHud)
-                {
-                    statePooler.Release(hudPrefabId, _spawnedHud);
-                }
-                else if (_spawnedHud != null)
-                {
-                    Destroy(_spawnedHud);
-                }
-            });
+                statePooler.Release(hudPrefabId, _spawnedHud);
+            }
+            else if (_spawnedHud != null)
+            {
+                Destroy(_spawnedHud);
+            }
         }
 
         // 2. Remove gameplay
@@ -129,6 +127,7 @@ public abstract class GameState : State
         yield return base.Exit();
         GameStateExit?.Invoke();
     }
+
 
     public override IEnumerator Pause()
     {

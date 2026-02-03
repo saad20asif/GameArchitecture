@@ -7,7 +7,6 @@ public class UiAnimationSystem
 {
     private CanvasGroup _canvasGroup;
     private RectTransform _uiPanel;
-    private Animator _animator;
     private StateAnimationConfig _config;
     private Coroutine _currentAnimationCoroutine;
     private Tween _currentTween;
@@ -62,26 +61,10 @@ public class UiAnimationSystem
         {
             _monoBehaviour.StopCoroutine(_currentAnimationCoroutine);
             _currentAnimationCoroutine = null;
-            if (_animator != null)
-            {
-                _animator.enabled = false;
-            }
         }
         
         _isAnimating = false;
     }
-
-    public void ResetToShownState()
-    {
-        _canvasGroup.alpha = 1f;
-        _uiPanel.localScale = Vector3.one;
-        _uiPanel.localPosition = new Vector3(0, _uiPanel.localPosition.y, _uiPanel.localPosition.z);
-        if (_animator != null)
-        {
-            _animator.enabled = false;
-        }
-    }
-
     private void SetInitialState(AnimationPhase phase)
     {
         DefaultAnimationType type = GetAnimationType(phase);
@@ -105,7 +88,7 @@ public class UiAnimationSystem
             case DefaultAnimationType.Scale:
                 _uiPanel.localScale = phase switch
                 {
-                    AnimationPhase.Enter => Vector3.zero,
+                    AnimationPhase.Enter => new Vector3(_config.StartScale, _config.StartScale, _config.StartScale),
                     _ => Vector3.one
                 };
                 break;
@@ -119,16 +102,6 @@ public class UiAnimationSystem
                 break;
         }
     }
-    private void PlayCustomAnimation(AnimationClip clip, Action onComplete)
-    {
-        if (_animator == null || clip == null) return;
-
-        _animator.enabled = true;
-        _animator.Play(clip.name);
-
-        _currentAnimationCoroutine = _monoBehaviour.StartCoroutine(WaitForAnimationComplete(clip.length, onComplete));
-    }
-
     private IEnumerator WaitForAnimationComplete(float duration, Action callback)
     {
         yield return new WaitForSeconds(duration);
@@ -209,7 +182,7 @@ public class UiAnimationSystem
         return phase switch
         {
             AnimationPhase.Enter => Vector3.one,
-            AnimationPhase.Exit => Vector3.zero,
+            AnimationPhase.Exit => new Vector3(_config.StartScale, _config.StartScale, _config.StartScale),
             _ => Vector3.one
         };
     }

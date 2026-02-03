@@ -1,11 +1,11 @@
-using System;
+using System.Collections;
 
 namespace Blues.Core.UI
 {
     public interface IShowable
     {
         void Show();
-        void Hide(Action  callback);
+        IEnumerator Hide();
         void Pause();
         void Resume();
     }
