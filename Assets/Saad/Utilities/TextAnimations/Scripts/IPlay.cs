@@ -1,0 +1,4 @@
+interface IPlay
+{
+    void Play();
+}
