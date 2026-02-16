@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.Audio;
 
 
-namespace THEBADDEST.SoundSystem
+namespace Blues.Core.SoundSystem
 {
-	
+	[CreateAssetMenu(fileName = "SoundSettings", menuName = "THEBADDEST/SoundSystem/SoundSettings", order = 0)]
 	public class SoundSettings : ScriptableObject
 	{
 
@@ -52,6 +52,7 @@ namespace THEBADDEST.SoundSystem
 		}
 		public AudioMixerGroup GetAudioMixerGroup(SoundType type)
 		{
+			//// Debug.Log("audioMixer "+audioMixer.name);
 			switch (type)
 			{
 				case SoundType.SFX:

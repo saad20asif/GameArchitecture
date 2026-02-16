@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6aec7af4ec08c3f4d91570990cb28468, type: 3}
+  m_Name: AdvancedMoveUIConfig
+  m_EditorClassIdentifier: 
+  anticipationTime: 0.15
+  anticipationEase: 27
+  enableScaleAnticipation: 1
+  anticipationScale: 1.25
+  targetScale: 0.2
+  enableSquashStretch: 0
+  squashScale: 0.8
+  stretchScale: 1.5
+  enableReverseAnticipation: 1
+  reverseDistance: 1
+  reverseEase: 6
+  enablePerpendicularAnticipation: 0
+  perpendicularDistance: 30
+  slideLeft: 0
+  perpendicularDuration: 0.15
+  perpendicularEase: 6
+  enableRotation: 0
+  rotationAxis: {x: 0, y: 0, z: 1}
+  rotationSpeed: 360
+  randomRotationDirection: 0
+  hitDuration: 0.7
+  hitEase: 5
+  impactParticleId: UISplash
+  playImpactOnComplete: 1
+  returnParticlesAfter: 2
+  impactOffset: {x: 0, y: 0, z: 0}
+  particlesScale: 1

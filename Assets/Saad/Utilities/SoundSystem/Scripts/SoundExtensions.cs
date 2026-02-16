@@ -2,8 +2,7 @@
 using System;
 using THEBADDEST.Coroutines;
 
-
-namespace THEBADDEST.SoundSystem
+namespace Blues.Core.SoundSystem
 {
 	/// <summary>
 	/// Extension methods for sound-related functionality
@@ -24,7 +23,7 @@ namespace THEBADDEST.SoundSystem
 					CachedSettings = Resources.Load<SoundSettings>("SoundSettings");
 					if (CachedSettings == null)
 					{
-						Debug.LogError("SoundSettings not found in Resources folder!");
+						// Debug.LogError("SoundSettings not found in Resources folder!");
 					}
 				}
 				return CachedSettings;

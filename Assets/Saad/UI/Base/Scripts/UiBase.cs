@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using Blues.Core.Variables;
 using UnityEngine;
 
 namespace Blues.Core.UI
 {
-    public abstract class UiBase : MonoBehaviour, IShowable
+    public abstract class UIBase : MonoBehaviour, IShowable
     {
         [SerializeField] protected StateAnimationConfig animationConfig;
         [SerializeField] protected RectTransform UIPanel;
@@ -22,18 +23,21 @@ namespace Blues.Core.UI
         protected virtual void Awake()
         {
             _canvas = GetComponent<Canvas>();
-            _canvasGroup = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
-            _canvas.sortingOrder = currentStateSortingOrder.GetValue();
-            _canvas.planeDistance = 5;
+            _canvasGroup = GetComponent<CanvasGroup>();
             
-            if (_canvas.worldCamera == null)
-                _canvas.worldCamera = Camera.main;
-            
+            // Validate setup
+            if (_canvas.worldCamera == null) _canvas.worldCamera = Camera.main;
+            if (UIPanel == null) UIPanel = GetComponent<RectTransform>();
+
             _animationSystem = new UiAnimationSystem(this, _canvasGroup, UIPanel, animationConfig);
         }
 
         public virtual void Show()
         {
+            if(currentStateSortingOrder != null) 
+                _canvas.sortingOrder = currentStateSortingOrder.GetValue();
+            
+            _canvas.planeDistance = 5;
             gameObject.SetActive(true);
             _animationSystem.PlayAnimation(AnimationPhase.Enter, () =>
             {
@@ -41,30 +45,26 @@ namespace Blues.Core.UI
             });
         }
 
-        public virtual void Hide(Action callback)
+        public virtual IEnumerator Hide()
         {
             if (_isHiding)
-            {
-                // If already hiding, queue the new callback
-                var originalCallback = _pendingHideCallback;
-                _pendingHideCallback = () =>
-                {
-                    originalCallback?.Invoke();
-                    callback?.Invoke();
-                };
-                return;
-            }
-            
+                yield break;
+
             _isHiding = true;
-            _pendingHideCallback = callback;
             MakeStateInteractable(false);
+
+            bool completed = false;
+
             _animationSystem.PlayAnimation(AnimationPhase.Exit, () =>
             {
-                OnHideComplete();
-                _pendingHideCallback?.Invoke();
-                _isHiding = false;
-                _pendingHideCallback = null;
+                completed = true;
             });
+
+            // FSM WAITS here
+            yield return new WaitUntil(() => completed);
+
+            gameObject.SetActive(false);
+            _isHiding = false;
         }
 
         private void OnHideComplete()
@@ -98,7 +98,7 @@ namespace Blues.Core.UI
 
         protected void MakeStateInteractable(bool flag)
         {
-            _canvasGroup.interactable = flag;
+            //_canvasGroup.interactable = flag;
             _canvasGroup.blocksRaycasts = flag;
         }
 

@@ -46,7 +46,6 @@ namespace Blues.Core.GameHud
                 {
                     _canvasGroup = gameObject.AddComponent<CanvasGroup>();
                 }
-                _canvas.sortingOrder = currentStateSortingOrder.GetValue();
             }
             // Store the initial positions of Header and Footer
             _headerInitialPosition = Header.anchoredPosition;
@@ -56,19 +55,37 @@ namespace Blues.Core.GameHud
         public virtual void Show()
         {
             //Debug.Log("GameHud Show called!");
+            if(currentStateSortingOrder != null) 
+                _canvas.sortingOrder = currentStateSortingOrder.GetValue();
+            
+            _canvas.planeDistance = 5;
             _canvasGroup.interactable = true;
             _canvasGroup.blocksRaycasts = true;
             HudAnimations.SlideInFromAbove(_headerInitialPosition, Header, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
             HudAnimations.SlideInFromBelow(_headerInitialPosition, Footer, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
         }
 
-        public virtual void Hide(Action callback =null)
+        public IEnumerator Hide()
         {
-            // Slide out animations for Header and Footer
-            HideGameHudBars(callback);
-            //Destroy(gameObject);
-            // Optionally kill any ongoing DOTween animations associated with this UI element
-            DOTween.Kill(this);
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
+
+            bool completed = false;
+
+            Sequence hideSequence = DOTween.Sequence();
+
+            hideSequence
+                .Append(HudAnimations.SlideOutAbove(Header, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut))
+                .Join(HudAnimations.SlideOutBelow(Footer, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut))
+                .OnComplete(() =>
+                {
+                    completed = true;
+                });
+
+            yield return new WaitUntil(() => completed);
+
+            DOTween.Kill(Header);
+            DOTween.Kill(Footer);
         }
         private void HideGameHudBars(Action callback = null)
         {

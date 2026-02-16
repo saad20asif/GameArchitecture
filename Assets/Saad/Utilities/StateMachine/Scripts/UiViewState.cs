@@ -17,7 +17,7 @@ namespace Blues.Core.StateMachine
         [InfoBox("Ensure prefab is registered in PoolManagerSO.", InfoMessageType.None)]
         private PoolManagerSO uIStatesPooler;
 
-        private UiBase _uiInstance;
+        private UIBase _uiInstance;
         private GameObject _spawnedInstance;
 
         public override IEnumerator Enter(IState previous)
@@ -49,7 +49,7 @@ namespace Blues.Core.StateMachine
                 _spawnedInstance = viewObject;
             }
 
-            _uiInstance = viewObject.GetComponent<UiBase>();
+            _uiInstance = viewObject.GetComponent<UIBase>();
             if (_uiInstance == null)
             {
                 Debug.LogError($"[UIViewState] GameObject at '{stateId}' does not contain UiBase component.");
@@ -64,21 +64,21 @@ namespace Blues.Core.StateMachine
         {
             if (_uiInstance != null)
             {
-                _uiInstance.Hide(() =>
+                yield return _uiInstance.Hide(); 
+
+                if (usePooling)
                 {
-                    if (usePooling)
-                    {
-                        uIStatesPooler.Release(stateId, _uiInstance.gameObject);
-                    }
-                    else if (_spawnedInstance != null)
-                    {
-                        Destroy(_spawnedInstance);
-                    }
-                });
+                    uIStatesPooler.Release(stateId, _uiInstance.gameObject);
+                }
+                else if (_spawnedInstance != null)
+                {
+                    Destroy(_spawnedInstance);
+                }
             }
 
             yield return base.Exit();
         }
+
 
         public override IEnumerator Pause()
         {

@@ -2,7 +2,7 @@ using Blues.Core.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelFailView : UiBase
+public class LevelFailView : UIBase
 {
     [SerializeField] private Button NextBtn;
     [SerializeField] private LevelFailState LevelFailState;

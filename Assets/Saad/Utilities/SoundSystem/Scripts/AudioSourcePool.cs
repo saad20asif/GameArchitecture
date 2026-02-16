@@ -1,83 +1,90 @@
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace THEBADDEST.SoundSystem
+namespace Blues.Core.SoundSystem
 {
     public class AudioSourcePool
     {
-        private readonly Transform parent;
-        private readonly IObjectPool<AudioSource> pool;
-        private readonly int maxSize;
+        private readonly Transform _parent;
+        private readonly IObjectPool<AudioSource> _pool;
 
         public AudioSourcePool(Transform parent, int maxSize = 30)
         {
-            this.parent = parent;
-            this.maxSize = maxSize;
+            _parent = parent;
 
-            // Create the object pool with Unity's built-in pooling system
-            pool = new ObjectPool<AudioSource>(
+            _pool = new ObjectPool<AudioSource>(
                 createFunc: CreateNewAudioSource,
                 actionOnGet: OnTakeFromPool,
                 actionOnRelease: OnReturnToPool,
                 actionOnDestroy: OnDestroyPoolObject,
                 collectionCheck: true,
-                defaultCapacity: 1,
+                defaultCapacity: 8,
                 maxSize: maxSize
             );
         }
 
         private AudioSource CreateNewAudioSource()
         {
-            GameObject obj = new GameObject("PooledAudioSource", typeof(AudioSource));
-            obj.transform.SetParent(parent, false);
-            AudioSource source = obj.GetComponent<AudioSource>();
+            var obj = new GameObject("PooledAudioSource", typeof(AudioSource));
+            obj.transform.SetParent(_parent, false);
+
+            var source = obj.GetComponent<AudioSource>();
             source.playOnAwake = false;
+
+            // Add once. Never AddComponent at runtime again.
+            var autoReturn = obj.AddComponent<AutoReturnToPool>();
+            autoReturn.Bind(source);
+
             return source;
         }
 
         private void OnTakeFromPool(AudioSource source)
         {
             source.gameObject.SetActive(true);
+
+            // Reset per-take
+            source.Stop();
             source.volume = 1f;
             source.pitch = 1f;
             source.loop = false;
             source.spatialBlend = 0f;
             source.outputAudioMixerGroup = null;
             source.clip = null;
+
+            // Ensure auto-return is disabled until requested.
+            var autoReturn = source.GetComponent<AutoReturnToPool>();
+            autoReturn.Disable();
         }
 
         private void OnReturnToPool(AudioSource source)
         {
-            if (source != null)
-            {
-                source.Stop();
-                source.clip = null;
-                source.outputAudioMixerGroup = null;
-                source.gameObject.SetActive(false);
-            }
+            if (source == null) return;
+
+            var autoReturn = source.GetComponent<AutoReturnToPool>();
+            autoReturn.Disable();
+
+            source.Stop();
+            source.clip = null;
+            source.outputAudioMixerGroup = null;
+            source.gameObject.SetActive(false);
         }
 
         private void OnDestroyPoolObject(AudioSource source)
         {
-            if (source != null)
-            {
-                Object.Destroy(source.gameObject);
-            }
+            if (source != null) Object.Destroy(source.gameObject);
         }
 
-        public AudioSource Get()
-        {
-            return pool.Get();
-        }
+        public AudioSource Get() => _pool.Get();
 
         public void Return(AudioSource source)
         {
-            if (source != null)
-            {
-                pool.Release(source);
-            }
+            if (source != null) _pool.Release(source);
         }
 
+        /// <summary>
+        /// For non-looping clips: returns to pool automatically after playback ends.
+        /// Allocation-free (no coroutine).
+        /// </summary>
         public void ReturnWhenFinished(AudioSource source)
         {
             if (source == null) return;
@@ -85,40 +92,62 @@ namespace THEBADDEST.SoundSystem
             if (!source.isPlaying)
             {
                 Return(source);
+                return;
             }
-            else
-            {
-                source.gameObject.AddComponent<AutoReturnToPool>().Initialize(this);
-            }
+
+            var autoReturn = source.GetComponent<AutoReturnToPool>();
+            autoReturn.Enable(this);
         }
     }
 
-    // Helper component to automatically return the AudioSource to pool when finished playing
-    public class AutoReturnToPool : MonoBehaviour
+    /// <summary>
+    /// Allocation-free "return when finished" helper.
+    /// Uses Update + DSP end time to avoid coroutine GC.
+    /// </summary>
+    public sealed class AutoReturnToPool : MonoBehaviour
     {
-        private AudioSourcePool pool;
-        private AudioSource audioSource;
+        private AudioSource _source;
+        private AudioSourcePool _pool;
+        private bool _armed;
+        private double _endDspTime;
 
-        public void Initialize(AudioSourcePool pool)
+        public void Bind(AudioSource source) => _source = source;
+
+        public void Enable(AudioSourcePool pool)
         {
-            this.pool = pool;
-            audioSource = GetComponent<AudioSource>();
-            StartCoroutine(WaitForSoundToFinish());
+            _pool = pool;
+            _armed = true;
+
+            // Predict end time. More reliable than polling with WaitForSeconds.
+            if (_source != null && _source.clip != null)
+            {
+                var pitch = Mathf.Max(0.0001f, _source.pitch);
+                _endDspTime = AudioSettings.dspTime + (_source.clip.length / pitch);
+            }
+            else
+            {
+                _endDspTime = AudioSettings.dspTime; // return next Update
+            }
         }
 
-        private System.Collections.IEnumerator WaitForSoundToFinish()
+        public void Disable()
         {
-            while (audioSource != null && audioSource.isPlaying)
-            {
-                yield return new WaitForSeconds(0.1f);
-            }
+            _armed = false;
+            _pool = null;
+            _endDspTime = 0;
+        }
 
-            if (pool != null && audioSource != null)
-            {
-                pool.Return(audioSource);
-            }
+        private void Update()
+        {
+            if (!_armed || _pool == null || _source == null) return;
 
-            Destroy(this); // Remove this component when done
+            // End condition: clip ended (or time passed and not playing).
+            if (!_source.isPlaying && AudioSettings.dspTime >= _endDspTime)
+            {
+                var pool = _pool; // local copy
+                Disable();
+                pool.Return(_source);
+            }
         }
     }
 }
