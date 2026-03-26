@@ -64,15 +64,19 @@ namespace Blues.Core.StateMachine
         {
             if (_uiInstance != null)
             {
-                yield return _uiInstance.Hide(); 
+                var instance = _uiInstance;
+                _uiInstance = null;          // null first — prevents double-release if Exit is called again mid-coroutine
+
+                yield return instance.Hide();
 
                 if (usePooling)
                 {
-                    uIStatesPooler.Release(stateId, _uiInstance.gameObject);
+                    uIStatesPooler.Release(stateId, instance.gameObject);
                 }
                 else if (_spawnedInstance != null)
                 {
                     Destroy(_spawnedInstance);
+                    _spawnedInstance = null;
                 }
             }
 

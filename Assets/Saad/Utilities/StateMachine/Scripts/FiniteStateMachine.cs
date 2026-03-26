@@ -99,10 +99,10 @@ namespace Blues.Core.StateMachine
             }
 
             yield return transition.Execute(); // Optional logic in the transition itself
-            yield return nextState.Enter(this); // Enter the new state
-
             CurrentState = nextState;
             OnStateEntered?.Invoke(CurrentState);
+            yield return nextState.Enter(this); // Enter the new state
+
         }
 
         // Reload the current state (exit → enter again)

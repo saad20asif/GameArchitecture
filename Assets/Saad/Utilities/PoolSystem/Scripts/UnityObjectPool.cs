@@ -117,7 +117,17 @@ namespace ProjectCore.PoolSystem
         }
 
         public T Get() => _pool.Get();
-        public void Release(T element) => _pool.Release(element);
+        public void Release(T element)
+        {
+            try
+            {
+                _pool.Release(element);
+            }
+            catch (InvalidOperationException e)
+            {
+                Debug.LogWarning($"[UnityObjectPool] Ignored double-release: {e.Message}");
+            }
+        }
         public void Clear() => _pool.Clear();
 
         public void Prewarm()
