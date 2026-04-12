@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/GameDevelopment/Projects/GameArchitecture/**)",
+      "Bash(find . -name *.unity -type f)",
+      "Bash(find /d/GameDevelopment/Projects/GameArchitecture/Assets/Saad -name \"*Splash*\" -o -name \"*Game*\" -type f | grep -E \"\\\\.\\(unity|cs\\)$\" | head -20)"
+    ]
+  }
+}

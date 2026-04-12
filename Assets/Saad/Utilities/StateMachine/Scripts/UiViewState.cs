@@ -31,7 +31,7 @@ namespace Blues.Core.StateMachine
                 viewObject = uIStatesPooler.Get(stateId);
                 if (viewObject == null)
                 {
-                    Debug.LogError($"[UIViewState] No pooled GameObject found for stateId: {stateId}");
+                    // PoolManagerSO.Get() already logged the error — just bail
                     yield break;
                 }
             }
@@ -57,6 +57,7 @@ namespace Blues.Core.StateMachine
             }
 
             viewObject.SetActive(true);
+            _uiInstance.SetSortingOrder(Listener.CurrentSortingOrder);
             _uiInstance.Show();
         }
 

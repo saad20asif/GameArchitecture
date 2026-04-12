@@ -35,22 +35,28 @@ public class ApplicationFlowController : BaseApplicationFlowController<Transitio
     protected override void RegisterFlowEvents()
     {
         GoToMainMenuEvent.Subscribe(GoToMainMenu);
-        GoToSpinWheelEvent.Subscribe(() => GoTo(SpinWheelTransition, UICloseReasons.FullScreenPlacement));
-        GoToGameEvent.Subscribe(() => GoTo(GameTransition, UICloseReasons.Game));
-        GoToLevelCompleteEvent.Subscribe(() => GoTo(LevelCompleteTransition, UICloseReasons.FullScreenPlacement));
-        GoToLevelFailEvent.Subscribe(() => GoTo(LevelFailTransition, UICloseReasons.FullScreenPlacement));
-        GoToRateUsEvent.Subscribe(() => GoTo(RateUsTransition, UICloseReasons.FullScreenPlacement));
+        GoToSpinWheelEvent.Subscribe(HandleGoToSpinWheel);
+        GoToGameEvent.Subscribe(HandleGoToGame);
+        GoToLevelCompleteEvent.Subscribe(HandleGoToLevelComplete);
+        GoToLevelFailEvent.Subscribe(HandleGoToLevelFail);
+        GoToRateUsEvent.Subscribe(HandleGoToRateUs);
     }
 
     protected override void UnregisterFlowEvents()
     {
         GoToMainMenuEvent.UnSubscribe(GoToMainMenu);
-        GoToSpinWheelEvent.UnSubscribe(() => GoTo(SpinWheelTransition, UICloseReasons.FullScreenPlacement));
-        GoToGameEvent.UnSubscribe(() => GoTo(GameTransition, UICloseReasons.Game));
-        GoToLevelCompleteEvent.UnSubscribe(() => GoTo(LevelCompleteTransition, UICloseReasons.FullScreenPlacement));
-        GoToLevelFailEvent.UnSubscribe(() => GoTo(LevelFailTransition, UICloseReasons.FullScreenPlacement));
-        GoToRateUsEvent.UnSubscribe(() => GoTo(RateUsTransition, UICloseReasons.FullScreenPlacement));
+        GoToSpinWheelEvent.UnSubscribe(HandleGoToSpinWheel);
+        GoToGameEvent.UnSubscribe(HandleGoToGame);
+        GoToLevelCompleteEvent.UnSubscribe(HandleGoToLevelComplete);
+        GoToLevelFailEvent.UnSubscribe(HandleGoToLevelFail);
+        GoToRateUsEvent.UnSubscribe(HandleGoToRateUs);
     }
+
+    private void HandleGoToSpinWheel()    => GoTo(SpinWheelTransition, UICloseReasons.FullScreenPlacement);
+    private void HandleGoToGame()         => GoTo(GameTransition, UICloseReasons.Game);
+    private void HandleGoToLevelComplete()=> GoTo(LevelCompleteTransition, UICloseReasons.FullScreenPlacement);
+    private void HandleGoToLevelFail()    => GoTo(LevelFailTransition, UICloseReasons.FullScreenPlacement);
+    private void HandleGoToRateUs()       => GoTo(RateUsTransition, UICloseReasons.FullScreenPlacement);
 
     private void GoToMainMenu(int reasonId)
     {

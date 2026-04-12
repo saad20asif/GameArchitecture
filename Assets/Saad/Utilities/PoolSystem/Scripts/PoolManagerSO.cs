@@ -133,7 +133,8 @@ namespace Blues.Core.PoolSystem
             if (_gameObjectPools.TryGetValue(poolId, out var pool))
                 return pool.Get();
 
-            throw new KeyNotFoundException($"Pool {poolId} not found");
+            Debug.LogError($"[PoolManagerSO] No pool registered for ID '{poolId}'. Check PoolManagerSO config.");
+            return null;
         }
 
         public void Release(string poolId, GameObject gameObject)

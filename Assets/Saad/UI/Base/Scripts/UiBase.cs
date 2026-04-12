@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Blues.Core.Variables;
 using UnityEngine;
 
 namespace Blues.Core.UI
@@ -9,7 +8,8 @@ namespace Blues.Core.UI
     {
         [SerializeField] protected StateAnimationConfig animationConfig;
         [SerializeField] protected RectTransform UIPanel;
-        [SerializeField] private Int currentStateSortingOrder;
+
+        private int _sortingOrder;
         
         private Canvas _canvas;
         private CanvasGroup _canvasGroup;
@@ -32,10 +32,15 @@ namespace Blues.Core.UI
             _animationSystem = new UiAnimationSystem(this, _canvasGroup, UIPanel, animationConfig);
         }
 
+        // Called by UIViewState before Show() so the canvas lands on the correct layer
+        public void SetSortingOrder(int order)
+        {
+            _sortingOrder = order;
+        }
+
         public virtual void Show()
         {
-            if(currentStateSortingOrder != null) 
-                _canvas.sortingOrder = currentStateSortingOrder.GetValue();
+            _canvas.sortingOrder = _sortingOrder;
             
             _canvas.planeDistance = 5;
             gameObject.SetActive(true);

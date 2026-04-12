@@ -1,7 +1,6 @@
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
-using Blues.Core.Variables;
 using THEBADDEST.Coroutines;
 using UnityEngine;
 
@@ -23,8 +22,10 @@ namespace Blues.Core.StateMachine
         // Lookup used to quickly check if a state is paused (for safety)
         private readonly HashSet<State> _pausedStateLookup = new();
 
-        // Tracks sort order for UI layering of state views
-        [SerializeField] private Int currentStateSortingOrder;
+        // Tracks sort order for UI layering of state views.
+        // Plain int — NOT a ScriptableObject. Resets to 0 on every play session automatically.
+        private int _sortingOrder;
+        public int CurrentSortingOrder => _sortingOrder;
 
         // Handle for an active coroutine so we can cancel overlapping transitions
         private Coroutine _transitionCoroutine;
@@ -122,7 +123,7 @@ namespace Blues.Core.StateMachine
         {
             while (PausedStates.Count > 0)
             {
-                currentStateSortingOrder.Decrement(1);
+                _sortingOrder--;
                 var paused = PausedStates.Pop();
                 _pausedStateLookup.Remove(paused);
                 yield return paused.Exit();
@@ -157,7 +158,7 @@ namespace Blues.Core.StateMachine
                 {
                     var popped = PausedStates.Pop();
                     _pausedStateLookup.Remove(popped);
-                    currentStateSortingOrder.Decrement(1);
+                    _sortingOrder--;
                     yield return popped.Exit();
                     OnStateExited?.Invoke(popped);
                 }
@@ -188,7 +189,7 @@ namespace Blues.Core.StateMachine
                 Debug.LogError($"State '{CurrentState.name}' is already in the paused stack! Cannot push again.");
             }
 #endif
-            currentStateSortingOrder.Increment(1);
+            _sortingOrder++;
             yield return CurrentState.Pause();
             OnStatePaused?.Invoke(CurrentState);
 
@@ -215,7 +216,7 @@ namespace Blues.Core.StateMachine
                 yield break;
             }
 
-            currentStateSortingOrder.Decrement(1);
+            _sortingOrder--;
             yield return target.Resume();
             OnStateResumed?.Invoke(target);
 
