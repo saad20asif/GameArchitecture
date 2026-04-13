@@ -1,29 +1,27 @@
+using System;
 using Blues.Core.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// MainMenuView — owns HOW the main menu looks, nothing else.
+///
+/// Rules:
+///   - Never holds a reference to MainMenuState or any State/Service
+///   - Fires events upward; MainMenuState subscribes in Enter(), unsubscribes in Exit()
+///   - Button listeners wired once in Awake() — GO is pooled, not destroyed
+/// </summary>
 public class MainMenuView : UIBase
 {
-    [SerializeField] private MainMenuState MainMenuState;
     [SerializeField] private Button PlayBtn;
-    [SerializeField] private Button GoToSpinWheel;
 
-    private void OnEnable()
+    public event Action OnPlayPressed;
+
+    protected override void Awake()
     {
-        PlayBtn.onClick.AddListener(OnNextBtnClicked);
-        GoToSpinWheel.onClick.AddListener(OnSpinWheelClicked);
+        base.Awake();
+        PlayBtn.onClick.AddListener(OnPlayBtnClicked);
     }
-    private void OnDisable()
-    {
-        PlayBtn.onClick.RemoveListener(OnNextBtnClicked);
-        GoToSpinWheel.onClick.RemoveListener(OnSpinWheelClicked);
-    }
-    private void OnNextBtnClicked()
-    {
-        MainMenuState.GoToPlayState();
-    }
-    private void OnSpinWheelClicked()
-    {
-        MainMenuState.GoToSpinWheel();
-    }
+
+    private void OnPlayBtnClicked() => OnPlayPressed?.Invoke();
 }

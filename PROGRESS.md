@@ -50,12 +50,13 @@
 
 | # | Item | Status | Date |
 |---|------|--------|------|
-| P1-01 | `ScreenManifest` ScriptableObject (ScreenId, Prefab, AnimPreset, SortGroup, Layout, Events) | ⬜ Pending | — |
-| P1-02 | `ScreenRegistry` ScriptableObject (array of manifests, auto-warms pools on boot) | ⬜ Pending | — |
+| P1-01 | `ScreenManifest` ScriptableObject (ScreenId, Prefab, AnimPreset, SortGroup, Layout, Events) | ✅ Done | 2026-04-12 |
+| P1-02 | `ScreenRegistry` ScriptableObject (array of manifests, auto-warms pools on boot) | ✅ Done | 2026-04-12 |
 | P1-03 | `Assets/Game/Screens/[Name]/` folder convention + Editor warning for violations | ⬜ Pending | — |
-| P1-04 | `AnimationPreset` library — named SO assets replacing inline `StateAnimationConfig` | ⬜ Pending | — |
-| P1-05 | `ComponentTag` enum + `TaggedComponent` MonoBehaviour (semantic anchors for AI agent) | ⬜ Pending | — |
-| P1-06 | `NavigationRequest` value object replacing raw `GoTo(Transition, UICloseReasons)` calls | ⬜ Pending | — |
+| P1-07 | MainMenu migration — reference implementation of screen contract | ✅ Done | 2026-04-12 |
+| P1-04 | `AnimationPreset` SO class scaffolded (`Assets/Game/Core/Screens/AnimationPreset.cs`) | ✅ Done | 2026-04-12 |
+| P1-05 | `ComponentTag` enum + `TaggedComponent` MonoBehaviour (semantic anchors for AI agent) | ✅ Done | 2026-04-12 |
+| P1-06 | `NavigationRequest` value object + `IStateContext` interface | ✅ Done | 2026-04-12 |
 
 ---
 
@@ -197,7 +198,7 @@
 
 ```
 Phase 0 — Critical Bug Fixes      ████████░░  4 / 5   (80%) — BUG-05 manual
-Phase 1 — Screen Contract         ░░░░░░░░░░  0 / 6   (0%)
+Phase 1 — Screen Contract         ████████░░  5 / 6   (83%) — P1-03 Editor tool pending
 Phase 2 — vContainer DI           ░░░░░░░░░░  0 / 6   (0%)
 Phase 3 — Modular Flow            ░░░░░░░░░░  0 / 10  (0%)
 Phase 4 — Service Interfaces      ░░░░░░░░░░  0 / 7   (0%)

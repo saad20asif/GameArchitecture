@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,44 +6,56 @@ using Blues.Core.Events;
 using Blues.Core.TimeUtility;
 using Blues.Core.GameHud;
 
+/// <summary>
+/// NormalGameHud — owns HOW the gameplay HUD looks, nothing else.
+///
+/// Rules:
+///   - Never holds a reference to NormalGameState or any State/Service
+///   - Fires events upward; NormalGameState subscribes in Enter(), unsubscribes in Exit()
+///   - Button listeners wired once in Awake() — GO is pooled, not destroyed
+///   - Tick GameEvent subscription lives in OnEnable/OnDisable (active only while visible)
+/// </summary>
 public class NormalGameHud : GameHud
 {
-    [SerializeField] private Button LevelCompleteBtn;
-    [SerializeField] private Button LevelFailBtn;
-    [SerializeField] private NormalGameState NormalGameState;
-    [SerializeField] private GameEvent Tick;
-    [SerializeField] private TextMeshProUGUI TimeText;
-    int seconds = 0;
+    [SerializeField] private Button            LevelCompleteBtn;
+    [SerializeField] private Button            LevelFailBtn;
+    [SerializeField] private GameEvent         Tick;
+    [SerializeField] private TextMeshProUGUI   TimeText;
+
+    public event Action OnLevelCompletePressed;
+    public event Action OnLevelFailPressed;
 
     public bool Paused { get; private set; }
 
+    private int _seconds;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        LevelCompleteBtn.onClick.AddListener(OnLevelCompleteBtnClicked);
+        LevelFailBtn.onClick.AddListener(OnLevelFailBtnClicked);
+    }
+
     private void OnEnable()
     {
-        UpdateTime();
-        LevelCompleteBtn.onClick.AddListener(OnLevelCompleteBtn);
-        LevelFailBtn.onClick.AddListener(OnLevelFailBtn);
+        _seconds = 0;
         Tick.Subscribe(UpdateTime);
     }
+
     private void OnDisable()
     {
-        LevelCompleteBtn.onClick.RemoveListener(OnLevelCompleteBtn);
-        LevelFailBtn.onClick.RemoveListener(OnLevelFailBtn);
         Tick.UnSubscribe(UpdateTime);
     }
-    private void OnLevelCompleteBtn()
-    {
-        NormalGameState.GoToLevelCompleteState();
-    }
-    private void OnLevelFailBtn()
-    {
-        NormalGameState.GoToLevelFailState();
-    }
+
+    private void OnLevelCompleteBtnClicked() => OnLevelCompletePressed?.Invoke();
+    private void OnLevelFailBtnClicked()     => OnLevelFailPressed?.Invoke();
+
     private void UpdateTime()
     {
         if (!Paused)
         {
-            seconds++;
-            TimeText.text = TimeManager.FormatTime(seconds);
+            _seconds++;
+            TimeText.text = TimeManager.FormatTime(_seconds);
         }
     }
 
@@ -50,13 +63,11 @@ public class NormalGameHud : GameHud
     {
         base.Resume();
         Paused = false;
-        //print("Normal GameHud Resume Called!");
     }
 
     public override void Pause()
     {
         base.Pause();
         Paused = true;
-        //print("Normal GameHud Pause Called!");
     }
 }

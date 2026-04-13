@@ -17,8 +17,15 @@ namespace Blues.Core.StateMachine
         [InfoBox("Ensure prefab is registered in PoolManagerSO.", InfoMessageType.None)]
         private PoolManagerSO uIStatesPooler;
 
-        private UIBase _uiInstance;
+        [ShowInInspector]private UIBase _uiInstance;
         private GameObject _spawnedInstance;
+
+        /// <summary>
+        /// Returns the active view instance cast to T.
+        /// Call in Enter() after base.Enter(), and in Exit() before base.Exit().
+        /// Returns null if the view has not been spawned yet or has already been released.
+        /// </summary>
+        protected T GetView<T>() where T : UIBase => _uiInstance as T;
 
         public override IEnumerator Enter(IState previous)
         {
