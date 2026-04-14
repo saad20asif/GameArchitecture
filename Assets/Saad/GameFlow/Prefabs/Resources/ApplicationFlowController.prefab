@@ -58,3 +58,5 @@ MonoBehaviour:
   LevelFailTransition: {fileID: 11400000, guid: 66e8885df9ed9674bbd3a35daff55685, type: 2}
   GoToRateUsEvent: {fileID: 11400000, guid: 85b2fcbdf70890f478056871336c2382, type: 2}
   RateUsTransition: {fileID: 11400000, guid: fb689b62c17249542849bdc743b2ab9d, type: 2}
+  _goToSettingsEvent: {fileID: 11400000, guid: 85f4d61746c805449b9822dbaa4267d3, type: 2}
+  _goToSettingsTransition: {fileID: 11400000, guid: 8a8cb5eb0e0a7ac419465135f5279452, type: 2}

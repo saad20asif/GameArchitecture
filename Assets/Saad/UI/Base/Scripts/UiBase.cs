@@ -10,15 +10,22 @@ namespace Blues.Core.UI
         [SerializeField] protected RectTransform UIPanel;
 
         private int _sortingOrder;
-        
+
         private Canvas _canvas;
         private CanvasGroup _canvasGroup;
 
         private UiAnimationSystem _animationSystem;
-        
+
         // Track animation state
         private Action _pendingHideCallback;
         private bool _isHiding;
+
+        /// <summary>
+        /// When false, Show/Hide skip the default animation system entirely.
+        /// Set by UIViewState before calling Show(). Subclasses can override
+        /// OnCustomShow / OnCustomHide to play their own animations.
+        /// </summary>
+        public bool UseDefaultAnimations { get; set; } = true;
         
         protected virtual void Awake()
         {
@@ -41,13 +48,23 @@ namespace Blues.Core.UI
         public virtual void Show()
         {
             _canvas.sortingOrder = _sortingOrder;
-            
             _canvas.planeDistance = 5;
             gameObject.SetActive(true);
-            _animationSystem.PlayAnimation(AnimationPhase.Enter, () =>
+
+            if (UseDefaultAnimations)
             {
+                _animationSystem.PlayAnimation(AnimationPhase.Enter, () =>
+                {
+                    MakeStateInteractable(true);
+                });
+            }
+            else
+            {
+                // No default animation — make interactable immediately,
+                // then let subclass run custom enter animation.
                 MakeStateInteractable(true);
-            });
+                OnCustomShow();
+            }
         }
 
         public virtual IEnumerator Hide()
@@ -58,23 +75,23 @@ namespace Blues.Core.UI
             _isHiding = true;
             MakeStateInteractable(false);
 
-            bool completed = false;
-
-            _animationSystem.PlayAnimation(AnimationPhase.Exit, () =>
+            if (UseDefaultAnimations)
             {
-                completed = true;
-            });
-
-            // FSM WAITS here
-            yield return new WaitUntil(() => completed);
+                bool completed = false;
+                _animationSystem.PlayAnimation(AnimationPhase.Exit, () =>
+                {
+                    completed = true;
+                });
+                yield return new WaitUntil(() => completed);
+            }
+            else
+            {
+                // Let subclass run custom exit animation and yield until done.
+                yield return OnCustomHide();
+            }
 
             gameObject.SetActive(false);
             _isHiding = false;
-        }
-
-        private void OnHideComplete()
-        {
-            gameObject.SetActive(false);
         }
 
         public virtual void Pause()
@@ -83,9 +100,11 @@ namespace Blues.Core.UI
             {
                 MakeStateInteractable(false);
                 Paused = true;
-                
-                // Complete any ongoing animations before pausing
-                _animationSystem.ForceCompleteCurrentAnimation();
+
+                if (UseDefaultAnimations)
+                    _animationSystem.ForceCompleteCurrentAnimation();
+
+                OnCustomPause();
             }
         }
 
@@ -94,12 +113,27 @@ namespace Blues.Core.UI
             if (Paused)
             {
                 Paused = false;
-                
-                // Complete pause animation before resuming
-                _animationSystem.ForceCompleteCurrentAnimation();
+
+                if (UseDefaultAnimations)
+                    _animationSystem.ForceCompleteCurrentAnimation();
+
                 MakeStateInteractable(true);
+                OnCustomResume();
             }
         }
+
+        /// <summary>Override to play a custom enter animation when UseDefaultAnimations is false.</summary>
+        protected virtual void OnCustomShow() { }
+
+        /// <summary>Override to play a custom exit animation when UseDefaultAnimations is false.
+        /// Yield until your animation finishes — FSM waits for this.</summary>
+        protected virtual IEnumerator OnCustomHide() { yield break; }
+
+        /// <summary>Override for custom pause behaviour (called regardless of UseDefaultAnimations).</summary>
+        protected virtual void OnCustomPause() { }
+
+        /// <summary>Override for custom resume behaviour (called regardless of UseDefaultAnimations).</summary>
+        protected virtual void OnCustomResume() { }
 
         protected void MakeStateInteractable(bool flag)
         {

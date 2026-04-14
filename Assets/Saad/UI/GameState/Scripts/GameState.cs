@@ -21,6 +21,12 @@ public abstract class GameState : State
     private PoolManagerSO statePooler;
 
 
+    [Header("Animations")]
+    [SerializeField]
+    [InfoBox("When OFF, GameHud skips its default header/footer slide animations. " +
+             "The Hud subclass can override Show/Hide/Pause/Resume for custom animations.", InfoMessageType.None)]
+    private bool useDefaultHudAnimations = true;
+
     [Header("State Events")]
     [SerializeField] private GameEvent GameStateEnter;
     [SerializeField] private GameEvent GameStatePaused;
@@ -82,6 +88,7 @@ public abstract class GameState : State
         if (gameHudInstance != null)
         {
             _iShowable = gameHudInstance;
+            gameHudInstance.UseDefaultAnimations = useDefaultHudAnimations;
             gameHudInstance.Show();
         }
         else

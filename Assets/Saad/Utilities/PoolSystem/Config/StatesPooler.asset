@@ -43,3 +43,13 @@ MonoBehaviour:
     DefaultCapacity: 1
     MaxSize: 1
     Prewarm: 0
+  - PoolID: Settings
+    Prefab: {fileID: 2529988179671370951, guid: df8ac7c7db0dc4a4ea9d7c67aca83f4c, type: 3}
+    DefaultCapacity: 1
+    MaxSize: 1
+    Prewarm: 0
+  - PoolID: CrazyJungle
+    Prefab: {fileID: 1154992601482643178, guid: 169fb6deb0082e9489893962b19382fb, type: 3}
+    DefaultCapacity: 1
+    MaxSize: 1
+    Prewarm: 0

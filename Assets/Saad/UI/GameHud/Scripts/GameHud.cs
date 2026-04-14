@@ -29,8 +29,15 @@ namespace Blues.Core.GameHud
 
         private Canvas _canvas;
         private CanvasGroup _canvasGroup;
-        
+
         [SerializeField] private Int currentStateSortingOrder;
+
+        /// <summary>
+        /// When false, Show/Hide/Pause/Resume skip the default header/footer slide animations.
+        /// Set by GameState before calling Show(). Subclasses can override
+        /// OnCustomShow / OnCustomHide / OnCustomPause / OnCustomResume for their own animations.
+        /// </summary>
+        public bool UseDefaultAnimations { get; set; } = true;
 
         protected virtual void Awake()
         {
@@ -54,15 +61,22 @@ namespace Blues.Core.GameHud
 
         public virtual void Show()
         {
-            //Debug.Log("GameHud Show called!");
-            if(currentStateSortingOrder != null) 
+            if(currentStateSortingOrder != null)
                 _canvas.sortingOrder = currentStateSortingOrder.GetValue();
-            
+
             _canvas.planeDistance = 5;
             _canvasGroup.interactable = true;
             _canvasGroup.blocksRaycasts = true;
-            HudAnimations.SlideInFromAbove(_headerInitialPosition, Header, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
-            HudAnimations.SlideInFromBelow(_headerInitialPosition, Footer, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
+
+            if (UseDefaultAnimations)
+            {
+                HudAnimations.SlideInFromAbove(_headerInitialPosition, Header, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
+                HudAnimations.SlideInFromBelow(_headerInitialPosition, Footer, HudBarsConfig.easeInDuration, HudBarsConfig.easeIn);
+            }
+            else
+            {
+                OnCustomShow();
+            }
         }
 
         public IEnumerator Hide()
@@ -70,23 +84,70 @@ namespace Blues.Core.GameHud
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
 
-            bool completed = false;
+            if (UseDefaultAnimations)
+            {
+                bool completed = false;
 
-            Sequence hideSequence = DOTween.Sequence();
+                Sequence hideSequence = DOTween.Sequence();
 
-            hideSequence
-                .Append(HudAnimations.SlideOutAbove(Header, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut))
-                .Join(HudAnimations.SlideOutBelow(Footer, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut))
-                .OnComplete(() =>
-                {
-                    completed = true;
-                });
+                hideSequence
+                    .Append(HudAnimations.SlideOutAbove(Header, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut))
+                    .Join(HudAnimations.SlideOutBelow(Footer, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut))
+                    .OnComplete(() =>
+                    {
+                        completed = true;
+                    });
 
-            yield return new WaitUntil(() => completed);
+                yield return new WaitUntil(() => completed);
 
-            DOTween.Kill(Header);
-            DOTween.Kill(Footer);
+                DOTween.Kill(Header);
+                DOTween.Kill(Footer);
+            }
+            else
+            {
+                yield return OnCustomHide();
+            }
         }
+
+        public virtual void Resume()
+        {
+            _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true;
+
+            if (UseDefaultAnimations)
+                Show();
+            else
+                OnCustomResume();
+        }
+
+        public virtual void Pause()
+        {
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
+
+            if (UseDefaultAnimations)
+            {
+                HideGameHudBars();
+            }
+            else
+            {
+                OnCustomPause();
+            }
+        }
+
+        /// <summary>Override for custom enter animation when UseDefaultAnimations is false.</summary>
+        protected virtual void OnCustomShow() { }
+
+        /// <summary>Override for custom exit animation when UseDefaultAnimations is false.
+        /// Yield until your animation finishes — GameState waits for this.</summary>
+        protected virtual IEnumerator OnCustomHide() { yield break; }
+
+        /// <summary>Override for custom pause animation when UseDefaultAnimations is false.</summary>
+        protected virtual void OnCustomPause() { }
+
+        /// <summary>Override for custom resume animation when UseDefaultAnimations is false.</summary>
+        protected virtual void OnCustomResume() { }
+
         private void HideGameHudBars(Action callback = null)
         {
             Sequence hideSequence = DOTween.Sequence();
@@ -95,34 +156,14 @@ namespace Blues.Core.GameHud
                         .Join(HudAnimations.SlideOutBelow(Footer, HudBarsConfig.easeOutDuration, HudBarsConfig.easeOut))
                         .OnComplete(() =>
                         {
-                            callback.Invoke();
-                            // Call the coroutine to unload assets after animations complete
-                            //StartCoroutine(UnloadAssets());
+                            callback?.Invoke();
                         });
         }
 
         private IEnumerator UnloadAssets()
         {
-            // Wait a frame to ensure the Destroy() call has been processed
             yield return null;
-            // Call Resources.UnloadUnusedAssets to free up memory
             yield return Resources.UnloadUnusedAssets();
-        }
-        public virtual void Resume()
-        {
-            //print("Resssss ");
-            _canvasGroup.interactable = true;
-            _canvasGroup.blocksRaycasts = true;
-            Show();
-        }
-        public virtual void Pause()
-        {
-            _canvasGroup.interactable = false;
-            _canvasGroup.blocksRaycasts = false;
-            HideGameHudBars(() =>
-            {
-                //print("Gamebars hided!");
-            });
         }
     }
 }

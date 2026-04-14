@@ -17,7 +17,13 @@ namespace Blues.Core.StateMachine
         [InfoBox("Ensure prefab is registered in PoolManagerSO.", InfoMessageType.None)]
         private PoolManagerSO uIStatesPooler;
 
-        [ShowInInspector]private UIBase _uiInstance;
+        [Header("Animations")]
+        [SerializeField]
+        [InfoBox("When OFF, UIBase skips the default animation system. " +
+                 "The View can override OnCustomShow / OnCustomHide for its own animations.", InfoMessageType.None)]
+        private bool useDefaultAnimations = true;
+
+        private UIBase _uiInstance;
         private GameObject _spawnedInstance;
 
         /// <summary>
@@ -64,6 +70,7 @@ namespace Blues.Core.StateMachine
             }
 
             viewObject.SetActive(true);
+            _uiInstance.UseDefaultAnimations = useDefaultAnimations;
             _uiInstance.SetSortingOrder(Listener.CurrentSortingOrder);
             _uiInstance.Show();
         }
