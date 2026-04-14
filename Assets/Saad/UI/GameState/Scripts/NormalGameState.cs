@@ -16,6 +16,7 @@ public class NormalGameState : GameState
 {
     [SerializeField] private GameEvent GoToLevelCompleteEvent;
     [SerializeField] private GameEvent GoToLevelFailEvent;
+    [SerializeField] private GameEvent GoToSettingsEvent;
 
     private NormalGameHud _hud;
 
@@ -33,6 +34,7 @@ public class NormalGameState : GameState
 
         _hud.OnLevelCompletePressed += HandleLevelComplete;
         _hud.OnLevelFailPressed     += HandleLevelFail;
+        _hud.OnSettingsPressed      += HandleSettings;
     }
 
     public override IEnumerator Exit()
@@ -41,6 +43,7 @@ public class NormalGameState : GameState
         {
             _hud.OnLevelCompletePressed -= HandleLevelComplete;
             _hud.OnLevelFailPressed     -= HandleLevelFail;
+            _hud.OnSettingsPressed      -= HandleSettings;
             _hud = null;
         }
 
@@ -49,4 +52,5 @@ public class NormalGameState : GameState
 
     private void HandleLevelComplete() => GoToLevelCompleteEvent.Invoke();
     private void HandleLevelFail()     => GoToLevelFailEvent.Invoke();
+    private void HandleSettings()      => GoToSettingsEvent.Invoke();
 }

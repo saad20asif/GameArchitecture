@@ -18,9 +18,11 @@ MonoBehaviour:
   poolGameplay: 1
   poolGameHud: 1
   statePooler: {fileID: 11400000, guid: 0c9e29a0676273041bc3a9cddff8c570, type: 2}
+  useDefaultHudAnimations: 1
   GameStateEnter: {fileID: 11400000, guid: 23cf083acd94ed64b9e7cd4c77488027, type: 2}
   GameStatePaused: {fileID: 11400000, guid: f6ca014ff8ab5334391f7b529b50b179, type: 2}
   GameStateResumed: {fileID: 11400000, guid: 8a7179a8563753743be1cf28dd3a054b, type: 2}
   GameStateExit: {fileID: 11400000, guid: a9c44cf64a87a95479c57e73e608f24e, type: 2}
   GoToLevelCompleteEvent: {fileID: 11400000, guid: b127c607009da264a81f6e3465b0080d, type: 2}
   GoToLevelFailEvent: {fileID: 11400000, guid: 2546da7c6ddcb964395a9b72bf972875, type: 2}
+  GoToSettingsEvent: {fileID: 11400000, guid: 5afe7256a9aecee4bae6b347d9760b0e, type: 2}

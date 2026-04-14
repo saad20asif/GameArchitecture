@@ -26,15 +26,6 @@ public class ApplicationFlowController : BaseApplicationFlowController<Transitio
     [Header("Rate Us")]
     [SerializeField] private GameEvent GoToRateUsEvent;
     [SerializeField] private Transition RateUsTransition;
-
-
-    [Header("Settings")]
-    [SerializeField] private GameEvent _goToSettingsEvent;
-    [SerializeField] private Transition _goToSettingsTransition;
-
-    [Header("CrazyJungle")]
-    [SerializeField] private GameEvent _goToCrazyJungleEvent;
-    [SerializeField] private Transition _goToCrazyJungleTransition;
     public void Boot()
     {
         BootFlow(MainMenuTransition, UICloseReasons.Home);
@@ -48,8 +39,6 @@ public class ApplicationFlowController : BaseApplicationFlowController<Transitio
         GoToLevelCompleteEvent.Subscribe(HandleGoToLevelComplete);
         GoToLevelFailEvent.Subscribe(HandleGoToLevelFail);
         GoToRateUsEvent.Subscribe(HandleGoToRateUs);
-            _goToSettingsEvent.Subscribe(HandleGoToSettings);
-        _goToCrazyJungleEvent.Subscribe(HandleGoToCrazyJungle);
 }
 
     protected override void UnregisterFlowEvents()
@@ -60,8 +49,6 @@ public class ApplicationFlowController : BaseApplicationFlowController<Transitio
         GoToLevelCompleteEvent.UnSubscribe(HandleGoToLevelComplete);
         GoToLevelFailEvent.UnSubscribe(HandleGoToLevelFail);
         GoToRateUsEvent.UnSubscribe(HandleGoToRateUs);
-            _goToSettingsEvent.UnSubscribe(HandleGoToSettings);
-        _goToCrazyJungleEvent.UnSubscribe(HandleGoToCrazyJungle);
 }
 
     private void HandleGoToSpinWheel()    => GoTo(SpinWheelTransition, UICloseReasons.FullScreenPlacement);
@@ -80,10 +67,4 @@ public class ApplicationFlowController : BaseApplicationFlowController<Transitio
 
         GoTo(MainMenuTransition, (UICloseReasons)reasonId);
     }
-
-    private void HandleGoToSettings() =>
-        GoTo(_goToSettingsTransition, UICloseReasons.Home);
-
-    private void HandleGoToCrazyJungle() =>
-        GoTo(_goToCrazyJungleTransition, UICloseReasons.Home);
 }

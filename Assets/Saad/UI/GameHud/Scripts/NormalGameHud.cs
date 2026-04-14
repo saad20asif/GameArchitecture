@@ -19,13 +19,13 @@ public class NormalGameHud : GameHud
 {
     [SerializeField] private Button            LevelCompleteBtn;
     [SerializeField] private Button            LevelFailBtn;
+    [SerializeField] private Button            settingsBtn;
     [SerializeField] private GameEvent         Tick;
     [SerializeField] private TextMeshProUGUI   TimeText;
 
     public event Action OnLevelCompletePressed;
     public event Action OnLevelFailPressed;
-
-    public bool Paused { get; private set; }
+    public event Action OnSettingsPressed;
 
     private int _seconds;
 
@@ -34,6 +34,7 @@ public class NormalGameHud : GameHud
         base.Awake();
         LevelCompleteBtn.onClick.AddListener(OnLevelCompleteBtnClicked);
         LevelFailBtn.onClick.AddListener(OnLevelFailBtnClicked);
+        settingsBtn.onClick.AddListener(OnSettingsBtnClicked);
     }
 
     private void OnEnable()
@@ -49,6 +50,7 @@ public class NormalGameHud : GameHud
 
     private void OnLevelCompleteBtnClicked() => OnLevelCompletePressed?.Invoke();
     private void OnLevelFailBtnClicked()     => OnLevelFailPressed?.Invoke();
+    private void OnSettingsBtnClicked()      => OnSettingsPressed?.Invoke();
 
     private void UpdateTime()
     {
@@ -59,15 +61,4 @@ public class NormalGameHud : GameHud
         }
     }
 
-    public override void Resume()
-    {
-        base.Resume();
-        Paused = false;
-    }
-
-    public override void Pause()
-    {
-        base.Pause();
-        Paused = true;
-    }
 }

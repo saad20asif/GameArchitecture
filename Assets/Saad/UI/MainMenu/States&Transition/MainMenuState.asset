@@ -16,5 +16,5 @@ MonoBehaviour:
   stateId: MainMenu
   usePooling: 1
   uIStatesPooler: {fileID: 11400000, guid: 0c9e29a0676273041bc3a9cddff8c570, type: 2}
+  useDefaultAnimations: 0
   GoToGameEvent: {fileID: 11400000, guid: 99e262760043c71408dedc66f3328693, type: 2}
-  GoToSpinWheelEvent: {fileID: 11400000, guid: 65f9b06937345ee459f45c189949770d, type: 2}
