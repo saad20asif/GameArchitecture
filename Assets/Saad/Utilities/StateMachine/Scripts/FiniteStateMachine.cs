@@ -54,6 +54,7 @@ namespace Blues.Core.StateMachine
         }
 
         // Begin a transition to a new state (optionally pause current)
+        // IState contract
         public void TransitionTo(Transition transition, bool pauseCurrent = false)
         {
             if (transition == null || transition.ToState == null)
@@ -67,7 +68,8 @@ namespace Blues.Core.StateMachine
                 CoroutineHandler.StopStaticCoroutine(_transitionCoroutine);
 
             // Start new transition coroutine
-            _transitionCoroutine = CoroutineHandler.StartStaticCoroutine(DoTransition(transition, pauseCurrent));
+            _transitionCoroutine = CoroutineHandler.StartStaticCoroutine(
+                DoTransition(transition, pauseCurrent));
         }
 
         // Core transition coroutine
@@ -89,7 +91,7 @@ namespace Blues.Core.StateMachine
                 yield break;
             }
 
-            // Handle pause or full exit based on intent
+            // Exit or pause the current state
             if (pauseCurrent || nextState.PausePreviousState)
             {
                 yield return PauseCurrentState();
@@ -99,11 +101,10 @@ namespace Blues.Core.StateMachine
                 yield return ExitCurrentState();
             }
 
-            yield return transition.Execute(); // Optional logic in the transition itself
+            yield return transition.Execute();
             CurrentState = nextState;
             OnStateEntered?.Invoke(CurrentState);
-            yield return nextState.Enter(this); // Enter the new state
-
+            yield return nextState.Enter(this);
         }
 
         // Reload the current state (exit → enter again)
@@ -118,7 +119,46 @@ namespace Blues.Core.StateMachine
             yield return CurrentState.Enter(this);
         }
 
-        // Clears the entire paused state stack (used for ClosePolicy.ClearAll)
+        // Pauses the current state, exits it, clears all paused states, then enters the new state.
+        // Because states are paused before exit, their views handle the rest (snap instantly).
+        public void ClearAllAndTransitionTo(Transition transition)
+        {
+            if (transition == null || transition.ToState == null)
+            {
+                Debug.LogWarning("Invalid transition or target state.");
+                return;
+            }
+
+            if (_transitionCoroutine != null)
+                CoroutineHandler.StopStaticCoroutine(_transitionCoroutine);
+
+            _transitionCoroutine = CoroutineHandler.StartStaticCoroutine(
+                DoClearAllAndTransition(transition));
+        }
+
+        private IEnumerator DoClearAllAndTransition(Transition transition)
+        {
+            // Pause the current state, then exit it
+            if (CurrentState != null)
+            {
+                yield return CurrentState.Pause();
+                OnStatePaused?.Invoke(CurrentState);
+                yield return CurrentState.Exit();
+                OnStateExited?.Invoke(CurrentState);
+            }
+
+            // Clear remaining paused states
+            yield return ClearPausedStates();
+
+            // Enter the new state
+            yield return transition.Execute();
+            CurrentState = transition.ToState;
+            OnStateEntered?.Invoke(CurrentState);
+            yield return CurrentState.Enter(this);
+        }
+
+        // Clears the entire paused state stack
+
         public IEnumerator ClearPausedStates()
         {
             while (PausedStates.Count > 0)
@@ -153,7 +193,10 @@ namespace Blues.Core.StateMachine
         {
             if (_pausedStateLookup.Contains(target))
             {
-                // Pop states until target is on top
+                // 1. Exit current (visible) state — this one animates
+                yield return ExitCurrentState();
+
+                // 2. Snap-clear intermediate paused states above the target (no animation)
                 while (PausedStates.Peek() != target)
                 {
                     var popped = PausedStates.Pop();
@@ -163,14 +206,13 @@ namespace Blues.Core.StateMachine
                     OnStateExited?.Invoke(popped);
                 }
 
-                // Replace current and resume
-                yield return ExitCurrentState();
+                // 3. Resume the target
                 yield return ResumePausedState(target);
                 CurrentState = target;
             }
             else
             {
-                // If target wasn't paused, clear everything and start fresh
+                // Target wasn't paused — exit current (animated), snap-clear stack, enter fresh
                 yield return ExitCurrentState();
                 yield return ClearPausedStates();
 

@@ -75,7 +75,12 @@ namespace Blues.Core.UI
             _isHiding = true;
             MakeStateInteractable(false);
 
-            if (UseDefaultAnimations)
+            // Already paused (hidden/non-interactable) — skip all animations, just deactivate
+            if (Paused)
+            {
+                // no-op: fall through to SetActive(false)
+            }
+            else if (UseDefaultAnimations)
             {
                 bool completed = false;
                 _animationSystem.PlayAnimation(AnimationPhase.Exit, () =>
@@ -86,7 +91,6 @@ namespace Blues.Core.UI
             }
             else
             {
-                // Let subclass run custom exit animation and yield until done.
                 yield return OnCustomHide();
             }
 

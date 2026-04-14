@@ -45,11 +45,13 @@ public abstract class BaseApplicationFlowController<TTransition> : MonoBehaviour
         switch (policy)
         {
             case ClosePolicy.ClearAll:
-                yield return finiteStateMachine.ClearPausedStates();
-                break;
+                finiteStateMachine.ClearAllAndTransitionTo(transition);
+                yield break;
+
             case ClosePolicy.PopOne:
                 yield return finiteStateMachine.PopPausedState();
-                break;
+                yield break;
+
             case ClosePolicy.PopUntil:
                 yield return finiteStateMachine.JumpTo((State)transition.ToState);
                 yield break;

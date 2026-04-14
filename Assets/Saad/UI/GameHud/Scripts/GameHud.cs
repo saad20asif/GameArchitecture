@@ -79,12 +79,20 @@ namespace Blues.Core.GameHud
             }
         }
 
+        public bool Paused { get; set; }
+
         public IEnumerator Hide()
         {
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
 
-            if (UseDefaultAnimations)
+            // Already paused (hidden/non-interactable) — skip all animations, just deactivate
+            if (Paused)
+            {
+                DOTween.Kill(Header);
+                DOTween.Kill(Footer);
+            }
+            else if (UseDefaultAnimations)
             {
                 bool completed = false;
 
@@ -111,6 +119,7 @@ namespace Blues.Core.GameHud
 
         public virtual void Resume()
         {
+            Paused = false;
             _canvasGroup.interactable = true;
             _canvasGroup.blocksRaycasts = true;
 
@@ -122,6 +131,7 @@ namespace Blues.Core.GameHud
 
         public virtual void Pause()
         {
+            Paused = true;
             _canvasGroup.interactable = false;
             _canvasGroup.blocksRaycasts = false;
 
