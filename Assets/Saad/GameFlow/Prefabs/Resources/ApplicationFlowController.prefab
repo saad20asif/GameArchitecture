@@ -60,3 +60,5 @@ MonoBehaviour:
   RateUsTransition: {fileID: 11400000, guid: fb689b62c17249542849bdc743b2ab9d, type: 2}
   _goToCrazyJungleEvent: {fileID: 11400000, guid: ca3abeeea5930b44aba09afcbf4f1750, type: 2}
   _goToCrazyJungleTransition: {fileID: 11400000, guid: b3bd75941f066fe4eae5c1919d359684, type: 2}
+  _goToGameSettingsXEvent: {fileID: 11400000, guid: 5a5702381f277b241b142b8f0abf69e2, type: 2}
+  _goToGameSettingsXTransition: {fileID: 11400000, guid: 54f148a9372d62e4581c10a3d4cd801e, type: 2}

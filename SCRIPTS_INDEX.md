@@ -9,7 +9,7 @@ Every C# script in the architecture with a one-line description. Use for quick l
 |--------|-------------|
 | `ApplicationBase` | Entry point: frame rate, TimeMachine.Tick, FSM.Init |
 | `BaseApplicationFlowController` | Abstract flow: BootFlow, GoTo, HandleTransition, back button, policy mapping |
-| `ApplicationFlowController` | Concrete flow: MainMenu, SpinWheel, Game, LevelComplete, LevelFail, RateUs events |
+| `ApplicationFlowController` | Concrete flow: MainMenu, SpinWheel, Game, LevelComplete, LevelFail, RateUs, **GameSettingsX** events. All subs use named methods (no lambdas). |
 | `SplashState` | Boot state: load GameScene additively, init StateRootManager, pools, ApplicationFlowController.Boot |
 | `StateRootManager` | Static States Transform, IsInitialized |
 | `Loading` | DOTween slider, updates Float load value |
@@ -19,11 +19,11 @@ Every C# script in the architecture with a one-line description. Use for quick l
 ## StateMachine
 | Script | Description |
 |--------|-------------|
-| `FiniteStateMachine` | ScriptableObject FSM: Init, TransitionTo, PausedStates stack, ClearAll/PopOne/JumpTo |
-| `State` | Base ScriptableObject state: Enter, Pause, Resume, Exit |
+| `FiniteStateMachine` | ScriptableObject FSM: Init, TransitionTo, **ClearAllAndTransitionTo**, PausedStates stack, ClearAll/PopOne/JumpTo. Sorting order is a plain int (resets each session). |
+| `State` | Base ScriptableObject state: Enter, Pause, Resume, Exit. **No animation flags.** |
 | `Transition` | ScriptableObject: ToState, closePolicy, Execute |
-| `UIViewState` | State that spawns UI from pool/Resources, Show/Hide via UIBase |
-| `IState` | Interface: TransitionTo, ClearPausedStates, ReloadCurrentState |
+| `UIViewState` | State that spawns UI from pool/Resources, Show/Hide via UIBase. Adds `useDefaultAnimations` flag + `GetView<T>()` helper. |
+| `IState` | Interface: TransitionTo, ClearPausedStates, ReloadCurrentState, **CurrentSortingOrder** |
 | `StateLogger` | Debug logging for state changes |
 
 ---
@@ -31,13 +31,13 @@ Every C# script in the architecture with a one-line description. Use for quick l
 ## UI Base
 | Script | Description |
 |--------|-------------|
-| `UIBase` | Abstract: Show, Hide (IEnumerator), Pause, Resume, UiAnimationSystem |
+| `UIBase` | Abstract: Show, Hide (IEnumerator), Pause, Resume. Has `UseDefaultAnimations` property + `OnCustomShow/Hide/Pause/Resume` hooks. `SetSortingOrder(int)` replaces Int SO. |
 | `IShowable` | Interface: Show, Hide, Pause, Resume |
 | `UiAnimationSystem` | DOTween enter/exit: Fade, Scale, Slide |
 | `StateAnimationConfig` | ScriptableObject: Enter/Exit types, durations, ease |
-| `UiCloseReasons` | Enum: Home, Game, SkipLevel, Revive, etc. |
+| `UiCloseReasons` | Enum: Home, Game, SkipLevel, Revive, FullScreenPlacement, ResumeGame, etc. |
 | `UiAnimations` | Legacy/alternate animation helpers |
-| `UiCloseReasons` | ClosePolicy enum: Default, ClearAll, PopUntil, PopOne |
+| `ClosePolicy` | Enum: Default, ClearAll, PopUntil, PopOne |
 
 ---
 
@@ -59,17 +59,21 @@ Every C# script in the architecture with a one-line description. Use for quick l
 | `RateUsState` | UIViewState for rate us popup |
 | `RateUsView` | UIBase for rate us |
 | `RateUsTransition` | Transition to RateUsState |
+| `GameSettingsXState` | UIViewState reference implementation — toggles DBBool SoundEnabled / HapticsEnabled via view events; `GetView<T>()` pattern |
+| `GameSettingsXUIView` | UIBase — emits `OnSettingsPressed / OnSoundToggled / OnHapticsToggled / OnRestorePressed / OnExitPressed` events |
+| `GameSettingsXViewData` | Plain POCO pushed by the state to the view (`SoundEnabled`, `HapticsEnabled`) |
+| `GameSettingsXTransition` | Transition to GameSettingsXState |
 
 ---
 
 ## GameState & HUD
 | Script | Description |
 |--------|-------------|
-| `GameState` | Abstract: load gameplay + HUD, GameStateEnter/Exit/Paused/Resumed |
-| `NormalGameState` | GameState: GoToLevelComplete, GoToLevelFail events |
+| `GameState` | Abstract: load gameplay + HUD, GameStateEnter/Exit/Paused/Resumed. Has `useDefaultHudAnimations` flag written to HUD before Show(). |
+| `NormalGameState` | GameState: GoToLevelComplete, GoToLevelFail, **GoToSettings** events. Wires HUD `OnSettingsPressed` → `GoToGameSettingsXEvent`. |
 | `GameStateTransition` | Transition to NormalGameState |
-| `GameHud` | IShowable: Header/Footer slide animations via HudAnimations |
-| `NormalGameHud` | Extends GameHud |
+| `GameHud` | IShowable: Header/Footer slide animations via HudAnimations. Has `UseDefaultAnimations` + `OnCustomShow/Hide/Pause/Resume` hooks mirroring UIBase. |
+| `NormalGameHud` | Extends GameHud. Exposes `OnLevelCompletePressed`, `OnLevelFailPressed`, `OnSettingsPressed` events. |
 | `HudAnimations` | Static: SlideInFromAbove/Below, SlideOutAbove/Below |
 
 ---
@@ -199,6 +203,7 @@ Every C# script in the architecture with a one-line description. Use for quick l
 | Script | Description |
 |--------|-------------|
 | `ScriptableObjectCreator` | Editor utility for creating SO assets |
+| `StateCreatorWindow` | **Tools → State Creator** editor window. Scaffolds a complete new screen (State SO, View MB, ViewData POCO, Transition SO, GameEvent SO, prefab, folder layout) from one form. Matches the GameSettingsX pattern. |
 
 ---
 

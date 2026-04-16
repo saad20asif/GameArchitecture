@@ -77,11 +77,11 @@ Assets/
 
 | Script | Purpose |
 |--------|---------|
-| `FiniteStateMachine` | ScriptableObject FSM. Manages `CurrentState`, `PausedStates` stack, transitions. Fires `OnStateEntered`, `OnStateExited`, `OnStatePaused`, `OnStateResumed`. |
-| `State` | Base ScriptableObject for states. Virtual `Enter`, `Pause`, `Resume`, `Exit`. Stores `Listener` (IState/FSM ref). |
+| `FiniteStateMachine` | ScriptableObject FSM. Manages `CurrentState`, `PausedStates` stack, transitions. Fires `OnStateEntered`, `OnStateExited`, `OnStatePaused`, `OnStateResumed`. Exposes `ClearAllAndTransitionTo(Transition)` for hard resets (pauses current → exit → clear stack → enter target). Sorting order is a plain `int` that resets each play session. |
+| `State` | Base ScriptableObject for states. Virtual `Enter`, `Pause`, `Resume`, `Exit`. Stores `Listener` (IState/FSM ref). **Zero animation awareness** — all presentation lives on the View. |
 | `Transition` | ScriptableObject with `ToState`, `closePolicy`, optional `Execute()` coroutine. |
-| `UIViewState` | State that spawns a UI from pool/Resources, gets `UIBase`, calls Show/Hide. Supports `usePooling`, `stateId`. |
-| `IState` | Interface for FSM: `TransitionTo`, `ClearPausedStates`, `ReloadCurrentState`. |
+| `UIViewState` | State that spawns a UI from pool/Resources, gets `UIBase`, calls Show/Hide. Fields: `stateId`, `usePooling`, `uIStatesPooler`, **`useDefaultAnimations`** (written to View before Show). Protected helper `GetView<T>()`. |
+| `IState` | Interface for FSM: `TransitionTo`, `ClearPausedStates`, `ReloadCurrentState`, **`CurrentSortingOrder`** (int getter). |
 
 **Close Policies** (driven by `UICloseReasons`):
 - `ClearAll`: Clear entire paused stack
@@ -104,7 +104,7 @@ Assets/
 
 | Script | Purpose |
 |--------|---------|
-| `UIBase` | Abstract MonoBehaviour. `Show()`, `Hide()` (IEnumerator), `Pause()`, `Resume()`. Uses `UiAnimationSystem` for enter/exit. Canvas, CanvasGroup, sorting order from `Int currentStateSortingOrder`. |
+| `UIBase` | Abstract MonoBehaviour. `Show()`, `Hide()` (IEnumerator), `Pause()`, `Resume()`. Uses `UiAnimationSystem` for default enter/exit. Canvas + CanvasGroup managed, sorting order received via `SetSortingOrder(int)` (no SO dependency). **Animation independence:** `UseDefaultAnimations` property toggles between the default system and `OnCustomShow / OnCustomHide (coroutine) / OnCustomPause / OnCustomResume` hooks. |
 | `IShowable` | Interface: `Show`, `Hide`, `Pause`, `Resume`. |
 | `UiAnimationSystem` | Non-Mono. Plays Fade/Scale/Slide via DOTween using `StateAnimationConfig` (enter/exit types, durations, ease). |
 | `StateAnimationConfig` | ScriptableObject: `EnterAnimationType`, `ExitAnimationType`, durations, ease, `StartScale`. |
@@ -164,9 +164,10 @@ Assets/
 | `MainMenuView` | UIBase. Buttons → MainMenuState.GoToPlayState(), GoToSpinWheel(). |
 | `LevelCompleteState`, `LevelFailState` | UIViewState. GoToMainMenuEvent (GameEventWithInt) for Home. |
 | `SpinWheelState`, `RateUsState` | UIViewState variants. |
-| `GameHud` | IShowable. Header/Footer slide in/out via HudAnimations. |
-| `NormalGameHud` | Extends GameHud. |
+| `GameHud` | IShowable. Header/Footer slide in/out via HudAnimations. Same animation-independence pattern as UIBase: `UseDefaultAnimations` + `OnCustomShow/Hide/Pause/Resume` hooks. |
+| `NormalGameHud` | Extends GameHud. Exposes `OnLevelCompletePressed`, `OnLevelFailPressed`, `OnSettingsPressed` events. |
 | `HudAnimations` | Static: SlideInFromAbove/Below, SlideOutAbove/Below. |
+| `GameSettingsXState` / `GameSettingsXUIView` / `GameSettingsXViewData` / `GameSettingsXTransition` | Reference settings screen under `Assets/Game/Screens/GameSettingsX/`. Canonical example of the UIViewState + UIBase pattern with named handlers and `GetView<T>()`. |
 
 ### 3.10 Spin Wheel (New)
 
@@ -240,19 +241,22 @@ Assets/
 
 ### UIBase
 - **Path**: `Assets/Saad/UI/Base/Scripts/UiBase.cs`
-- **Show()**: Sets canvas order, planeDistance, activates, plays enter animation, MakeStateInteractable(true).
-- **Hide()**: IEnumerator. Blocks input, plays exit animation, waits completion, deactivates.
-- **Pause/Resume**: Toggle interactivity, ForceCompleteCurrentAnimation.
+- **Show()**: Sets canvas sortingOrder (from `SetSortingOrder(int)`), planeDistance, activates. If `UseDefaultAnimations`, plays enter animation → `MakeStateInteractable(true)`. Else: interactable immediately + `OnCustomShow()`.
+- **Hide()**: IEnumerator. Blocks input. If `Paused`, just deactivates (no animation). Else if `UseDefaultAnimations`, plays exit animation and waits. Else yields `OnCustomHide()`.
+- **Pause/Resume**: Toggle `Paused`, toggle raycast blocking, `ForceCompleteCurrentAnimation()` if default, and always call `OnCustomPause/Resume`.
 
 ### UIViewState
 - **Path**: `Assets/Saad/Utilities/StateMachine/Scripts/UiViewState.cs`
-- **Enter**: Get from pool (stateId) or Resources, parent to StateRootManager.States, get UIBase, Show().
-- **Exit**: Hide() (yield), Release to pool or Destroy.
-- **Pause/Resume**: Forward to _uiInstance.
+- **Fields**: `stateId`, `usePooling`, `uIStatesPooler`, `useDefaultAnimations`.
+- **Enter**: Get from pool (with null-bail) or Resources (with null-bail + error log), parent to `StateRootManager.States`, get `UIBase` component (with null-bail), set active, **write `UseDefaultAnimations`**, call `SetSortingOrder(Listener.CurrentSortingOrder)`, `Show()`.
+- **Exit**: Null-first then `yield return instance.Hide()` (prevents double-release), Release to pool or Destroy.
+- **Pause/Resume**: Forward to `_uiInstance`.
+- **Helper**: `protected T GetView<T>() where T : UIBase` — typed view accessor for subclasses.
 
 ### GameState
 - **Path**: `Assets/Saad/UI/GameState/Scripts/GameState.cs`
-- **Enter**: Load gameplay prefab (optional), load HUD from pool/Resources, Show HUD, invoke GameStateEnter.
+- **Fields include `useDefaultHudAnimations`** — written to the HUD before `Show()` so a game mode can bypass the default header/footer slide in favor of the HUD subclass's custom hooks.
+- **Enter**: Load gameplay prefab (optional), load HUD from pool/Resources, write `UseDefaultAnimations` onto HUD, `Show()` HUD, invoke GameStateEnter.
 - **Exit**: Hide HUD (yield), release/destroy HUD and gameplay, GameStateExit.
 - **Pause/Resume**: Forward to HUD, GameStatePaused/Resumed.
 
@@ -286,11 +290,18 @@ DBInt.OnEnable → Load() → PlayerPrefs.GetInt(_key) or DefaultValue
 ## 6. Extension Guide
 
 ### Adding a New Screen
-1. Create `YourState` : UIViewState (or State). Assign stateId (pool ID or Resources path).
-2. Create `YourView` : UIBase. Reference YourState, wire buttons to state methods.
-3. Create `YourTransition` : Transition. Set ToState = YourState.
-4. Add GameEvent for navigation. In ApplicationFlowController: serialize event + transition, subscribe GoTo(YourTransition, reason).
-5. Register prefab in PoolManagerSO if using pooling.
+
+**Fast path:** open **Tools → State Creator** (`Assets/Editor/StateCreatorWindow.cs`). It produces everything below. Reference: `Assets/Game/Screens/GameSettingsX/` is the canonical output.
+
+Manual path:
+1. Create `YourState` : UIViewState (or State). Assign stateId (pool ID or Resources path). Set `useDefaultAnimations` as needed.
+2. Create `YourUIView` : UIBase. View only fires events upward — no logic, no service lookups. Expose `SetData(YourViewData)` for state → view pushes.
+3. Create `YourViewData` : plain struct (no Unity deps).
+4. Create `YourTransition` : Transition. Set ToState = YourState.
+5. Add GameEvent for navigation. In ApplicationFlowController: serialize event + transition, **subscribe a named handler** (never a lambda) in `RegisterFlowEvents` / unsubscribe it in `UnregisterFlowEvents`.
+6. Register prefab in PoolManagerSO if using pooling.
+
+In `YourState.Enter()`: `yield return base.Enter(previous)`, then `_view = GetView<YourUIView>()`, subscribe to the view's events with named handlers, build a `ViewData` and call `_view.SetData(...)`. In `Exit()`: unsubscribe, null the cached view, then `yield return base.Exit()`.
 
 ### Adding a New GameEvent
 1. Create Asset: ProjectCore/Events/Game Event - Basic (or GameEvent - Int).

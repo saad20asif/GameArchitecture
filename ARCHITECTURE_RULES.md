@@ -87,6 +87,60 @@ fsm.TransitionTo(playTransition, new LevelContext { LevelIndex = 5 });
 
 ---
 
+## 3a. Animation Independence — Law
+
+> **The FSM and State layer are animation-agnostic. Views own their own presentation.**
+
+This is non-negotiable. Search the core for these and you will find *nothing*:
+- `State.cs` has no animation fields, flags, or durations.
+- `FiniteStateMachine.cs` knows nothing about tweens.
+- There is no `SkipExitAnimation`, `FastClose`, or `InstantExit` flag anywhere in the FSM.
+
+Every presentation decision lives on the view:
+
+| Mechanism | Where | What it controls |
+|---|---|---|
+| `UIBase.UseDefaultAnimations` / `GameHud.UseDefaultAnimations` | View | Whether the built-in `UiAnimationSystem` / `HudAnimations` runs, or the view's custom hooks do. |
+| `OnCustomShow` / `OnCustomHide` / `OnCustomPause` / `OnCustomResume` | View subclass | What actually plays when default animations are off. `OnCustomHide` is a coroutine the FSM blocks on. |
+| `Paused` (on `UIBase`/`GameHud`) | View | When `true`, `Hide()` skips all animations and just deactivates — used implicitly after `Pause()` so popped-off-stack states snap out cleanly. |
+
+**Who sets the flag:** `UIViewState.useDefaultAnimations` (serialized) and `GameState.useDefaultHudAnimations` (serialized) are written onto the view right before `Show()`.
+
+### Correct — view owns its animation
+
+```csharp
+public class FancyPopupView : UIBase
+{
+    protected override void OnCustomShow()                         // UseDefaultAnimations = false
+    {
+        UIPanel.anchoredPosition = new Vector2(0, 1500);
+        UIPanel.DOAnchorPosY(0, 0.35f).SetEase(Ease.OutBack);
+    }
+
+    protected override IEnumerator OnCustomHide()
+    {
+        bool done = false;
+        UIPanel.DOAnchorPosY(1500, 0.25f).SetEase(Ease.InBack).OnComplete(() => done = true);
+        yield return new WaitUntil(() => done);                    // FSM waits here
+    }
+}
+```
+
+### Wrong — leaking presentation into the state or FSM
+
+```csharp
+// BAD — adding animation flags to the FSM / State SO
+public class State : ScriptableObject { public bool SkipExitAnim; }
+public class FiniteStateMachine { if (state.SkipExitAnim) ... }
+
+// BAD — state driving tweens directly
+public override IEnumerator Exit() { yield return view.UIPanel.DOFade(0, 0.3f); }
+```
+
+If you need a state to "snap out" instead of animate, the correct path is to `Pause()` it first (as `ClearAllAndTransitionTo` does) — not to add a flag to the FSM.
+
+---
+
 ## 4. View Hierarchy — Three Types
 
 ### `UIBase` — full FSM-managed screens
@@ -328,6 +382,52 @@ int spinReward = _remoteConfig.Get("spin_wheel_coin_reward", defaultValue: 100);
 - `ISaveService` is the only save interface. Current implementation: `JsonFileSaveService` (local, encrypted).
 - Future: swap to `CloudSaveService` (Unity Gaming Services) without changing callers.
 - All saves on low-end devices use `SaveAsync` to avoid main-thread spikes.
+
+---
+
+## 11. Documentation Is Part Of The Change — Law
+
+> Every code change ships with its doc update in the same turn. No exceptions.
+
+When any code is fixed, improved, refactored, or extended, the markdown docs that describe it must be updated **in the same commit / task / PR** — not "later", not as a TODO.
+
+### The sync contract
+
+After a code change, walk this list and update every file that references the changed concept:
+
+| File | Update when you change… |
+|------|--------------------------|
+| `README.md` | Feature set, high-level overview, doc index |
+| `ARCHITECTURE.md` | Any class/field/method shown in a table, example, or data-flow diagram; namespaces; footer date |
+| `ARCHITECTURE_RULES.md` (this file) | A rule is added, relaxed, clarified, or gains a counter-example |
+| `SCRIPTS_INDEX.md` | Scripts are added, renamed, moved, or their one-line role changes |
+| `DOCUMENTATION.md` | Core systems table, script-reference section, extension guide |
+| `QUICK_REFERENCE.md` | Decision tables, checklists, Phase 0 bug boxes, template build rows |
+| `PROGRESS.md` | Tasks complete, land, slip, or get re-scoped; completion bars; "what's next" |
+| `ROADMAP.md` | Phase scope/ordering changes |
+| `BUILD_STATE_CREATOR_TOOL.md` | State Creator tool or its generated pattern changes |
+| `AI_AGENT_CONTEXT.md`, `ARCHITECTURE_PROMPT.md` | Agent-facing patterns, screen contract, or onboarding boot sequence change |
+
+### Process
+
+1. Make the code change.
+2. Map each touched concept (class / field / method / event / flow / rule) to the docs that reference it.
+3. Update every reference — kill stale method names, wrong field types, removed features, obsolete "pending" markers.
+4. Bump "Last updated" footers where present.
+5. Only then: commit / hand back.
+
+### Anti-patterns
+
+- "I'll update the docs in a follow-up PR" — no. Drift compounds.
+- Updating only the most obvious file (e.g. `ARCHITECTURE.md`) while `SCRIPTS_INDEX.md` still lists the old class name.
+- Leaving `// TODO: update docs` comments — fix it now.
+- Shipping a new public API without documenting it in `ARCHITECTURE.md` and `SCRIPTS_INDEX.md`.
+
+### The test
+
+> Can someone read the docs and the code side-by-side without spotting a contradiction?
+
+If not, the change isn't done.
 
 ---
 

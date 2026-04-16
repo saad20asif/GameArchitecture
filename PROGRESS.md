@@ -1,6 +1,6 @@
 # Progress Tracker
 > Updated every time something is completed. This is the single source of truth for what's done and what's next.
-> See `ROADMAP.md` for full specs of each item. See `ARCHITECTURE_RULES.md` for rules that govern all work.
+> See `ROADMAP.md` for full specs of each item. See `ARCHITECTURE_RULES.md` for rules that govern all work — including **§11 Docs Sync** (every code change ships with its doc update in the same turn).
 
 ---
 
@@ -39,7 +39,7 @@
 | BUG-01 | Lambda subscription leak — `ApplicationFlowController` subscribes with lambdas that can never be unsubscribed | `Assets/Saad/GameFlow/Scripts/ApplicationFlowController.cs` | ✅ Done | 2026-04-12 |
 | BUG-02 | `WaitForSeconds` GC allocation every second in `TimeMachine` | `Assets/Saad/TimeMachine/Scripts/TimeMachine.cs` | ✅ Already fixed (readonly field was already present) | 2026-04-12 |
 | BUG-03 | `PoolManagerSO.Get()` throws `KeyNotFoundException` instead of null + error log | `Assets/Saad/Utilities/PoolSystem/Scripts/PoolManagerSO.cs` | ✅ Done | 2026-04-12 |
-| BUG-04 | Canvas sorting order race condition — counter lives on SO asset (persists between sessions) | `IState.cs`, `FiniteStateMachine.cs`, `UIBase.cs`, `UIViewState.cs` | ✅ Done | 2026-04-12 |
+| BUG-04 | Canvas sorting order race condition — counter lives on SO asset (persists between sessions) | `IState.cs`, `FiniteStateMachine.cs`, `UIBase.cs`, `UIViewState.cs` | ✅ Done | 2026-04-12 — counter is now a plain `int` on `FiniteStateMachine`, exposed via `IState.CurrentSortingOrder`, written to `UIBase` via `SetSortingOrder(int)`. (Note: `GameHud.cs` still reads an `Int` SO — legacy path, tracked as tech-debt for the next pass.) |
 | BUG-05 | Delete legacy `Assets/Saad/UI/SpinWheel/` folder — duplicate system confuses agent | `Assets/Saad/UI/SpinWheel/` | ⚠️ Manual — delete in Unity Editor | — |
 
 ---
@@ -57,6 +57,22 @@
 | P1-04 | `AnimationPreset` SO class scaffolded (`Assets/Game/Core/Screens/AnimationPreset.cs`) | ✅ Done | 2026-04-12 |
 | P1-05 | `ComponentTag` enum + `TaggedComponent` MonoBehaviour (semantic anchors for AI agent) | ✅ Done | 2026-04-12 |
 | P1-06 | `NavigationRequest` value object + `IStateContext` interface | ✅ Done | 2026-04-12 |
+
+---
+
+## Phase 1b — Animation Independence & State Creator Tool (bonus)
+> **Landed mid-April 2026** — not on the original roadmap, but essential groundwork for clean state templates.
+
+| # | Item | Status | Date |
+|---|------|--------|------|
+| P1b-01 | `UIBase.UseDefaultAnimations` + `OnCustomShow/Hide/Pause/Resume` hooks | ✅ Done | 2026-04-14 |
+| P1b-02 | `GameHud.UseDefaultAnimations` + matching custom hooks | ✅ Done | 2026-04-14 |
+| P1b-03 | `UIViewState.useDefaultAnimations` serialized field → writes to view before Show | ✅ Done | 2026-04-14 |
+| P1b-04 | `GameState.useDefaultHudAnimations` serialized field → writes to HUD before Show | ✅ Done | 2026-04-14 |
+| P1b-05 | `FiniteStateMachine.ClearAllAndTransitionTo` — pause-before-exit to skip exit animations cleanly | ✅ Done | 2026-04-14 |
+| P1b-06 | `StateCreatorWindow` Editor tool — scaffolds State / View / ViewData / Transition / Event / Prefab in one form | ✅ Done | 2026-04-15 |
+| P1b-07 | `UIViewState.GetView<T>()` typed view accessor | ✅ Done | 2026-04-15 |
+| P1b-08 | GameSettingsX reference screen — canonical example of the full pattern | ✅ Done | 2026-04-16 |
 
 ---
 
@@ -127,7 +143,7 @@
 | `GameplayScreen` | FSM State + IGameHud | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ Pending | — |
 | `LevelCompleteScreen` | FSM State | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ Pending | — |
 | `LevelFailScreen` | FSM State | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ Pending | — |
-| `SettingsScreen` | FSM State | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ Pending | — |
+| `SettingsScreen` (GameSettingsX) | FSM State | N/A | ✅ | ✅ | ✅ | ✅ | ✅ Done | 2026-04-16 |
 | `SpinWheelScreen` | FSM State | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ Pending | — |
 | `DailyRewardScreen` | FSM State | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ | ⬜ Pending | — |
 
@@ -198,11 +214,12 @@
 
 ```
 Phase 0 — Critical Bug Fixes      ████████░░  4 / 5   (80%) — BUG-05 manual
-Phase 1 — Screen Contract         ████████░░  5 / 6   (83%) — P1-03 Editor tool pending
+Phase 1 — Screen Contract         ████████░░  6 / 7   (86%) — P1-03 Editor folder warning pending
+Phase 1b — Anim Indep + Creator   ██████████  8 / 8   (100%) — bonus phase, see P1b-*
 Phase 2 — vContainer DI           ░░░░░░░░░░  0 / 6   (0%)
 Phase 3 — Modular Flow            ░░░░░░░░░░  0 / 10  (0%)
 Phase 4 — Service Interfaces      ░░░░░░░░░░  0 / 7   (0%)
-Phase 5 — Magic Sort Template     ░░░░░░░░░░  0 / 13  (0%)
+Phase 5 — Magic Sort Template     █░░░░░░░░░  1 / 13  (8%)  — SettingsScreen (GameSettingsX) done
 Phase 6 — Editor Validation       ░░░░░░░░░░  0 / 4   (0%)
 Phase 7 — AI Agent Integration    ░░░░░░░░░░  0 / 5   (0%)
 Performance Hardening             ░░░░░░░░░░  0 / 7   (0%)
@@ -213,8 +230,8 @@ Documentation                     ██████████  10 / 10 (100%)
 
 ## What's Next
 
-**Immediate next action: BUG-05 (manual), then Phase 1.**
-
-BUG-05: In the Unity Editor, delete `Assets/Saad/UI/SpinWheel/` (the legacy folder with 3 scripts). The new system lives in `Assets/Saad/UI/Spin Wheel/`. Do this in the Editor so Unity removes the `.meta` files and cleans up references properly.
-
-Once BUG-05 is done, Phase 0 is complete. Move to Phase 1 — ScreenManifest. This is the unlock that makes everything else systematic.
+**Immediate next actions:**
+1. **BUG-05 (manual)** — Delete `Assets/Saad/UI/SpinWheel/` (legacy folder with 3 scripts) in the Unity Editor. The new system lives in `Assets/Saad/UI/Spin Wheel/`. Use the Editor so Unity cleans up `.meta` files and references.
+2. **P1-03** — Editor warning that screen files must live in `Assets/Game/Screens/[Name]/`.
+3. **Phase 5 expansion** — Now that `StateCreatorWindow` + the GameSettingsX reference screen exist, churning out the rest of the Magic Sort template is mostly Editor-tool driven. Next targets: `SplashScreen`, `HubScreen`, `GameplayScreen` (the big IGameHud one).
+4. **Phase 2 (vContainer DI)** remains the major architectural unlock still to come.

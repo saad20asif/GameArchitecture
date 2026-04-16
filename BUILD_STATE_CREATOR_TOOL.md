@@ -1,6 +1,8 @@
 # State Creator Tool
 
 > AI-assisted state scaffolding for the game architecture.
+> **Status:** ✅ Shipped. Tool source: `Assets/Editor/StateCreatorWindow.cs`.
+> **Reference output:** `Assets/Game/Screens/GameSettingsX/` — a screen that was built with the tool and hand-polished to match the canonical pattern described in [ARCHITECTURE.md §6.8](./ARCHITECTURE.md#68-gamesettingsx-reference-implementation).
 
 ---
 

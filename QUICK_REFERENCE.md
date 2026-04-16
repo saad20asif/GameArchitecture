@@ -22,6 +22,9 @@
 | Reacting to currency change | Subscribe to `IEconomyService.OnBalanceChanged` in State |
 | Playing a sound | `ISoundService.Play(soundName)` |
 | Getting a pooled object | `IPoolService.Get(poolId)` — null check the result |
+| Custom enter/exit animation for a screen | `useDefaultAnimations = false` on `UIViewState` + override `OnCustomShow()` / `OnCustomHide()` (coroutine) on the View |
+| Custom HUD animations per game mode | `useDefaultHudAnimations = false` on `GameState` + override HUD's `OnCustomShow/Hide/Pause/Resume` |
+| Scaffold a new screen | **Tools → State Creator** (Editor window). Reference: `Assets/Game/Screens/GameSettingsX/` |
 
 ---
 
@@ -54,12 +57,16 @@ private void HandleMyEvent() => DoSomething();
 
 ## Screen file checklist
 
-Every screen needs exactly these 5 files in `Assets/Game/Screens/[Name]/`:
-- [ ] `[Name]Manifest.asset` — ScreenManifest SO
-- [ ] `[Name]State.cs` — extends UIViewState
-- [ ] `[Name]View.cs` — extends UIBase
-- [ ] `[Name]ViewData.cs` — plain struct, no Unity deps
-- [ ] `[Name]Prefab.prefab` — tagged components
+Use **Tools → State Creator** (`StateCreatorWindow`) to scaffold all of this. Reference implementation: `Assets/Game/Screens/GameSettingsX/`.
+
+Every screen lives in `Assets/Game/Screens/[Name]/` and contains:
+- [ ] `Scripts/[Name]State.cs` — extends `UIViewState` (use `GetView<T>()`; named handlers only)
+- [ ] `Scripts/[Name]UIView.cs` — extends `UIBase` (emits events, no logic)
+- [ ] `Scripts/[Name]ViewData.cs` — plain struct, no Unity deps
+- [ ] `Scripts/[Name]Transition.cs` — extends `Transition` (optional if no custom Execute)
+- [ ] `Config/[Name]State.asset`, `GoTo[Name]Event.asset`, `GoTo[Name]Transition.asset`
+- [ ] `Prefabs/[Name].prefab`
+- [ ] (When `ScreenManifest` adoption rolls out in later phases) `[Name]Manifest.asset`
 
 ---
 
@@ -98,11 +105,11 @@ LevelLifetimeScope (per level — destroyed on exit)
 
 ## Phase 0 bugs — fixed?
 
-- [ ] Lambda subscriptions → named methods in `ApplicationFlowController`
-- [ ] `WaitForSeconds` cached in `TimeMachine`
-- [ ] `PoolManagerSO.Get()` returns null + logs error instead of throwing
-- [ ] Sorting order counter moved off SO to `FSMRuntime` MonoBehaviour
-- [ ] Legacy `SpinWheel/` folder deleted
+- [x] Lambda subscriptions → named methods in `ApplicationFlowController`
+- [x] `WaitForSeconds` cached in `TimeMachine`
+- [x] `PoolManagerSO.Get()` returns null + logs error instead of throwing
+- [x] Sorting order counter moved off SO — now a plain `int` on `FiniteStateMachine`, exposed via `IState.CurrentSortingOrder`, written to `UIBase.SetSortingOrder(int)`. (`FSMRuntime` MonoBehaviour split still deferred; note `GameHud` still uses an Int SO — legacy tech-debt.)
+- [ ] Legacy `SpinWheel/` folder deleted (manual, Editor-only)
 
 ---
 
@@ -120,7 +127,7 @@ LevelLifetimeScope (per level — destroyed on exit)
 | GameplayScreen | | | | | |
 | LevelCompleteScreen | | | | | |
 | LevelFailScreen | | | | | |
-| SettingsScreen | | | | | |
+| SettingsScreen (GameSettingsX) | N/A | ✅ | ✅ | ✅ | ✅ |
 | SpinWheelScreen | | | | | |
 | DailyRewardScreen | | | | | |
 

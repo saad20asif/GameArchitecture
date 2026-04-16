@@ -166,7 +166,7 @@ The FSM is the backbone of the entire application. It is a **ScriptableObject**,
 | `CurrentState` | `State` | The currently active state. Serialized for editor inspection. |
 | `PausedStates` | `Stack<State>` | Stack of states that have been paused (overlays, popups). |
 | `_pausedStateLookup` | `HashSet<State>` | O(1) check to detect if a state is already paused. |
-| `currentStateSortingOrder` | `Int` (SO) | Shared sorting order variable. Increments on pause, decrements on resume. Used by `UIBase` to layer canvases. |
+| `_sortingOrder` | `int` (plain) | Current canvas sorting order. Increments on pause, decrements on resume. Exposed via `IState.CurrentSortingOrder`. **Plain int (not a ScriptableObject)** so it auto-resets to 0 on every play session. |
 | `_transitionCoroutine` | `Coroutine` | Handle to the active transition coroutine. Cancelled and replaced on new transitions. |
 
 #### Events
@@ -186,6 +186,7 @@ These are C# events (not ScriptableObject events) for observers that want to rea
 |--------|-------------|
 | `IEnumerator Init()` | Boots the FSM. Enters `BootState`. Must be called from a MonoBehaviour coroutine. |
 | `void TransitionTo(Transition, bool pauseCurrent)` | Begins a transition. Cancels any in-progress transition first. |
+| `void ClearAllAndTransitionTo(Transition)` | Pauses → Exits current, clears the entire paused stack, then enters target. Used when the new state is a full reset (e.g., "Home"). Because the current state is paused before exit, its view snaps away with no exit animation. |
 | `IEnumerator ReloadCurrentState()` | Exits then re-enters the current state without touching the paused stack. |
 | `IEnumerator ClearPausedStates()` | Exits every paused state from top to bottom. Used by `ClosePolicy.ClearAll`. |
 | `IEnumerator PopPausedState()` | Exits current, resumes the top paused state. Used by `ClosePolicy.PopOne`. |
@@ -258,6 +259,15 @@ This is the standard state for all UI screens. It manages the lifecycle of a UI 
 | `stateId` | `string` | ID used to Get/Release from the pool OR path in Resources folder. |
 | `usePooling` | `bool` | Toggle between pooled and Resources-loaded prefab. |
 | `uIStatesPooler` | `PoolManagerSO` | The pool to Get/Release from. Only shown in Inspector if `usePooling = true`. |
+| `useDefaultAnimations` | `bool` | **NEW.** Written to `UIBase.UseDefaultAnimations` before `Show()`. When `false`, the view's default animation system is bypassed — the view's `OnCustomShow` / `OnCustomHide` hooks are called instead. See [Animation Independence](#66-animation-independence-pattern). |
+
+#### Protected Helper
+
+```csharp
+protected T GetView<T>() where T : UIBase => _uiInstance as T;
+```
+
+Subclasses call `GetView<MyViewType>()` from `Enter()` (after `base.Enter()`) to grab a typed reference to the spawned view, then subscribe to its events. See [GameSettingsXState](#67-gamesettingsx-reference-implementation).
 
 #### Enter Flow
 
@@ -265,13 +275,21 @@ This is the standard state for all UI screens. It manages the lifecycle of a UI 
 UIViewState.Enter()
     │
     ├── [if usePooling]   viewObject = uIStatesPooler.Get(stateId)
-    └── [if not pooling]  viewObject = Instantiate(Resources.Load(stateId))
-                          viewObject.SetParent(StateRootManager.States)
+    │                     if viewObject == null → yield break (pool already logged)
+    └── [if not pooling]  prefab = Resources.Load(stateId)
+                          if prefab == null → logError, yield break
+                          viewObject = Instantiate(prefab, StateRootManager.States)
     │
     ├── _uiInstance = viewObject.GetComponent<UIBase>()
+    ├── if _uiInstance == null → logError, yield break
+    │
     ├── viewObject.SetActive(true)
-    └── _uiInstance.Show()          ← plays enter animation
+    ├── _uiInstance.UseDefaultAnimations = useDefaultAnimations    ← NEW
+    ├── _uiInstance.SetSortingOrder(Listener.CurrentSortingOrder)  ← pulled from FSM, not Int SO
+    └── _uiInstance.Show()
 ```
+
+Null checks around pool/Resources load ensure missing assets fail loudly without NullReferenceExceptions further down.
 
 #### Exit Flow
 
@@ -359,10 +377,13 @@ These two enums work together to determine how the paused state stack is handled
 public interface IState
 {
     void TransitionTo(Transition transition, bool pauseCurrent = false);
+    IEnumerator ClearPausedStates();
+    IEnumerator ReloadCurrentState();
+    int CurrentSortingOrder { get; }    // read-only; FSM owns the counter
 }
 ```
 
-This is the only interface exposed to states. A state can trigger a transition by calling `Listener.TransitionTo(...)`, but cannot directly manipulate the FSM's paused stack or current state.
+This is the only interface exposed to states. A state can trigger a transition, clear the stack, reload itself, or read the current sorting order — but it cannot directly push/pop the FSM's paused stack or overwrite the current state. `CurrentSortingOrder` is used by `UIViewState` to layer spawned canvases without requiring a shared Int ScriptableObject.
 
 ---
 
@@ -426,16 +447,19 @@ protected virtual IEnumerator HandleTransition(TTransition transition, ClosePoli
 
 Wires up all the game's state routing:
 
-| Event SO | Transition | Reason |
-|----------|-----------|--------|
-| `GoToMainMenuEvent` (int param) | `MainMenuTransition` | `(UICloseReasons)reasonId` |
-| `GoToSpinWheelEvent` | `SpinWheelTransition` | `FullScreenPlacement` |
-| `GoToGameEvent` | `GameTransition` | `Game` |
-| `GoToLevelCompleteEvent` | `LevelCompleteTransition` | `FullScreenPlacement` |
-| `GoToLevelFailEvent` | `LevelFailTransition` | `FullScreenPlacement` |
-| `GoToRateUsEvent` | `RateUsTransition` | `FullScreenPlacement` |
+| Event SO | Transition | Reason | Handler |
+|----------|-----------|--------|---------|
+| `GoToMainMenuEvent` (int param) | `MainMenuTransition` | `(UICloseReasons)reasonId` | `GoToMainMenu` |
+| `GoToSpinWheelEvent` | `SpinWheelTransition` | `FullScreenPlacement` | `HandleGoToSpinWheel` |
+| `GoToGameEvent` | `GameTransition` | `Game` | `HandleGoToGame` |
+| `GoToLevelCompleteEvent` | `LevelCompleteTransition` | `FullScreenPlacement` | `HandleGoToLevelComplete` |
+| `GoToLevelFailEvent` | `LevelFailTransition` | `FullScreenPlacement` | `HandleGoToLevelFail` |
+| `GoToRateUsEvent` | `RateUsTransition` | `FullScreenPlacement` | `HandleGoToRateUs` |
+| `_goToGameSettingsXEvent` | `_goToGameSettingsXTransition` | `FullScreenPlacement` | `HandleGoToGameSettingsX` |
 
 `GoToMainMenu` takes an int so that callers can pass different `UICloseReasons` — the "Home" button sends `Home` (ClearAll), a "Revive" button would send `Revive` (PopOne), etc.
+
+**All subscriptions use named methods, not lambdas.** `Subscribe(lambda)` and `Unsubscribe(lambda)` compile to different delegate instances and would leak on scene reload. Every entry in `RegisterFlowEvents` has a matching `UnSubscribe(sameMethod)` in `UnregisterFlowEvents`.
 
 `Boot()` is called by `SplashState` to start the first transition to `MainMenuState`.
 
@@ -459,24 +483,31 @@ Every UI screen prefab has a component that extends `UIBase`.
 |-------|------|---------|
 | `animationConfig` | `StateAnimationConfig` | Defines enter/exit animation type, duration, easing. |
 | `UIPanel` | `RectTransform` | The panel animated by `UiAnimationSystem`. |
-| `currentStateSortingOrder` | `Int` (SO) | Shared with FSM; determines canvas layer order. |
+| `_sortingOrder` | `int` | Sorting order for this canvas. Set from the FSM via `SetSortingOrder(int)` (called by `UIViewState` before `Show()`). **No Int ScriptableObject needed.** |
 | `_canvas` | `Canvas` | Set in Awake. `worldCamera` auto-assigned to `Camera.main`. |
 | `_canvasGroup` | `CanvasGroup` | Used for alpha fade and raycast blocking. |
 | `_animationSystem` | `UiAnimationSystem` | Created in Awake, handles all tween logic. |
 | `_isHiding` | `bool` | Guard flag to prevent double-hide calls. |
-| `Paused` | `bool` (property) | Tracks paused state for interactivity control. |
+| `Paused` | `bool` (property) | Tracks paused state. When `Paused == true`, `Hide()` skips all animations and just deactivates. |
+| `UseDefaultAnimations` | `bool` (property) | **Animation independence flag.** When `true` (default), `Show/Hide` run the `UiAnimationSystem`. When `false`, they call `OnCustomShow()` / `OnCustomHide()` hooks instead. Written by `UIViewState` from its `useDefaultAnimations` field before `Show()`. |
 
 #### Show()
 
 ```
 Show()
-    ├── canvas.sortingOrder = currentStateSortingOrder.GetValue()
+    ├── canvas.sortingOrder = _sortingOrder     ← received from FSM via SetSortingOrder
     ├── canvas.planeDistance = 5
     ├── gameObject.SetActive(true)
-    └── animationSystem.PlayAnimation(Enter, callback: MakeStateInteractable(true))
+    │
+    ├── [if UseDefaultAnimations]
+    │       animationSystem.PlayAnimation(Enter, onComplete: MakeStateInteractable(true))
+    │
+    └── [else]
+            MakeStateInteractable(true)   ← interactive immediately
+            OnCustomShow()                ← subclass plays its own animation (void, fire-and-forget)
 ```
 
-Called by `UIViewState.Enter()`. The UI is not interactable until the enter animation completes.
+Called by `UIViewState.Enter()`. With default animations, the UI is not interactable until the enter animation completes. With custom animations, the view is interactive at once and responsible for its own presentation.
 
 #### Hide() [Coroutine]
 
@@ -484,19 +515,39 @@ Called by `UIViewState.Enter()`. The UI is not interactable until the enter anim
 Hide()
     ├── Guard: if _isHiding → yield break
     ├── _isHiding = true
-    ├── MakeStateInteractable(false)    ← immediately blocks input
-    ├── animationSystem.PlayAnimation(Exit, callback: completed = true)
-    ├── [WAIT] yield return new WaitUntil(() => completed)
+    ├── MakeStateInteractable(false)          ← immediately blocks input
+    │
+    ├── [if Paused]                            ← already non-interactable (overlay pushed on top), no animation needed
+    │       (no-op, fall through to deactivate)
+    │
+    ├── [else if UseDefaultAnimations]
+    │       animationSystem.PlayAnimation(Exit, callback: completed = true)
+    │       yield return WaitUntil(() => completed)
+    │
+    ├── [else]
+    │       yield return OnCustomHide()        ← coroutine; FSM WAITS for it
+    │
     ├── gameObject.SetActive(false)
     └── _isHiding = false
 ```
 
-**The FSM waits here.** The coroutine only completes after the exit animation finishes. This guarantees clean visual transitions with no flickering.
+**The FSM waits here.** Whether the default system or the custom coroutine drives the exit, `Hide()` only completes after the animation finishes, guaranteeing clean visual transitions.
 
 #### Pause() / Resume()
 
-- `Pause()`: Blocks raycasts, calls `ForceCompleteCurrentAnimation()` to snap animations to end state.
-- `Resume()`: Unblocks raycasts, calls `ForceCompleteCurrentAnimation()` again (resolves any in-progress tween), then re-enables interaction.
+- `Pause()`: Blocks raycasts, sets `Paused = true`. If `UseDefaultAnimations`, also calls `ForceCompleteCurrentAnimation()` to snap the in-flight tween. Always calls `OnCustomPause()` so custom hud/screens can react (dim background, stop idle tween, etc.) regardless of animation mode.
+- `Resume()`: Inverse — clears `Paused`, `ForceCompleteCurrentAnimation()` if default, calls `OnCustomResume()`, unblocks raycasts.
+
+#### Custom Animation Hooks
+
+```csharp
+protected virtual void OnCustomShow()               { }
+protected virtual IEnumerator OnCustomHide()        { yield break; }
+protected virtual void OnCustomPause()              { }
+protected virtual void OnCustomResume()             { }
+```
+
+Override these in a `UIBase` subclass (typically paired with `useDefaultAnimations = false` on the owning `UIViewState`) to fully control enter/exit presentation. `OnCustomHide` **must** be a coroutine that yields until the animation finishes — the FSM blocks on it.
 
 **Interactivity:** Uses `_canvasGroup.blocksRaycasts` (not `interactable`). This means paused screens are visible but cannot receive input.
 
@@ -584,11 +635,205 @@ All follow the same pattern: a `State` (ScriptableObject) paired with a `UIBase`
 | State ScriptableObject | View MonoBehaviour | Notes |
 |------------------------|-------------------|-------|
 | `MainMenuState` | `MainMenuView` | Play button raises `GoToGameEvent`, SpinWheel button raises `GoToSpinWheelEvent`. |
-| `GameState` / `NormalGameState` | `GameHud` / `NormalGameHud` | Loads both a gameplay prefab and HUD prefab. HUD slides header/footer bars. Subscribes to `TimeMachine.Tick`. |
+| `GameState` / `NormalGameState` | `GameHud` / `NormalGameHud` | Loads both a gameplay prefab and HUD prefab. HUD slides header/footer bars. `NormalGameHud` exposes `OnLevelCompletePressed`, `OnLevelFailPressed`, `OnSettingsPressed` — state wires them to `GoToLevelCompleteEvent`, `GoToLevelFailEvent`, `GoToSettingsEvent`. |
 | `LevelCompleteState` | `LevelCompleteView` | Next button raises `GoToMainMenuEvent` with `Home` reason. |
 | `LevelFailState` | `LevelFailView` | Retry or Home buttons raise appropriate events. |
 | `SpinWheelState` | `SpinWheelView` | Loads spin data from JSON. Back button pops to MainMenu. |
 | `RateUsState` | `RateUsView` | Back button pops. |
+| `GameSettingsXState` | `GameSettingsXUIView` | Settings overlay raised from the HUD via `GoToGameSettingsXEvent`. Toggles `DBBool` `SoundEnabled` / `HapticsEnabled`. See [§6.8](#68-gamesettingsx-reference-implementation). |
+
+---
+
+### 6.6 GameHud
+
+**File:** `Saad/UI/GameHud/Scripts/GameHud.cs`
+**Type:** Abstract `MonoBehaviour` implementing `IShowable`
+**Namespace:** `Blues.Core.GameHud`
+
+The HUD is the persistent top/bottom UI for a playable state (coins, lives, timer, settings button, etc.). Like `UIBase`, it mirrors the animation-independence contract.
+
+#### Fields
+
+| Field | Purpose |
+|-------|---------|
+| `HudBarsConfig` | `UiConfig` with easeIn/easeOut duration and curves. |
+| `Header`, `Footer`, `Middle` | RectTransforms animated via `HudAnimations.SlideInFromAbove / SlideOutBelow`, etc. |
+| `currentStateSortingOrder` | `Int` ScriptableObject — still used here (legacy; will migrate to FSM-driven sort order in a later pass). |
+| `UseDefaultAnimations` | Property. When `false`, bars skip the slide animations; `OnCustomShow / Hide / Pause / Resume` hooks fire instead. |
+| `Paused` | Tracks paused state; when `Paused == true`, `Hide()` kills bar tweens without animating. |
+
+#### Flow
+
+Identical shape to `UIBase` — `Show()` plays `SlideInFromAbove/Below` when `UseDefaultAnimations`, else calls `OnCustomShow()`; `Hide()` awaits `OnCustomHide()` when the flag is off; `Pause/Resume` call their custom hooks alongside (or instead of) the default `HideGameHudBars` tween.
+
+#### GameState Integration
+
+`GameState` owns the HUD lifecycle:
+
+```csharp
+[Header("Animations")]
+[SerializeField] private bool useDefaultHudAnimations = true;   // ← written to HUD before Show()
+```
+
+In `Enter()`:
+
+```csharp
+gameHudInstance.UseDefaultAnimations = useDefaultHudAnimations;
+gameHudInstance.Show();
+```
+
+Set `useDefaultHudAnimations = false` on a `GameState` subclass and override the HUD's custom hooks to do something more elaborate (e.g., skin-specific animations) without changing the base `GameHud` code.
+
+---
+
+### 6.7 Animation Independence Pattern
+
+> **Core principle:** *The FSM / State layer is animation-agnostic. Views own their own presentation.*
+
+`FiniteStateMachine` and `State` contain zero animation fields or flags. They only drive lifecycle (`Enter → Pause ↔ Resume → Exit`). All visual concerns live on `UIBase` / `GameHud`.
+
+Every view has:
+
+| Surface | Behavior when `UseDefaultAnimations = true` | Behavior when `false` |
+|---------|---------------------------------------------|------------------------|
+| `Show()` | Plays `UiAnimationSystem` enter tween, interactable after tween | Immediately interactable + `OnCustomShow()` (fire-and-forget) |
+| `Hide()` | Plays exit tween, yields until complete | Yields `OnCustomHide()` (coroutine) |
+| `Pause()` | `ForceCompleteCurrentAnimation()` + `OnCustomPause()` | `OnCustomPause()` only |
+| `Resume()` | `ForceCompleteCurrentAnimation()` + `OnCustomResume()` | `OnCustomResume()` only |
+
+**Who writes the flag:**
+- `UIViewState.useDefaultAnimations` (serialized on the State SO) → `UIBase.UseDefaultAnimations` (right before `Show()`).
+- `GameState.useDefaultHudAnimations` (serialized on the State SO) → `GameHud.UseDefaultAnimations` (right before `Show()`).
+
+**Example: a custom slide-from-top view**
+
+```csharp
+public class FancyPopupView : UIBase
+{
+    [SerializeField] private float slideDuration = 0.35f;
+
+    protected override void OnCustomShow()
+    {
+        UIPanel.anchoredPosition = new Vector2(0, 1500);
+        UIPanel.DOAnchorPosY(0, slideDuration).SetEase(Ease.OutBack);
+    }
+
+    protected override IEnumerator OnCustomHide()
+    {
+        bool done = false;
+        UIPanel.DOAnchorPosY(1500, slideDuration).SetEase(Ease.InBack)
+               .OnComplete(() => done = true);
+        yield return new WaitUntil(() => done);
+    }
+}
+```
+
+In the corresponding `UIViewState` asset, set `useDefaultAnimations = false`. The FSM waits on `OnCustomHide` exactly as it would for the default exit tween — no change to the transition pipeline.
+
+**Why this matters for transitions:** `FSM.ClearAllAndTransitionTo()` calls `Pause()` on the current state before `Exit()`, so `Paused == true` when `Hide()` runs, and the exit animation is skipped entirely. The view lands in "non-interactable, hidden" state instantly, ready for pool release — all without any animation flag plumbed through the FSM.
+
+---
+
+### 6.8 GameSettingsX Reference Implementation
+
+**Location:** `Assets/Game/Screens/GameSettingsX/`
+
+`GameSettingsX` is the canonical reference screen. If you're adding a new screen, copy this structure.
+
+#### Folder Layout
+
+```
+Assets/Game/Screens/GameSettingsX/
+├── Art/                       ← screen-specific art
+├── Config/                    ← *.asset files owned by the screen
+│   ├── GameSettingsXState.asset
+│   ├── GoToGameSettingsXEvent.asset
+│   ├── GoToGameSettingsXTransition.asset
+│   ├── v_SoundEnabled.asset   (DBBool)
+│   └── v_HapticsEnabled.asset (DBBool)
+├── Prefabs/
+│   └── GameSettingsX.prefab
+├── Scripts/
+│   ├── GameSettingsXState.cs        ← ScriptableObject (extends UIViewState)
+│   ├── GameSettingsXUIView.cs       ← MonoBehaviour (extends UIBase)
+│   ├── GameSettingsXViewData.cs     ← plain POCO for pushing data to the view
+│   └── GameSettingsXTransition.cs   ← optional Transition subclass
+└── PROMPT.md                        ← screen-specific AI context
+```
+
+Everything the screen needs is co-located; deleting the folder removes the entire feature.
+
+#### State — `GameSettingsXState`
+
+```csharp
+public class GameSettingsXState : UIViewState
+{
+    [SerializeField] private GameEvent GoToHomeEvent;
+    [SerializeField] private DBBool SoundEnabled;
+    [SerializeField] private DBBool HapticsEnabled;
+
+    private GameSettingsXUIView _view;
+
+    public override IEnumerator Enter(IState previous)
+    {
+        yield return base.Enter(previous);
+
+        _view = GetView<GameSettingsXUIView>();
+        if (_view == null) yield break;
+
+        SubscribeEvents();
+        RefreshView();
+    }
+
+    public override IEnumerator Exit()
+    {
+        if (_view != null)
+        {
+            UnsubscribeEvents();
+            _view = null;
+        }
+        yield return base.Exit();
+    }
+    // HandleSoundToggled → toggles DBBool, RefreshView() pushes state into the view …
+}
+```
+
+**Pattern rules:**
+1. **Use `GetView<T>()`** — typed, null-safe, works for pooled and non-pooled spawn paths.
+2. **Named handlers, not lambdas** — Subscribe/Unsubscribe must be symmetric. Lambdas leak.
+3. **Null the cached view in `Exit()` before calling `base.Exit()`** — prevents use-after-release if `Exit()` re-entered.
+4. **Data flows one way**: state writes `DBBool` → state builds `ViewData` → view renders. The view **never** reads a DBBool directly.
+
+#### View — `GameSettingsXUIView`
+
+```csharp
+public class GameSettingsXUIView : UIBase
+{
+    public event Action OnSettingsPressed;
+    public event Action OnSoundToggled;
+    public event Action OnHapticsToggled;
+    public event Action OnRestorePressed;
+    public event Action OnExitPressed;
+
+    public void SetData(GameSettingsXViewData data)
+    {
+        SoundIcon.color   = data.SoundEnabled   ? EnabledColor : DisabledColor;
+        HapticsIcon.color = data.HapticsEnabled ? EnabledColor : DisabledColor;
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        SoundBtn.onClick.AddListener(() => OnSoundToggled?.Invoke());
+        // …
+    }
+}
+```
+
+**View rules:**
+1. Only emits events. No game logic. No ScriptableObject references except inherited ones (`animationConfig`).
+2. `SetData(ViewData)` is the only write path from the state.
+3. Extends `UIBase` → gets `UseDefaultAnimations`, custom hooks, pool compatibility for free.
 
 ---
 
@@ -1044,6 +1289,8 @@ ApplicationFlowController.GoToMainMenu(reasonId=0)
 
 ## 16. Adding a New State — Step-by-Step
 
+> **Fast path:** open **Tools → State Creator** (`Assets/Editor/StateCreatorWindow.cs`). The window scaffolds all the files below (State, View, ViewData, Transition, Event, prefab, folder layout) from a single form. The manual steps below exist to explain what the tool does — and for rare cases where a hand-built screen is wanted. See also [BUILD_STATE_CREATOR_TOOL.md](./BUILD_STATE_CREATOR_TOOL.md) and [§6.8 GameSettingsX](#68-gamesettingsx-reference-implementation) for a complete reference implementation.
+
 ### Step 1: Create the View MonoBehaviour
 
 ```csharp
@@ -1118,6 +1365,8 @@ public class MyNewState : UIViewState
 
 ### Step 6: Wire into ApplicationFlowController
 
+Use **named methods**, never lambdas — lambdas compile to fresh delegates and `Subscribe`/`UnSubscribe` would not pair up.
+
 ```csharp
 // In ApplicationFlowController.cs
 [Header("My New State")]
@@ -1127,14 +1376,17 @@ public class MyNewState : UIViewState
 protected override void RegisterFlowEvents()
 {
     // ... existing registrations ...
-    GoToMyNewStateEvent.Subscribe(() => GoTo(MyNewStateTransition, UICloseReasons.FullScreenPlacement));
+    GoToMyNewStateEvent.Subscribe(HandleGoToMyNewState);
 }
 
 protected override void UnregisterFlowEvents()
 {
     // ... existing unregistrations ...
-    GoToMyNewStateEvent.UnSubscribe(() => GoTo(MyNewStateTransition, UICloseReasons.FullScreenPlacement));
+    GoToMyNewStateEvent.UnSubscribe(HandleGoToMyNewState);
 }
+
+private void HandleGoToMyNewState() =>
+    GoTo(MyNewStateTransition, UICloseReasons.FullScreenPlacement);
 ```
 
 ### Step 7: Create the Event ScriptableObject
@@ -1161,4 +1413,4 @@ protected override void UnregisterFlowEvents()
 
 ---
 
-*Last updated: 2026-04-12*
+*Last updated: 2026-04-16 — animation independence, GameSettingsX reference, State Creator Tool, FSM sorting counter now plain int*

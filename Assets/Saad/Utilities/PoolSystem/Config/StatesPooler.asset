@@ -43,3 +43,8 @@ MonoBehaviour:
     DefaultCapacity: 1
     MaxSize: 1
     Prewarm: 0
+  - PoolID: GameSettingsX
+    Prefab: {fileID: 148092027684655630, guid: d587f755e55c5fe4087b9df4cc5229f2, type: 3}
+    DefaultCapacity: 1
+    MaxSize: 1
+    Prewarm: 0

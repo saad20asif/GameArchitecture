@@ -23,7 +23,7 @@ namespace Blues.Core.StateMachine
                  "The View can override OnCustomShow / OnCustomHide for its own animations.", InfoMessageType.None)]
         private bool useDefaultAnimations = true;
 
-        private UIBase _uiInstance;
+        [ShowInInspector]private UIBase _uiInstance;
         private GameObject _spawnedInstance;
 
         /// <summary>
@@ -35,6 +35,7 @@ namespace Blues.Core.StateMachine
 
         public override IEnumerator Enter(IState previous)
         {
+            Debug.Log($"Entering state: {stateId}");
             yield return base.Enter(previous);
 
             GameObject viewObject = null;

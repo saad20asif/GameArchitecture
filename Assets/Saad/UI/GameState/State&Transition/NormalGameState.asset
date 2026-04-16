@@ -25,4 +25,4 @@ MonoBehaviour:
   GameStateExit: {fileID: 11400000, guid: a9c44cf64a87a95479c57e73e608f24e, type: 2}
   GoToLevelCompleteEvent: {fileID: 11400000, guid: b127c607009da264a81f6e3465b0080d, type: 2}
   GoToLevelFailEvent: {fileID: 11400000, guid: 2546da7c6ddcb964395a9b72bf972875, type: 2}
-  GoToSettingsEvent: {fileID: 11400000, guid: 5afe7256a9aecee4bae6b347d9760b0e, type: 2}
+  GoToSettingsEvent: {fileID: 11400000, guid: 5a5702381f277b241b142b8f0abf69e2, type: 2}
