@@ -462,7 +462,7 @@ public class StateCreatorWindow : EditorWindow
         if (poolWired) AddPoolEntry(pooler, name, dummyPrefab);
 
         // ── AFC wiring
-        bool flowUpdated = PatchApplicationFlowController(name);
+        bool flowUpdated = PatchApplicationFlowController(name, _closePolicy, _pausePreviousState);
         bool prefabWired = PatchAfcPrefab(name,
             $"{configDir}/GoTo{name}Event.asset",
             $"{configDir}/GoTo{name}Transition.asset");
@@ -545,7 +545,7 @@ public class StateCreatorWindow : EditorWindow
             if (hudPrefab != null)      { AddPoolEntry(pooler, $"{name}Hud", hudPrefab);      hudWired = true; }
         }
 
-        bool flowUpdated = PatchApplicationFlowController(name);
+        bool flowUpdated = PatchApplicationFlowController(name, _closePolicy, _pausePreviousState);
         bool prefabWired = PatchAfcPrefab(name,
             $"{configDir}/GoTo{name}Event.asset",
             $"{configDir}/GoTo{name}Transition.asset");
@@ -910,7 +910,8 @@ public class StateCreatorWindow : EditorWindow
     //  AFC — SCRIPT PATCHER
     // ════════════════════════════════════════════════════════════════════════
 
-    private static bool PatchApplicationFlowController(string name)
+    private static bool PatchApplicationFlowController(string name,
+        ClosePolicy closePolicy = ClosePolicy.Default, bool pausePrevious = false)
     {
         if (!File.Exists(AfcPath)) return false;
         string src = File.ReadAllText(AfcPath);
@@ -929,11 +930,26 @@ public class StateCreatorWindow : EditorWindow
         src = InsertBeforeMethodClose(src, "protected override void UnregisterFlowEvents()",
             $"        _goTo{name}Event.UnSubscribe(HandleGoTo{name});\n");
 
+        // Derive the correct UICloseReasons from Close Policy + Pause Previous:
+        //   ClearAll                    → Home  (clears entire stack)
+        //   PopOne                      → ResumeGame (exits current, resumes previous)
+        //   Default + pausePrevious     → FullScreenPlacement (pushes on top, pauses previous)
+        //   Default + no pause          → FullScreenPlacement without pause flag — but closest safe default
+        string reason;
+        if (closePolicy == ClosePolicy.ClearAll)
+            reason = "Home";
+        else if (closePolicy == ClosePolicy.PopOne)
+            reason = "ResumeGame";
+        else if (pausePrevious)
+            reason = "FullScreenPlacement";
+        else
+            reason = "FullScreenPlacement";
+
         int lb = src.LastIndexOf('}');
         if (lb < 0) return false;
         src = src.Substring(0, lb) +
               $"\n    private void HandleGoTo{name}() =>\n" +
-              $"        GoTo(_goTo{name}Transition, UICloseReasons.Home);\n" +
+              $"        GoTo(_goTo{name}Transition, UICloseReasons.{reason});\n" +
               "}\n";
         File.WriteAllText(AfcPath, src);
         return true;

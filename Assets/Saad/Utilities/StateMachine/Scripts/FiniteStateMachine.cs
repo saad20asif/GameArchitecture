@@ -252,6 +252,11 @@ namespace Blues.Core.StateMachine
         // Resumes a paused state and pops it from the paused stack
         private IEnumerator ResumePausedState(State target)
         {
+            if (PausedStates.Count == 0)
+            {
+                Debug.LogWarning($"[FSM] Cannot resume '{target.name}' — paused stack is empty.");
+                yield break;
+            }
             if (PausedStates.Peek() != target)
             {
                 Debug.LogWarning($"Trying to resume non-top state '{target.name}'. This is not allowed.");
