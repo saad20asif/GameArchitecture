@@ -7,7 +7,10 @@
       "mcp__UnityMCP__manage_asset",
       "mcp__UnityMCP__manage_scriptable_object",
       "mcp__UnityMCP__refresh_unity",
-      "mcp__UnityMCP__manage_prefabs"
+      "mcp__UnityMCP__manage_prefabs",
+      "Bash(git *)",
+      "Bash(find . -iname \"CLAUDE.md\" -not -path \"*/Library/*\")",
+      "Bash(ls \"C:\\\\Users\\\\Game District\\\\.claude\\\\CLAUDE.md\")"
     ]
   }
 }
