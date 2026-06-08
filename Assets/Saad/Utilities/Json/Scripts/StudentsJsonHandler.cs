@@ -44,7 +44,6 @@ public struct Student
     public Grades grades;
     public Course[] courses;
 }
-[SerializeField]
 struct StudentWrapper
 {
     public Student[] Students;
